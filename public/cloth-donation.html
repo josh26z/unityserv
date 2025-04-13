@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloth Donation</title>
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+
+        /* Container */
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+        }
+
+        /* Dropdown & Button Styles */
+        label {
+            font-size: 18px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        select, button {
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: block;
+            margin-top: 15px;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Cloth Donation</h1>
+        
+        <label for="clothing-type">Select the type of clothes to donate:</label>
+        <select id="clothing-type">
+            <option value="">-- Choose an option --</option>
+            <option value="male">Clothes for Males</option>
+            <option value="female">Clothes for Females2</option>
+            <option value="children">Clothes for Children</option>
+            <option value="elderly">Clothes for Elderly People</option>
+        </select>
+
+        <button onclick="submitClothDonation()">Submit</button>
+
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </div>
+
+    <script>
+        function submitClothDonation() {
+            let selectedValue = document.getElementById("clothing-type").value;
+            if (selectedValue) {
+                alert("Thank you for choosing to donate " + selectedValue + " clothes!");
+            } else {
+                alert("Please select an option before submitting.");
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UNITY SERVE</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('images/background pastel.jpg') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: brightness(0.9);
+    }
+
+    .form-container {
+      background-color: rgba(255, 255, 255, 0.9);
+      width: 100%;
+      max-width: 600px;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #e75a1d;
+    }
+
+    .form-container label {
+      margin-top: 15px;
+      display: block;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-container input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      transition: all 0.3s ease;
+    }
+
+    .form-container input:focus {
+      border-color: #c37714;
+      outline: none;
+    }
+
+    .form-container button {
+      width: 100%;
+      padding: 14px;
+      background-color: #d18420;
+      border: none;
+      color: white;
+      font-size: 18px;
+      margin-top: 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .form-container button:hover {
+      background-color: #bfc1c2;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>INDIVIDUAL REGISTRATION</h2>
+    <form id="individualForm">
+      <label>Full Name:</label>
+      <input type="text" id="name" placeholder="Enter your full name" required>
+
+      <label>Email:</label>
+      <input type="email" id="email" placeholder="example@domain.com" required>
+
+      <label>Phone Number:</label>
+      <input type="tel" id="phone" placeholder="10-digit number" pattern="[0-9]{10}" required>
+
+      <label>Password:</label>
+      <input type="password" id="password" placeholder="Create a strong password" required>
+
+      <button type="submit">Register Now</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("individualForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!name || !email || !phone || !password) {
+        alert("⚠️ Please fill all the fields.");
+      } else if (!/^\d{10}$/.test(phone)) {
+        alert("📞 Please enter a valid 10-digit phone number.");
+      } else {
+        alert(`🎉 Welcome, ${name}! Your registration with UNITY SERVE is successful.`);
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+
+</body>
+</html>

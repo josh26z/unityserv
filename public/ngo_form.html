@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UNITY SERVE - NGO Registration</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('images/background pastel.jpg') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: brightness(0.9);
+    }
+
+    .form-container {
+      background-color: rgba(255, 255, 255, 0.9);
+      width: 100%;
+      max-width: 700px;
+      padding: 35px 45px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #06B6D4;
+    }
+
+    .form-container label {
+      margin-top: 15px;
+      display: block;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-container input, 
+    .form-container select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      transition: all 0.3s ease;
+    }
+
+    .form-container input:focus, 
+    .form-container select:focus {
+      border-color: #06B6D4;
+      outline: none;
+    }
+
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px 20px;
+      margin-top: 10px;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    .form-container button {
+      width: 100%;
+      padding: 14px;
+      background-color: #0891B2;
+      border: none;
+      color: white;
+      font-size: 18px;
+      margin-top: 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .form-container button:hover {
+      background-color: #bfc1c2;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>NGO REGISTRATION</h2>
+    <form id="ngoForm">
+      <label>NGO Name:</label>
+      <input type="text" id="ngoName" placeholder="Your NGO's name" required>
+
+      <label>Email:</label>
+      <input type="email" id="email" placeholder="example@ngo.org" required>
+
+      <label>Phone Number:</label>
+      <input type="tel" id="phone" placeholder="10-digit contact number" pattern="[0-9]{10}" required>
+
+      <label>Location of NGO:</label>
+      <input type="text" id="location" placeholder="City, State/Country" required>
+
+      <label>Domain of Services (Select all that apply):</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="domain" value="Education"> Education</label>
+        <label><input type="checkbox" name="domain" value="Healthcare"> Healthcare</label>
+        <label><input type="checkbox" name="domain" value="Clothes Donation">Clothes Donation</label>
+        <label><input type="checkbox" name="domain" value="Food Donation"> Food Donation</label>
+      </div>
+
+      <label>Number of Volunteers:</label>
+      <select id="volunteers" required>
+        <option value="">-- Select number of volunteers --</option>
+        <option value="1-10">1-10</option>
+        <option value="11-50">11-50</option>
+        <option value="51-100">51-100</option>
+        <option value="101-500">101-500</option>
+        <option value="500+">500+</option>
+      </select>
+
+      <button type="submit">Register NGO</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("ngoForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const ngoName = document.getElementById("ngoName").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const location = document.getElementById("location").value.trim();
+      const volunteers = document.getElementById("volunteers").value;
+      const domains = Array.from(document.querySelectorAll('input[name="domain"]:checked')).map(cb => cb.value);
+
+      if (!ngoName || !email || !phone || !location || !volunteers || domains.length === 0) {
+        alert("⚠️ Please complete all fields and select at least one domain.");
+      } else if (!/^\d{10}$/.test(phone)) {
+        alert("📞 Enter a valid 10-digit phone number.");
+      } else {
+        alert(`✅ NGO "${ngoName}" successfully registered with UNITY SERVE.\n\n📍 Location: ${location}\n🌟 Domains: ${domains.join(', ')}\n👥 Volunteers: ${volunteers}`);
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+
+</body>
+</html>

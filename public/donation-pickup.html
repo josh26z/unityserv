@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Pickup - NGO Access</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .filters, .restaurants {
+            margin-top: 30px;
+        }
+        select, button {
+            padding: 12px;
+            margin-right: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .restaurant {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #e0ffe0;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: opacity 0.3s;
+        }
+        .restaurant.greyed-out {
+            opacity: 0.5;
+            background-color: #f0f0f0;
+        }
+        .back-button {
+            margin-top: 30px;
+            display: block;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Donation Pickup - NGO Access</h1>
+        <div class="filters">
+            <h2>Filter by Location & Availability</h2>
+            <select id="locationFilter">
+                <option value="all">All Locations</option>
+                <option value="bhopal">Bhopal</option>
+                <option value="sehore">Sehore</option>
+                <option value="astha">Astha</option>
+                <option value="indore">Indore</option>
+            </select>
+            <select id="availabilityFilter">
+                <option value="all">All</option>
+                <option value="yes">Available Now</option>
+                <option value="no">Unavailable</option>
+            </select>
+            <button onclick="applyFilters()">Apply Filters</button>
+        </div>
+        
+        <div class="restaurants" id="restaurantList">
+            <!-- Sample restaurant cards -->
+            <div class="restaurant" data-location="bhopal" data-available="yes">
+                <span><strong>Spice Villa - Bhopal</strong> (Priority Access)</span>
+                <button>Request Pickup</button>
+            </div>
+
+            <div class="restaurant greyed-out" data-location="sehore" data-available="no">
+                <span><strong>Green Garden - Sehore</strong> (Unavailable)</span>
+                <button disabled>Currently Unavailable</button>
+            </div>
+
+            <div class="restaurant" data-location="astha" data-available="yes">
+                <span><strong>Astha Dine - Astha</strong> (Priority Access)</span>
+                <button>Request Pickup</button>
+            </div>
+
+            <div class="restaurant greyed-out" data-location="indore" data-available="no">
+                <span><strong>Indore Bites - Indore</strong> (Unavailable)</span>
+                <button disabled>Currently Unavailable</button>
+            </div>
+        </div>
+        
+        <a href="index.html" class="back-button">
+            <button>⬅️ Back to Home</button>
+        </a>
+    </div>
+
+    <script>
+        function applyFilters() {
+            const location = document.getElementById('locationFilter').value;
+            const availability = document.getElementById('availabilityFilter').value;
+
+            const restaurants = Array.from(document.querySelectorAll('.restaurant'));
+
+            const sortedRestaurants = restaurants.sort((a, b) => {
+                return b.dataset.available.localeCompare(a.dataset.available);
+            });
+
+            sortedRestaurants.forEach((restaurant) => {
+                const matchesLocation = location === 'all' || restaurant.dataset.location === location;
+                const matchesAvailability = availability === 'all' || restaurant.dataset.available === availability;
+
+                if (matchesLocation && matchesAvailability) {
+                    restaurant.style.display = 'flex';
+                } else {
+                    restaurant.style.display = 'none';
+                }
+            });
+        }
+
+        setInterval(() => {
+            // Simulate real-time changes in availability
+            const restaurants = document.querySelectorAll('.restaurant');
+            restaurants.forEach((restaurant) => {
+                const randomAvailability = Math.random() > 0.5 ? 'yes' : 'no';
+                restaurant.dataset.available = randomAvailability;
+                restaurant.classList.toggle('greyed-out', randomAvailability === 'no');
+                restaurant.querySelector('button').disabled = randomAvailability === 'no';
+                restaurant.querySelector('button').textContent = randomAvailability === 'yes' ? 'Request Pickup' : 'Currently Unavailable';
+            });
+            applyFilters();
+        }, 5000); // Update every 5 seconds
+
+        window.onload = applyFilters;
+    </script>
+</body>
+</html>

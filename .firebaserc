@@ -1,0 +1,16 @@
+{
+  "projects": {
+    "default": "unityserve-demo-2f30f",
+    "unityserve-demo": "unityserve-demo-2f30f"
+  },
+  "targets": {
+    "unityserve-demo-2f30f": {
+      "hosting": {
+        "unityservengo-demo": [
+          "unityserve-demo-2f30f"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

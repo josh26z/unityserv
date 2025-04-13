@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+
+        /* Container */
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+        }
+
+        /* Dropdown & Button Styles */
+        label {
+            font-size: 18px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        select, button {
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+
+        button {
+            background-color: #a9eee3;
+            color: rgb(0, 0, 0);
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #062b828e;
+        }
+    </style>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Donation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Donate for Education</h1>
+        
+        <label for="donation-type">Select what you want to donate:</label>
+        <select id="donation-type">
+            <option value="">-- Choose an option --</option>
+            <option value="books">Books</option>
+            <option value="stationery">Stationery (Pens, Notebooks, Pencils)</option>
+            <option value="uniforms">School Uniforms</option>
+            <option value="bags">School Bags</option>
+            <option value="monetary">Monetary Help</option>
+        </select>
+
+        <button onclick="submitDonation()">Submit</button>
+    </div>
+
+    <script>
+        function submitDonation() {
+            let selectedValue = document.getElementById("donation-type").value;
+            if (selectedValue) {
+                alert("Thank you for choosing to donate " + selectedValue + "!");
+            } else {
+                alert("Please select an option before submitting.");
+            }
+        }
+    </script>
+    
+
+</body>
+</html>
