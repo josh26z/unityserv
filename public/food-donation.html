@@ -1,494 +1,1118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Donation - UnityServe</title>
-    <link rel="icon" href="images/ngo_logo.png" type="image/x-icon">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700|Anton" rel="stylesheet">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-
-    <!-- FontAwesome for Icons -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
-    <!-- Additional CSS Libraries -->
-    <link rel="stylesheet" href="fonts/icomoon/style.css">
-    <link rel="stylesheet" href="css/magnific-popup.css">
-    <link rel="stylesheet" href="css/jquery-ui.css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
-    <link rel="stylesheet" href="css/aos.css">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
-
     <style>
-        /* Food Donation Form Specific Styles */
-        body {
-            font-family: 'Nunito', sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+        /* General Styles */
+        :root {
+            --primary-color: #4ea8ff; /* Updated to blue */
+            --primary-dark: #3d97ff;
+            --primary-light: #70baff;
+            --secondary-color: #212529; /* Dark gray/black from UnityServe */
+            --accent-color: #6c757d; /* Gray from UnityServe */
+            --donate-color: #e86327; /* Orange for donate button */
+            --banner-color: #c4ad56; /* Gold/yellow for banner */
+            --text-light: #6c757d;
+            --text-dark: #212529;
+            --bg-light: #f8f9fa;
+            --success-color: #5dd3b8; /* Mint green from submit button */
+            --success-dark: #4bc0a5;
+            --white: #ffffff;
+            --transition: all 0.3s ease;
         }
         
-        h1, h2, h3, h4, h5, h6 {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        /* Preloader */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--bg-light);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Main Container */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            width: 90%;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .main-container.loaded {
+            opacity: 1;
+        }
+        
+        /* Header Section with Image */
+        .header-section {
+            width: 100%;
+            height: 200px;
+            background-image: url('/api/placeholder/1600/400');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(196, 173, 86, 0.9), rgba(33, 37, 41, 0.9)); /* Updated colors */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+        
+        .overlay-icon {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .overlay h1 {
             font-family: 'Anton', sans-serif;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            font-weight: 700;
         }
         
-        /* Header styles */
-        .site-navbar {
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .site-logo .text-primary {
-            color: #4ea8ff !important;
-        }
-        
-        .signin-link, .donate-link {
-            display: inline-block;
-            background-color: #6c757d;
-            color: white !important;
-            border-radius: 5px;
-            padding: 8px 15px !important;
-            margin-right: 10px;
-            transition: all 0.3s ease;
-        }
-        
-        .signin-link:hover {
-            background-color: #5a6268;
-            color: white !important;
-        }
-        
-        .donate-link {
-            background-color: #e86327;
-        }
-        
-        .donate-link:hover {
-            background-color: #d55a20;
-            color: white !important;
-        }
-        
-        /* Form container styling */
-        .donation-container {
-            max-width: 650px;
-            margin: 50px auto;
-            padding: 30px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        /* Main heading styling */
-        .donation-heading {
-            color: #4ea8ff;
-            font-size: 2.2rem;
-            margin-bottom: 1.5rem;
-            text-align: left;
-        }
-        
-        /* Guidelines box styling */
-        .guidelines-box {
-            background-color: #f8f9fa;
-            border-left: 4px solid #4ea8ff;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .guidelines-heading {
-            color: #4ea8ff;
-            font-family: 'Anton', sans-serif;
-            margin-bottom: 15px;
-        }
-        
-        .guidelines-box ul {
-            list-style-type: disc;
-            color: #777;
-            padding-left: 20px;
-            margin-bottom: 0;
-        }
-        
-        .guidelines-box li {
-            margin-bottom: 8px;
-        }
-        
-        /* Form section styling */
-        .form-section-title {
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 15px;
+        .overlay p {
+            font-family: 'Nunito', sans-serif;
             font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-weight: 300;
         }
         
+        /* Form Section */
         .form-section {
-            margin-bottom: 25px;
-        }
-        
-        /* Donation type radio buttons styling */
-        .donation-types {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .donation-type-option {
-            flex: 1;
-            min-width: 250px;
+            width: 100%;
+            padding: 2rem;
             position: relative;
         }
         
-        .donation-type-radio {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-        }
-        
-        .donation-type-label {
-            display: block;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .donation-type-radio:checked + .donation-type-label {
-            border-color: #4ea8ff;
-            background-color: rgba(78, 168, 255, 0.05);
-        }
-        
-        .donation-type-title {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .donation-type-desc {
-            color: #777;
-            font-size: 0.9rem;
-        }
-        
-        /* Food items input styling */
-        .food-items-section {
-            margin-top: 20px;
-        }
-        
-        .food-item-input {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .food-item-name {
-            flex: 2;
-        }
-        
-        .food-item-quantity {
-            flex: 1;
-            max-width: 80px;
-        }
-        
-        .food-item-unit {
-            flex: 1;
-        }
-        
-        .food-item-add {
-            flex: 0;
-            background-color: #4ea8ff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 0 20px;
-            font-weight: 600;
-        }
-        
-        .food-items-list {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
-            min-height: 100px;
-        }
-        
-        .no-items-message {
-            color: #aaa;
+        .form-header {
             text-align: center;
-            padding: 20px 0;
+            margin-bottom: 2rem;
         }
         
-        /* Additional notes styling */
-        .notes-textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            resize: vertical;
-            min-height: 100px;
+        .form-header h2 {
+            font-family: 'Anton', sans-serif;
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
         }
         
-        /* Footer styling */
-        .form-footer {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 30px;
+        .form-header p {
+            font-family: 'Nunito', sans-serif;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-top: 1rem;
+            font-weight: 300;
         }
         
-        .btn-continue {
-            background-color: #4ea8ff;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
+        /* Form Steps */
+        .step-container {
+            display: none;
+        }
+        
+        .step-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step-title {
+            font-family: 'Anton', sans-serif;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+        
+        label {
+            font-family: 'Nunito', sans-serif;
+            display: block;
+            margin-bottom: 0.8rem;
+            color: var(--text-dark);
             font-weight: 600;
             font-size: 1rem;
         }
         
-        .btn-continue:hover {
-            background-color: #3d97ff;
+        .category-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-card {
+            flex: 1 0 calc(50% - 15px);
+            min-width: 120px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            background-color: rgba(78, 168, 255, 0.05);
+        }
+        
+        .category-card.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(78, 168, 255, 0.1);
+        }
+        
+        .category-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .category-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+        
+        .category-name {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+        
+        .category-description {
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 8px;
+            line-height: 1.4;
+            font-weight: 300;
+        }
+        
+        /* Item Selection */
+        .item-selection {
+            background-color: var(--bg-light);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .item-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .item-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .item-option:last-child {
+            border-bottom: none;
+        }
+        
+        .item-option:hover {
+            background-color: rgba(78, 168, 255, 0.05);
+        }
+        
+        .item-option.selected {
+            background-color: rgba(78, 168, 255, 0.1);
+        }
+        
+        .item-option input[type="radio"] {
+            margin-right: 15px;
+        }
+        
+        .item-name {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        /* Input & Select Elements */
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Nunito', sans-serif;
+            transition: var(--transition);
+            background-color: white;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(78, 168, 255, 0.2);
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 15px;
+        }
+        
+        /* Quantity Control */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
+            background-color: var(--bg-light);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .quantity-btn:hover {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .quantity-input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            margin: 0 10px;
+            padding: 0;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        input.with-icon {
+            padding-left: 45px;
+        }
+        
+        input:focus + .input-icon {
+            color: var(--primary-color);
+        }
+        
+        /* Navigation Buttons */
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .nav-btn {
+            font-family: 'Nunito', sans-serif;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 1px solid #ddd;
+        }
+        
+        .nav-btn.next {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn.next:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .nav-btn.prev:hover {
+            background-color: #e0e0e0;
+        }
+        
+        /* Submit Button */
+        .submit-btn {
+            font-family: 'Nunito', sans-serif;
+            display: block;
+            width: 100%;
+            background-color: var(--success-color);
+            color: var(--secondary-color);
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--success-dark);
+            transform: translateY(-3px);
+        }
+        
+        /* Summary Box */
+        .summary-box {
+            background-color: var(--bg-light);
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .summary-label {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .summary-value {
+            font-family: 'Nunito', sans-serif;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        /* Success Message */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .success-title {
+            font-family: 'Anton', sans-serif;
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .success-text {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        /* Information Cards */
+        .info-cards {
+            display: flex;
+            gap: 15px;
+            margin-top: 2.5rem;
+        }
+        
+        .info-card {
+            flex: 1;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            background-color: var(--bg-light);
+            transition: var(--transition);
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+        
+        .info-card:hover .info-icon {
+            transform: scale(1.1);
+        }
+        
+        .info-card h3 {
+            font-family: 'Anton', sans-serif;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-card p {
+            font-family: 'Nunito', sans-serif;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .main-container {
+                width: 95%;
+            }
+            
+            .form-section {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .category-cards {
+                flex-direction: column;
+            }
+            
+            .category-card {
+                flex: 1 0 100%;
+            }
+            
+            .info-cards {
+                flex-direction: column;
+            }
+            
+            .form-navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- Header with Navigation -->
-    <header class="site-navbar js-sticky-header site-navbar-target" role="banner">
-        <div class="container">
-            <div class="row align-items-center justify-content-between">
-                <div class="site-logo d-flex align-items-center">
-                    <img src="images/ngo_logo.png" alt="Unity Serve Logo" class="site-logo-img me-2">
-                    <a href="index.html" class="text-black fw-bold fs-2">
-                        <span class="text-primary">UNITY SERVE</span>
-                    </a>
-                </div>
-                <nav class="site-navigation text-center ml-auto" role="navigation">
-                    <ul class="site-menu main-menu js-clone-nav ml-auto d-none d-lg-flex">
-                        <li><a href="index.html" class="nav-link">Home</a></li>
-                        <li><a href="index.html#about-section" class="nav-link">About Us</a></li>
-                        <li><a href="index.html#discover-section" class="nav-link active">Services</a></li>
-                        <li><a href="index.html#donate-section" class="nav-link">Join Us</a></li>
-                        <li><a href="index.html#blog-section" class="nav-link">Events</a></li>
-                        <li><a href="index.html#contact-section" class="nav-link">Contact</a></li>
-                        <li><a href="sign-in.html" class="nav-link signin-link">SIGN IN</a></li>
-                        <li><a href="index.html#donation-section" class="nav-link donate-link">DONATE</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
-
-    <!-- Donation Form Container -->
-    <div class="donation-container">
-        <h1 class="donation-heading">WHAT WOULD YOU LIKE TO DONATE?</h1>
-        
-        <!-- Food Donation Guidelines -->
-        <div class="guidelines-box">
-            <h3 class="guidelines-heading">FOOD DONATION GUIDELINES</h3>
-            <p>Please ensure all food items are:</p>
-            <ul>
-                <li>Unopened and sealed in original packaging</li>
-                <li>Not expired or close to expiry (minimum 2 weeks before expiry)</li>
-                <li>Non-perishable items are preferred</li>
-                <li>Free from damage or contamination</li>
-            </ul>
-        </div>
-        
-        <!-- Donation Form -->
-        <form id="foodDonationForm">
-            <!-- Donation Type Section -->
-            <div class="form-section">
-                <h3 class="form-section-title">Donation Type</h3>
-                <div class="donation-types">
-                    <div class="donation-type-option">
-                        <input type="radio" id="nonPerishable" name="donationType" value="nonPerishable" class="donation-type-radio" checked>
-                        <label for="nonPerishable" class="donation-type-label">
-                            <div class="donation-type-title">Non-Perishable</div>
-                            <div class="donation-type-desc">Canned goods, rice, pasta, etc.</div>
-                        </label>
-                    </div>
-                    
-                    <div class="donation-type-option">
-                        <input type="radio" id="perishable" name="donationType" value="perishable" class="donation-type-radio">
-                        <label for="perishable" class="donation-type-label">
-                            <div class="donation-type-title">Perishable</div>
-                            <div class="donation-type-desc">Fresh produce, dairy, bakery, etc.</div>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="donation-types">
-                    <div class="donation-type-option">
-                        <input type="radio" id="preparedMeals" name="donationType" value="preparedMeals" class="donation-type-radio">
-                        <label for="preparedMeals" class="donation-type-label">
-                            <div class="donation-type-title">Prepared Meals</div>
-                            <div class="donation-type-desc">Cooked meals, catering leftovers</div>
-                        </label>
-                    </div>
-                    
-                    <div class="donation-type-option">
-                        <input type="radio" id="other" name="donationType" value="other" class="donation-type-radio">
-                        <label for="other" class="donation-type-label">
-                            <div class="donation-type-title">Other</div>
-                            <div class="donation-type-desc">Special food items, supplements</div>
-                        </label>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Food Items Section -->
-            <div class="form-section food-items-section">
-                <h3 class="form-section-title">Food Items</h3>
-                <div class="food-item-input">
-                    <input type="text" class="form-control food-item-name" id="foodItem" placeholder="Enter food item">
-                    <input type="number" class="form-control food-item-quantity" id="itemQuantity" placeholder="Qty" min="1" value="1">
-                    <select class="form-select food-item-unit" id="itemUnit">
-                        <option value="kg">kg</option>
-                        <option value="packages">packages</option>
-                        <option value="cans">cans</option>
-                        <option value="items">items</option>
-                        <option value="boxes">boxes</option>
-                        <option value="liters">liters</option>
-                    </select>
-                    <button type="button" class="btn food-item-add" id="addItemBtn">Add</button>
-                </div>
-                
-                <div class="food-items-list" id="foodItemsList">
-                    <p class="no-items-message" id="noItemsMessage">No items added yet</p>
-                    <!-- Food items will be added here dynamically -->
-                </div>
-            </div>
-            
-            <!-- Additional Notes Section -->
-            <div class="form-section">
-                <h3 class="form-section-title">Additional Notes</h3>
-                <textarea class="notes-textarea" placeholder="Any special instructions or details about your donation"></textarea>
-            </div>
-            
-            <!-- Form Footer -->
-            <div class="form-footer">
-                <button type="button" class="btn btn-continue" id="step1Next">Continue</button>
-            </div>
-        </form>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader"></div>
     </div>
-
-    <!-- Footer -->
-    <footer style="background-color: #222; color: #fff; padding: 40px 20px; text-align: center;">
-        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; max-width: 1200px; margin: auto;">
-
-            <!-- About Us with Logo -->
-            <div style="flex: 1; min-width: 200px; margin-bottom: 20px; text-align: left;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="images/ngo_logo.png" alt="Unity Serve Logo" style="width: 50px; height: 50px; border-radius: 50%;">
-                    <h2 style="font-size: 22px; font-weight: bold; margin: 0;">Unity Serve</h2>
-                </div>
-                <p style="font-size: 14px; margin-top: 10px;">We are a group of young individuals <br>committed to being productive for <br> others in need.</p>
-            </div>
-
-            <!-- Features Section with Hyperlinks -->
-            <div style="flex: 1; min-width: 200px; margin-bottom: 20px; text-align: left;">
-                <h3 style="font-size: 18px; font-weight: normal;">Features</h3>
-                <ul style="list-style: none; padding: 0; font-size: 14px; line-height: 1.8;">
-                    <li><a href="services.html" style="color: #fff; text-decoration: none;">Services</a></li>
-                    <li><a href="join-us.html" style="color: #fff; text-decoration: none;">Join Us</a></li>
-                    <li><a href="our-team.html" style="color: #fff; text-decoration: none;">Our Team</a></li>
-                    <li><a href="testimonials.html" style="color: #fff; text-decoration: none;">Testimonials</a></li>
-                    <li><a href="events.html" style="color: #fff; text-decoration: none;">Upcoming Events</a></li>
-                </ul>
-            </div>
-
-            <!-- Contact & Social Media -->
-            <div style="flex: 1; min-width: 200px; margin-bottom: 20px; text-align: left;">
-                <h3 style="font-size: 18px; font-weight: normal;">Contact Us</h3>
-                <p style="font-size: 14px;">Email: unityservengo@gmail.com</p>
-                <p style="font-size: 14px;">Call: +91-863-036-0001</p>
-
-                <h4 style="font-size: 16px; font-weight: normal; margin-top: 20px;">Follow Us</h4>
-                <div style="margin-top: 10px;">
-                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-instagram"></i></a>
-                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-twitter"></i></a>
-                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-            </div>
-
-            <!-- Newsletter Subscription -->
-            <div style="flex: 1; min-width: 250px; margin-bottom: 20px; text-align: left;">
-                <h3 style="font-size: 18px; font-weight: normal;">Subscribe to Newsletter</h3>
-                <input type="email" placeholder="Enter Email" style="width: 100%; padding: 10px; font-size: 14px; border-radius: 5px; border: none; margin-bottom: 10px;">
-                <button style="width: 100%; padding: 10px; background-color: #4ea8ff; color: white; border: none; font-size: 14px; border-radius: 5px; cursor: pointer;">
-                    Subscribe
-                </button>
+    
+    <div class="main-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="overlay">
+                <i class="fas fa-utensils overlay-icon"></i>
+                <h1>Food Donation</h1>
             </div>
         </div>
-
-        <p style="font-size: 12px; margin-top: 20px;">© 2025 Unity Serve. All rights reserved.</p>
-    </footer>
-
-    <!-- JavaScript Libraries -->
-    <script src="js/jquery-3.3.1.min.js"></script>
-    <script src="js/jquery-ui.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.sticky.js"></script>
-
-    <!-- Food Donation Form Specific JavaScript -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add food items
-            document.getElementById('addItemBtn').addEventListener('click', function() {
-                const itemName = document.getElementById('foodItem').value.trim();
-                const quantity = document.getElementById('itemQuantity').value;
-                const unit = document.getElementById('itemUnit').value;
+        
+        <!-- Form Section -->
+        <div class="form-section">
+            <div class="form-header">
+                <p>Select what food items you would like to donate. Your generosity helps provide nourishment to those in need and supports our mission of fighting hunger in our communities.</p>
+            </div>
+            
+            <form id="donation-form">
+                <!-- Step 1: Category Selection -->
+                <div class="step-container active" id="step-1">
+                    <h3 class="step-title">Step 1: Select a Category</h3>
+                    <div class="category-cards">
+                        <label class="category-card" for="non-perishable">
+                            <input type="radio" id="non-perishable" name="category" value="non-perishable">
+                            <div class="category-icon"><i class="fas fa-box"></i></div>
+                            <div class="category-name">Non-Perishable</div>
+                            <div class="category-description">Canned goods, pasta, rice, etc.</div>
+                        </label>
+                        
+                        <label class="category-card" for="perishable">
+                            <input type="radio" id="perishable" name="category" value="perishable">
+                            <div class="category-icon"><i class="fas fa-apple-alt"></i></div>
+                            <div class="category-name">Perishable</div>
+                            <div class="category-description">Fresh produce, dairy, bakery, etc.</div>
+                        </label>
+                        
+                        <label class="category-card" for="prepared-meals">
+                            <input type="radio" id="prepared-meals" name="category" value="prepared-meals">
+                            <div class="category-icon"><i class="fas fa-utensils"></i></div>
+                            <div class="category-name">Prepared Meals</div>
+                            <div class="category-description">Cooked meals, catering leftovers</div>
+                        </label>
+                        
+                        <label class="category-card" for="other-food">
+                            <input type="radio" id="other-food" name="category" value="other-food">
+                            <div class="category-icon"><i class="fas fa-shopping-basket"></i></div>
+                            <div class="category-name">Other</div>
+                            <div class="category-description">Special food items, supplements</div>
+                        </label>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <div></div> <!-- Empty div for spacing -->
+                        <button type="button" class="nav-btn next" id="to-step-2">Continue <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
                 
-                if (itemName && quantity > 0) {
-                    addFoodItem(itemName, quantity, unit);
-                    document.getElementById('foodItem').value = '';
-                    document.getElementById('itemQuantity').value = '1';
-                    document.getElementById('noItemsMessage').style.display = 'none';
+                <!-- Step 2: Item Selection -->
+                <div class="step-container" id="step-2">
+                    <h3 class="step-title">Step 2: Select an Item</h3>
+                    
+                    <!-- Non-Perishable Items -->
+                    <div class="item-selection" id="non-perishable-items" style="display: none;">
+                        <div class="item-list">
+                            <label class="item-option" for="canned-vegetables">
+                                <input type="radio" id="canned-vegetables" name="item" value="canned-vegetables">
+                                <span class="item-name">Canned Vegetables</span>
+                            </label>
+                            
+                            <label class="item-option" for="canned-fruits">
+                                <input type="radio" id="canned-fruits" name="item" value="canned-fruits">
+                                <span class="item-name">Canned Fruits</span>
+                            </label>
+                            
+                            <label class="item-option" for="canned-proteins">
+                                <input type="radio" id="canned-proteins" name="item" value="canned-proteins">
+                                <span class="item-name">Canned Proteins (Tuna, Chicken, etc.)</span>
+                            </label>
+                            
+                            <label class="item-option" for="rice">
+                                <input type="radio" id="rice" name="item" value="rice">
+                                <span class="item-name">Rice</span>
+                            </label>
+                            
+                            <label class="item-option" for="pasta">
+                                <input type="radio" id="pasta" name="item" value="pasta">
+                                <span class="item-name">Pasta</span>
+                            </label>
+                            
+                            <label class="item-option" for="dried-beans">
+                                <input type="radio" id="dried-beans" name="item" value="dried-beans">
+                                <span class="item-name">Dried Beans & Lentils</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Perishable Items -->
+                    <div class="item-selection" id="perishable-items" style="display: none;">
+                        <div class="item-list">
+                            <label class="item-option" for="fresh-vegetables">
+                                <input type="radio" id="fresh-vegetables" name="item" value="fresh-vegetables">
+                                <span class="item-name">Fresh Vegetables</span>
+                            </label>
+                            
+                            <label class="item-option" for="fresh-fruits">
+                                <input type="radio" id="fresh-fruits" name="item" value="fresh-fruits">
+                                <span class="item-name">Fresh Fruits</span>
+                            </label>
+                            
+                            <label class="item-option" for="dairy">
+                                <input type="radio" id="dairy" name="item" value="dairy">
+                                <span class="item-name">Dairy Products</span>
+                            </label>
+                            
+                            <label class="item-option" for="bread">
+                                <input type="radio" id="bread" name="item" value="bread">
+                                <span class="item-name">Bread & Bakery Items</span>
+                            </label>
+                            
+                            <label class="item-option" for="meat">
+                                <input type="radio" id="meat" name="item" value="meat">
+                                <span class="item-name">Meat & Protein</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Prepared Meals Items -->
+                    <div class="item-selection" id="prepared-meals-items" style="display: none;">
+                        <div class="item-list">
+                            <label class="item-option" for="cooked-meals">
+                                <input type="radio" id="cooked-meals" name="item" value="cooked-meals">
+                                <span class="item-name">Cooked Meals</span>
+                            </label>
+                            
+                            <label class="item-option" for="catering-leftovers">
+                                <input type="radio" id="catering-leftovers" name="item" value="catering-leftovers">
+                                <span class="item-name">Catering Leftovers</span>
+                            </label>
+                            
+                            <label class="item-option" for="restaurant-surplus">
+                                <input type="radio" id="restaurant-surplus" name="item" value="restaurant-surplus">
+                                <span class="item-name">Restaurant Surplus</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Other Foods Items -->
+                    <div class="item-selection" id="other-food-items" style="display: none;">
+                        <div class="item-list">
+                            <label class="item-option" for="nutritional-supplements">
+                                <input type="radio" id="nutritional-supplements" name="item" value="nutritional-supplements">
+                                <span class="item-name">Nutritional Supplements</span>
+                            </label>
+                            
+                            <label class="item-option" for="baby-food">
+                                <input type="radio" id="baby-food" name="item" value="baby-food">
+                                <span class="item-name">Baby Food</span>
+                            </label>
+                            
+                            <label class="item-option" for="special-dietary">
+                                <input type="radio" id="special-dietary" name="item" value="special-dietary">
+                                <span class="item-name">Special Dietary Foods</span>
+                            </label>
+                            
+                            <label class="item-option" for="food-gift-cards">
+                                <input type="radio" id="food-gift-cards" name="item" value="food-gift-cards">
+                                <span class="item-name">Food Gift Cards</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="nav-btn prev" id="to-step-1"><i class="fas fa-arrow-left"></i> Back</button>
+                        <button type="button" class="nav-btn next" id="to-step-3">Continue <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Quantity & Details -->
+                <div class="step-container" id="step-3">
+                    <h3 class="step-title">Step 3: Specify Quantity & Details</h3>
+                    
+                    <div class="form-group">
+                        <label>How many would you like to donate?</label>
+                        <div class="quantity-control">
+                            <div class="quantity-btn minus" id="quantity-minus">-</div>
+                            <input type="number" id="quantity" name="quantity" class="quantity-input" value="1" min="1" max="100">
+                            <div class="quantity-btn plus" id="quantity-plus">+</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="unit">Unit:</label>
+                        <select id="unit" name="unit">
+                            <option value="items">Items</option>
+                            <option value="kg">Kilograms</option>
+                            <option value="packages">Packages</option>
+                            <option value="cans">Cans</option>
+                            <option value="boxes">Boxes</option>
+                            <option value="liters">Liters</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="donor-name">Your Name:</label>
+                        <div class="input-group">
+                            <input type="text" id="donor-name" name="donor-name" class="with-icon" required>
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="donor-email">Your Email:</label>
+                        <div class="input-group">
+                            <input type="email" id="donor-email" name="donor-email" class="with-icon" required>
+                            <i class="fas fa-envelope input-icon"></i>
+                        </div>
+                    </div><div class="form-group">
+                        <label for="donor-phone">Your Phone Number:</label>
+                        <div class="input-group">
+                            <input type="tel" id="donor-phone" name="donor-phone" class="with-icon">
+                            <i class="fas fa-phone input-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Additional Notes:</label>
+                        <textarea id="notes" name="notes" rows="4" placeholder="Any special instructions or details about your donation"></textarea>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="nav-btn prev" id="to-step-2"><i class="fas fa-arrow-left"></i> Back</button>
+                        <button type="button" class="nav-btn next" id="to-step-4">Review <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Review & Submit -->
+                <div class="step-container" id="step-4">
+                    <h3 class="step-title">Step 4: Review & Submit</h3>
+                    
+                    <div class="summary-box">
+                        <div class="summary-item">
+                            <span class="summary-label">Category:</span>
+                            <span class="summary-value" id="summary-category">Not selected</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Item:</span>
+                            <span class="summary-value" id="summary-item">Not selected</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Quantity:</span>
+                            <span class="summary-value" id="summary-quantity">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Unit:</span>
+                            <span class="summary-value" id="summary-unit">Not selected</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Donor:</span>
+                            <span class="summary-value" id="summary-name">Not provided</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Contact:</span>
+                            <span class="summary-value" id="summary-contact">Not provided</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Notes:</span>
+                            <span class="summary-value" id="summary-notes">None</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Submit Donation</button>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="nav-btn prev" id="to-step-3"><i class="fas fa-arrow-left"></i> Back</button>
+                    </div>
+                </div>
+                
+                <!-- Success Message -->
+                <div class="success-message" id="success-message">
+                    <i class="fas fa-check-circle success-icon"></i>
+                    <h2 class="success-title">Thank You!</h2>
+                    <p class="success-text">Your generous food donation has been registered. Our team will contact you shortly to arrange the details for collection or drop-off.</p>
+                    <button type="button" class="submit-btn" id="reset-form">Make Another Donation</button>
+                </div>
+            </form>
+            
+            <!-- Information Cards -->
+            <div class="info-cards">
+                <div class="info-card">
+                    <i class="fas fa-utensils info-icon"></i>
+                    <h3>5,000+</h3>
+                    <p>Meals provided monthly</p>
+                </div>
+                
+                <div class="info-card">
+                    <i class="fas fa-users info-icon"></i>
+                    <h3>250+</h3>
+                    <p>Families supported</p>
+                </div>
+                
+                <div class="info-card">
+                    <i class="fas fa-hands-helping info-icon"></i>
+                    <h3>Join Us</h3>
+                    <p>Be part of the change</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script>
+        // Preloader
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('preloader').style.display = 'none';
+                document.querySelector('.main-container').classList.add('loaded');
+            }, 800);
+        });
+        
+        // DOM Content Loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Steps Navigation
+            const steps = document.querySelectorAll('.step-container');
+            let currentStep = 1;
+            
+            // Show specific step
+            function showStep(stepNumber) {
+                steps.forEach(step => step.classList.remove('active'));
+                document.getElementById(`step-${stepNumber}`).classList.add('active');
+                currentStep = stepNumber;
+                
+                // Scroll to top of the form
+                document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Category Selection
+            const categoryCards = document.querySelectorAll('.category-card');
+            const itemSelections = {
+                'non-perishable': document.getElementById('non-perishable-items'),
+                'perishable': document.getElementById('perishable-items'),
+                'prepared-meals': document.getElementById('prepared-meals-items'),
+                'other-food': document.getElementById('other-food-items')
+            };
+            
+            categoryCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    categoryCards.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    this.querySelector('input[type="radio"]').checked = true;
+                });
+            });
+            
+            // Item Selection
+            const itemOptions = document.querySelectorAll('.item-option');
+            
+            itemOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const parentList = this.closest('.item-list');
+                    parentList.querySelectorAll('.item-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    this.querySelector('input[type="radio"]').checked = true;
+                });
+            });
+            
+            // Quantity Controls
+            document.getElementById('quantity-minus').addEventListener('click', function() {
+                const input = document.getElementById('quantity');
+                const currentValue = parseInt(input.value);
+                if (currentValue > parseInt(input.min)) {
+                    input.value = currentValue - 1;
                 }
             });
             
-            // Add food item to the list
-            function addFoodItem(name, quantity, unit) {
-                const foodItemsList = document.getElementById('foodItemsList');
+            document.getElementById('quantity-plus').addEventListener('click', function() {
+                const input = document.getElementById('quantity');
+                const currentValue = parseInt(input.value);
+                if (currentValue < parseInt(input.max)) {
+                    input.value = currentValue + 1;
+                }
+            });
+            
+            // Step Navigation Buttons
+            document.getElementById('to-step-2').addEventListener('click', function() {
+                const selectedCategory = document.querySelector('input[name="category"]:checked');
                 
-                const item = document.createElement('div');
-                item.className = 'food-item';
-                item.style.display = 'flex';
-                item.style.justifyContent = 'space-between';
-                item.style.alignItems = 'center';
-                item.style.padding = '10px';
-                item.style.borderBottom = '1px solid #eee';
-                item.innerHTML = `
-                    <span>${name} (${quantity} ${unit})</span>
-                    <i class="fas fa-times" style="cursor: pointer; color: #dc3545;"></i>
-                `;
+                if (!selectedCategory) {
+                    alert('Please select a food category');
+                    return;
+                }
                 
-                // Remove item when clicking the X
-                item.querySelector('.fa-times').addEventListener('click', function() {
-                    foodItemsList.removeChild(item);
-                    
-                    // Show "No items" message if list is empty
-                    if (foodItemsList.querySelectorAll('.food-item').length === 0) {
-                        document.getElementById('noItemsMessage').style.display = 'block';
-                    }
+                // Hide all item selections first
+                Object.values(itemSelections).forEach(selection => {
+                    selection.style.display = 'none';
                 });
                 
-                foodItemsList.appendChild(item);
-            }
+                // Show the selected category's items
+                const categoryValue = selectedCategory.value;
+                itemSelections[categoryValue].style.display = 'block';
+                
+                showStep(2);
+            });
             
-            // Continue to next step
-            document.getElementById('step1Next').addEventListener('click', function() {
-                // Here you would implement navigation to the next step
-                // For now we'll just alert
-                alert('Continuing to Donor Information...');
-                // In a real implementation, you would show the next form section
-                // window.location.href = 'food-donation-step2.html';
+            document.getElementById('to-step-1').addEventListener('click', function() {
+                showStep(1);
+            });
+            
+            document.getElementById('to-step-3').addEventListener('click', function() {
+                const selectedItem = document.querySelector('input[name="item"]:checked');
+                
+                if (!selectedItem) {
+                    alert('Please select a food item');
+                    return;
+                }
+                
+                showStep(3);
+            });
+            
+            document.getElementById('to-step-2').addEventListener('click', function() {
+                showStep(2);
+            });
+            
+            document.getElementById('to-step-4').addEventListener('click', function() {
+                const quantity = document.getElementById('quantity').value;
+                const name = document.getElementById('donor-name').value;
+                const email = document.getElementById('donor-email').value;
+                
+                if (!quantity || !name || !email) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                // Update summary
+                const selectedCategory = document.querySelector('input[name="category"]:checked');
+                const selectedItem = document.querySelector('input[name="item"]:checked');
+                const selectedUnit = document.getElementById('unit').value;
+                const notes = document.getElementById('notes').value;
+                
+                const categoryName = selectedCategory.parentElement.querySelector('.category-name').textContent;
+                const itemName = selectedItem.parentElement.querySelector('.item-name').textContent;
+                
+                document.getElementById('summary-category').textContent = categoryName;
+                document.getElementById('summary-item').textContent = itemName;
+                document.getElementById('summary-quantity').textContent = quantity;
+                document.getElementById('summary-unit').textContent = selectedUnit;
+                document.getElementById('summary-name').textContent = name;
+                document.getElementById('summary-contact').textContent = `${email} | ${document.getElementById('donor-phone').value || 'No phone provided'}`;
+                document.getElementById('summary-notes').textContent = notes || 'None';
+                
+                showStep(4);
+            });
+            
+            document.getElementById('to-step-3').addEventListener('click', function() {
+                showStep(3);
+            });
+            
+            // Form submission
+            document.getElementById('donation-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show loading on button
+                const submitBtn = document.querySelector('.submit-btn');
+                const originalText = submitBtn.innerText;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                submitBtn.disabled = true;
+                
+                // Simulate form submission
+                setTimeout(function() {
+                    steps.forEach(step => step.style.display = 'none');
+                    document.getElementById('success-message').style.display = 'block';
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 1500);
+            });
+            
+            // Reset form
+            document.getElementById('reset-form').addEventListener('click', function() {
+                document.getElementById('donation-form').reset();
+                
+                categoryCards.forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                itemOptions.forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                document.getElementById('quantity').value = 1;
+                
+                document.getElementById('success-message').style.display = 'none';
+                steps.forEach(step => step.style.display = '');
+                showStep(1);
             });
         });
     </script>
