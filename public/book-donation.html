@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Add these before your custom script -->
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donate for Education - UnityServe</title>
@@ -1048,20 +1051,52 @@
             
             // Form submission
             document.getElementById('donation-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Show loading on button
-                const submitBtn = document.querySelector('.submit-btn');
-                const originalText = submitBtn.innerText;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-                submitBtn.disabled = true;
-                
-                // Simulate form submission
-                setTimeout(function() {
-                    steps.forEach(step => step.style.display = 'none');
-                    document.getElementById('success-message').style.display = 'block';
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
+  e.preventDefault();
+  
+  // Show loading on button
+  const submitBtn = document.querySelector('.submit-btn');
+  const originalText = submitBtn.innerText;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  submitBtn.disabled = true;
+  
+  // Get form values
+  const selectedCategory = document.querySelector('input[name="category"]:checked');
+  const selectedItem = document.querySelector('input[name="item"]:checked');
+  const quantity = document.getElementById('quantity').value;
+  const name = document.getElementById('donor-name').value;
+  const email = document.getElementById('donor-email').value;
+  const phone = document.getElementById('donor-phone').value;
+  
+  // Prepare data for Firestore
+  const donationData = {
+    category: selectedCategory.value,
+    categoryName: selectedCategory.parentElement.querySelector('.category-name').textContent,
+    item: selectedItem.value,
+    itemName: selectedItem.parentElement.querySelector('.item-name').textContent,
+    quantity: parseInt(quantity),
+    donorName: name,
+    donorEmail: email,
+    donorPhone: phone || 'Not provided',
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    status: 'pending'
+  };
+  
+  // Add to Firestore
+  db.collection('educationDonations').add(donationData)
+    .then(() => {
+      // Success - show success message
+      document.querySelectorAll('.step-container').forEach(step => {
+        step.style.display = 'none';
+      });
+      document.getElementById('success-message').style.display = 'block';
+    })
+    .catch((error) => {
+      console.error("Error adding document: ", error);
+      alert('There was an error submitting your donation. Please try again.');
+    })
+    .finally(() => {
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
                 }, 1500);
             });
             
@@ -1084,6 +1119,22 @@
                 showStep(1);
             });
         });
+        // Firebase configuration (use your actual config)
+const firebaseConfig = {
+  apiKey: "AIzaSyDamfMwJ3tdO1YduL6IfJ-nK_xpWwzfR3I",
+  authDomain: "unityserve-demo-2f30f.firebaseapp.com",
+  projectId: "unityserve-demo-2f30f",
+  storageBucket: "unityserve-demo-2f30f.firebasestorage.app",
+  messagingSenderId: "365353192644",
+  appId: "1:365353192644:web:104908f7e2c22db1d44d91",
+  measurementId: "G-J4SBKX337D"
+};
+
+// Initialize Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
     </script>
 </body>
 </html>
