@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <title>UNITY SERVE - NGO Registration</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -133,7 +137,26 @@
   </div>
 
   <script>
-    document.getElementById("ngoForm").addEventListener("submit", function (e) {
+    // Firebase configuration (replace with your actual config)
+    const firebaseConfig = {
+  apiKey: "AIzaSyDamfMwJ3tdO1YduL6IfJ-nK_xpWwzfR3I",
+  authDomain: "unityserve-demo-2f30f.firebaseapp.com",
+  databaseURL: "https://unityserve-demo-2f30f-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "unityserve-demo-2f30f",
+  storageBucket: "unityserve-demo-2f30f.firebasestorage.app",
+  messagingSenderId: "365353192644",
+  appId: "1:365353192644:web:104908f7e2c22db1d44d91",
+  measurementId: "G-J4SBKX337D"
+};
+  
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  
+    document.getElementById("ngoForm").addEventListener("submit", async function (e) {
       e.preventDefault();
       const ngoName = document.getElementById("ngoName").value.trim();
       const email = document.getElementById("email").value.trim();
@@ -141,14 +164,31 @@
       const location = document.getElementById("location").value.trim();
       const volunteers = document.getElementById("volunteers").value;
       const domains = Array.from(document.querySelectorAll('input[name="domain"]:checked')).map(cb => cb.value);
-
+  
+      // Validation
       if (!ngoName || !email || !phone || !location || !volunteers || domains.length === 0) {
         alert("⚠️ Please complete all fields and select at least one domain.");
       } else if (!/^\d{10}$/.test(phone)) {
         alert("📞 Enter a valid 10-digit phone number.");
       } else {
-        alert(`✅ NGO "${ngoName}" successfully registered with UNITY SERVE.\n\n📍 Location: ${location}\n🌟 Domains: ${domains.join(', ')}\n👥 Volunteers: ${volunteers}`);
-        window.location.href = "index.html";
+        try {
+          // Save to Firestore
+          await db.collection("ngos").add({
+  ngoName,
+  email,
+  phone,
+  location,
+  domains,
+  volunteers,
+  createdAt: new Date()
+});
+
+          alert(`✅ NGO "${ngoName}" successfully registered with UNITY SERVE.`);
+          window.location.href = "index.html";
+        } catch (error) {
+          console.error("Error saving registration: ", error);
+          alert("❌ Registration failed. Please try again later.");
+        }
       }
     });
   </script>
