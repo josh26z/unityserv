@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <title>UNITY SERVE</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -75,11 +78,12 @@
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
+
 </head>
 <body>
 
   <div class="form-container">
-    <h2>INDIVIDUAL REGISTRATION</h2>
+    <h2>VOLUNTEER REGISTRATION</h2>
     <form id="individualForm">
       <label>Full Name:</label>
       <input type="text" id="name" placeholder="Enter your full name" required>
@@ -98,20 +102,86 @@
   </div>
 
   <script>
-    document.getElementById("individualForm").addEventListener("submit", function (e) {
+    // Firebase configuration (replace with your actual config)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDamfMwJ3tdO1YduL6IfJ-nK_xpWwzfR3I",
+      authDomain: "unityserve-demo-2f30f.firebaseapp.com",
+      projectId: "unityserve-demo-2f30f",
+      storageBucket: "unityserve-demo-2f30f.firebasestorage.app",
+      messagingSenderId: "365353192644",
+      appId: "1:365353192644:web:104908f7e2c22db1d44d91"
+    };
+  
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  
+    document.getElementById("individualForm").addEventListener("submit", async function (e) {
       e.preventDefault();
+      
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const phone = document.getElementById("phone").value.trim();
       const password = document.getElementById("password").value.trim();
-
+      const timestamp = new Date();
+  
+      // Validation
       if (!name || !email || !phone || !password) {
         alert("⚠️ Please fill all the fields.");
-      } else if (!/^\d{10}$/.test(phone)) {
+        return;
+      }
+      
+      if (!/^\d{10}$/.test(phone)) {
         alert("📞 Please enter a valid 10-digit phone number.");
-      } else {
-        alert(`🎉 Welcome, ${name}! Your registration with UNITY SERVE is successful.`);
+        return;
+      }
+  
+      try {
+        // Add a loading state
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Registering...";
+  
+        // 1. Create user with Firebase Authentication
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+  
+        // 2. Save additional user data to Firestore
+        await db.collection("users").doc(user.uid).set({
+          name,
+          email,
+          phone,
+          createdAt: timestamp,
+          role: "individual" // You can add roles if needed
+        });
+  
+        // 3. Send email verification (optional)
+        await user.sendEmailVerification();
+  
+        alert(`🎉 Welcome, ${name}! Registration successful. Please check your email for verification.`);
         window.location.href = "index.html";
+      } catch (error) {
+        console.error("Registration error:", error);
+        
+        // User-friendly error messages
+        let errorMessage = "Registration failed. Please try again.";
+        if (error.code === "auth/email-already-in-use") {
+          errorMessage = "This email is already registered.";
+        } else if (error.code === "auth/weak-password") {
+          errorMessage = "Password should be at least 6 characters.";
+        }
+        
+        alert(`❌ ${errorMessage}`);
+      } finally {
+        // Reset button state
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Register Now";
+        }
       }
     });
   </script>
