@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Sign In / Sign Up - UnityServe</title>
+    <link rel="icon" href="images/ngo_logo.png" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700|Anton" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- FontAwesome for Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <!-- Additional CSS Libraries -->
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
+    <link rel="stylesheet" href="css/aos.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* Sign In/Sign Up Page Specific Styles with Updated Theme */
+        body {
+            background-color: #ffffff;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .header-container {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .site-logo .text-primary {
+            color: #4ea8ff !important;
+            font-family: 'Anton', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        .nav-link {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 400;
+            color: #333;
+            padding: 10px 15px;
+        }
+        
+        .nav-link.active {
+            color: #4ea8ff;
+        }
+        
+        .signin-link {
+            background-color: #6c757d;
+            color: white !important;
+            border-radius: 5px;
+            padding: 12px 20px !important;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+            font-weight: 700;
+        }
+        
+        .donate-link {
+            background-color: #e86327;
+            color: white !important;
+            border-radius: 5px;
+            padding: 12px 20px !important;
+            transition: all 0.3s ease;
+            font-weight: 700;
+        }
+        
+        .auth-container {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+        
+        .auth-banner {
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('images/overlay.jpg');
+            background-color: #c8aa32; /* Updated gold background as requested */
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .auth-banner h2 {
+            font-family: 'Anton', sans-serif;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .auth-banner p {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .auth-form {
+            padding: 3rem 2rem;
+        }
+        
+        .auth-tabs {
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 2rem;
+        }
+        
+        .auth-tab {
+            background: none;
+            border: none;
+            padding: 0.75rem 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #6c757d;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .auth-tab.active {
+            color: #4ea8ff;
+        }
+        
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            height: 2px;
+            width: 100%;
+            background-color: #4ea8ff;
+            bottom: -2px;
+            left: 0;
+        }
+        
+        .form-section {
+            display: none;
+        }
+        
+        .form-section.active {
+            display: block;
+        }
+        
+        .auth-form-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+            border: 1px solid #ced4da;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .btn-auth {
+            padding: 0.75rem;
+            font-weight: 600;
+            width: 100%;
+            background-color: #4ea8ff;
+            border: none;
+            color: white;
+            border-radius: 0.25rem;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .btn-auth:hover {
+            background-color: #3d97ff;
+        }
+        
+        .auth-links {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        
+        .auth-links a {
+            color: #4ea8ff;
+            text-decoration: none;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .social-auth {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .social-auth-title {
+            position: relative;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .social-auth-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 43%;
+            height: 1px;
+            background-color: #dee2e6;
+        }
+        
+        .social-auth-title::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            width: 43%;
+            height: 1px;
+            background-color: #dee2e6;
+        }
+        
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            margin: 0 0.5rem;
+            color: white;
+            transition: opacity 0.3s;
+        }
+        
+        .social-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .social-btn-google {
+            background-color: #DB4437;
+        }
+        
+        .social-btn-facebook {
+            background-color: #4267B2;
+        }
+        
+        .social-btn-twitter {
+            background-color: #1DA1F2;
+        }
+        
+        .site-logo {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .site-logo img {
+            height: 60px;
+            width: auto;
+        }
+        
+        .site-logo a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        /* Footer styling */
+        footer {
+            background-color: #222;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        /* Make section headings match the style */
+        .section-title {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Header with Navigation -->
+<header class="site-navbar js-sticky-header site-navbar-target header-container" role="banner">
+    <div class="container">
+        <div class="row align-items-center justify-content-between">
+            <div class="site-logo d-flex align-items-center">
+                <img src="images/ngo_logo.png" alt="Unity Serve Logo" class="site-logo-img me-2">
+                <a href="index.html" class="text-black fw-bold fs-4">
+                    <span class="text-primary">UNITY SERVE</span>
+                </a>
+            </div>
+            <nav class="site-navigation text-center ml-auto" role="navigation">
+                <ul class="site-menu main-menu js-clone-nav ml-auto d-none d-lg-flex">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="index.html#about-section" class="nav-link">About Us</a></li>
+                    <li><a href="index.html#discover-section" class="nav-link">Services</a></li>
+                    <li><a href="index.html#donate-section" class="nav-link">Join Us</a></li>
+                    <li><a href="index.html#blog-section" class="nav-link">Events</a></li>
+                    <li><a href="index.html#contact-section" class="nav-link">Contact</a></li>
+                    <li><a href="sign-in.html" class="nav-link signin-link active">SIGN IN</a></li>
+                    <li><a href="index.html#donation-section" class="nav-link donate-link">DONATE</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- Sign In/Sign Up Container -->
+<div class="container auth-container">
+    <div class="row">
+        <!-- Left Side Banner -->
+        <div class="col-md-5 d-none d-md-block p-0">
+            <div class="auth-banner">
+                <h2>Welcome to Unity Serve</h2>
+                <p>Join our community and be a part of the change. Together, we can make a difference in the lives of those who need it most.</p>
+                <p>Already have an account? Sign in to continue your journey with us.</p>
+                <p>New to Unity Serve? Sign up and start making an impact today.</p>
+            </div>
+        </div>
+        
+        <!-- Right Side Forms -->
+        <div class="col-md-7 p-0">
+            <div class="auth-form">
+                <!-- Site Logo (Mobile Only) -->
+                <div class="site-logo d-md-none">
+                    <img src="images/ngo_logo.png" alt="Unity Serve Logo">
+                    <a href="index.html" class="d-block mt-2">
+                        <span class="text-primary">UNITY SERVE</span>
+                    </a>
+                </div>
+                
+                <!-- Auth Tabs -->
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="signin-tab">Sign In</button>
+                    <button class="auth-tab" id="signup-tab">Sign Up</button>
+                </div>
+                
+                <!-- Sign In Form -->
+                <div class="form-section active" id="signin-section">
+                    <h3 class="auth-form-title">Sign In to Your Account</h3>
+                    <form id="signin-form">
+                        <div class="form-group">
+                            <label for="signin-email">Email Address</label>
+                            <input type="email" class="form-control" id="signin-email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signin-password">Password</label>
+                            <input type="password" class="form-control" id="signin-password" placeholder="Enter your password" required>
+                        </div>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="remember-me">
+                            <label class="form-check-label" for="remember-me">Remember me</label>
+                        </div>
+                        <button type="submit" class="btn btn-auth">Sign In</button>
+                    </form>
+                    <div class="auth-links">
+                        <a href="#" id="forgot-password">Forgot your password?</a>
+                    </div>
+                    
+                    <!-- Social Sign In Options -->
+                    <div class="social-auth">
+                        <div class="social-auth-title">Or sign in with</div>
+                        <div class="social-buttons">
+                            <a href="#" class="social-btn social-btn-google"><i class="fab fa-google"></i></a>
+                            <a href="#" class="social-btn social-btn-facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-btn social-btn-twitter"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sign Up Form -->
+                <div class="form-section" id="signup-section">
+                    <h3 class="auth-form-title">Create Your Account</h3>
+                    <form id="signup-form">
+                        <div class="form-group">
+                            <label for="signup-name">Full Name</label>
+                            <input type="text" class="form-control" id="signup-name" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-email">Email Address</label>
+                            <input type="email" class="form-control" id="signup-email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-mobile">Mobile Number</label>
+                            <input type="tel" class="form-control" id="signup-mobile" placeholder="Enter your mobile number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-address">Address</label>
+                            <textarea class="form-control" id="signup-address" rows="3" placeholder="Enter your address" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-password">Password</label>
+                            <input type="password" class="form-control" id="signup-password" placeholder="Create a password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-confirm-password">Confirm Password</label>
+                            <input type="password" class="form-control" id="signup-confirm-password" placeholder="Confirm your password" required>
+                        </div>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="terms-agree" required>
+                            <label class="form-check-label" for="terms-agree">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></label>
+                        </div>
+                        <button type="submit" class="btn btn-auth">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p style="font-size: 12px; margin: 0;">© 2025 Unity Serve. All rights reserved.</p>
+</footer>
+
+<!-- JavaScript Libraries -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.sticky.js"></script>
+
+<script>
+    // Auth tabs functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const signinTab = document.getElementById('signin-tab');
+        const signupTab = document.getElementById('signup-tab');
+        const signinSection = document.getElementById('signin-section');
+        const signupSection = document.getElementById('signup-section');
+        
+        signinTab.addEventListener('click', function() {
+            signinTab.classList.add('active');
+            signupTab.classList.remove('active');
+            signinSection.classList.add('active');
+            signupSection.classList.remove('active');
+        });
+        
+        signupTab.addEventListener('click', function() {
+            signupTab.classList.add('active');
+            signinTab.classList.remove('active');
+            signupSection.classList.add('active');
+            signinSection.classList.remove('active');
+        });
+        
+        // Form submission handlers
+        const signinForm = document.getElementById('signin-form');
+        const signupForm = document.getElementById('signup-form');
+        
+        signinForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('signin-email').value;
+            const password = document.getElementById('signin-password').value;
+            
+            // Here you would handle authentication with your backend
+            console.log('Sign in attempt with:', email);
+            
+            // For demo purposes, show success message and redirect
+            alert('Sign in successful!');
+            window.location.href = 'index.html';
+        });
+        
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const mobile = document.getElementById('signup-mobile').value;
+            const address = document.getElementById('signup-address').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+            
+            // Password validation
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // Here you would handle user registration with your backend
+            console.log('Sign up attempt for:', {name, email, mobile, address});
+            
+            // For demo purposes, show success message
+            alert('Account created successfully! Please sign in.');
+            
+            // Switch to sign in tab
+            signinTab.click();
+        });
+        
+        // Forgot password handler
+        document.getElementById('forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = prompt('Please enter your email address to reset your password:');
+            if (email) {
+                // Here you would handle password reset request
+                alert(`Password reset instructions have been sent to ${email}.`);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin Panel - UnityServe</title>
+    <link rel="icon" href="images/ngo_logo.png" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700|Anton" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #4ea8ff;
+            --secondary-color: #c8aa32;
+            --accent-color: #e86327;
+            --dark-color: #333;
+            --light-color: #f8f9fa;
+            --gray-color: #6c757d;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .sidebar {
+            background-color: var(--dark-color);
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            padding-top: 20px;
+            width: 250px;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-collapsed {
+            margin-left: -250px;
+        }
+        
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: margin 0.3s;
+        }
+        
+        .content-expanded {
+            margin-left: 0;
+        }
+        
+        .admin-header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        
+        .toggle-sidebar {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--dark-color);
+        }
+        
+        .brand-logo {
+            font-family: 'Anton', sans-serif;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .sidebar .nav-link {
+            color: #ddd;
+            padding: 10px 15px;
+            margin: 5px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .dropdown-toggle::after {
+            float: right;
+            margin-top: 10px;
+        }
+        
+        .dashboard-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            border-radius: 50%;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .stat-users {
+            background-color: var(--primary-color);
+        }
+        
+        .stat-ngos {
+            background-color: var(--secondary-color);
+        }
+        
+        .stat-donations {
+            background-color: var(--accent-color);
+        }
+        
+        .stat-events {
+            background-color: var(--gray-color);
+        }
+        
+        .tab-content {
+            background-color: white;
+            border-radius: 0 0 10px 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .nav-tabs .nav-link {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            border-color: #dee2e6 #dee2e6 #fff;
+        }
+        
+        .table th {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            margin: 0 2px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .view-btn {
+            background-color: var(--primary-color);
+        }
+        
+        .edit-btn {
+            background-color: var(--secondary-color);
+        }
+        
+        .delete-btn {
+            background-color: #dc3545;
+        }
+        
+        .alert-count {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        
+        .user-dropdown img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+        }
+        
+        .search-input {
+            padding-left: 35px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+        }
+        
+        .badge {
+            font-weight: normal;
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+        
+        .badge-success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .badge-pending {
+            background-color: #ffc107;
+            color: black;
+        }
+        
+        .badge-rejected {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                margin-left: -250px;
+            }
+            
+            .sidebar.active {
+                margin-left: 0;
+            }
+            
+            .content {
+                margin-left: 0;
+            }
+            
+            .content.active {
+                margin-left: 250px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="px-3 mb-4">
+            <a href="index.html" class="brand-logo">UNITY SERVE</a>
+            <p class="text-muted small mt-2">Administrator Panel</p>
+        </div>
+        
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="#dashboard" class="nav-link active" data-bs-toggle="tab">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#users" class="nav-link" data-bs-toggle="tab">
+                    <i class="fas fa-users"></i> Users
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#ngos" class="nav-link" data-bs-toggle="tab">
+                    <i class="fas fa-building"></i> NGOs
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#donationCollapse">
+                    <i class="fas fa-hand-holding-heart"></i> Donations
+                </a>
+                <div class="collapse" id="donationCollapse">
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a href="#healthcareDonations" class="nav-link" data-bs-toggle="tab">
+                                <i class="fas fa-medkit"></i> Healthcare
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#educationDonations" class="nav-link" data-bs-toggle="tab">
+                                <i class="fas fa-book"></i> Education
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#clothDonations" class="nav-link" data-bs-toggle="tab">
+                                <i class="fas fa-tshirt"></i> Clothing
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#foodDonations" class="nav-link" data-bs-toggle="tab">
+                                <i class="fas fa-utensils"></i> Food
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#shelterServices" class="nav-link" data-bs-toggle="tab">
+                                <i class="fas fa-home"></i> Shelter
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a href="#events" class="nav-link" data-bs-toggle="tab">
+                    <i class="fas fa-calendar-alt"></i> Events
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#requests" class="nav-link" data-bs-toggle="tab">
+                    <i class="fas fa-bell"></i> Requests <span class="alert-count">5</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#settings" class="nav-link" data-bs-toggle="tab">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            <li class="nav-item mt-5">
+                <a href="index.html" class="nav-link text-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content" id="content">
+        <!-- Header -->
+        <div class="admin-header d-flex justify-content-between mb-4">
+            <div class="d-flex align-items-center">
+                <span class="toggle-sidebar me-3" id="toggle-sidebar">
+                    <i class="fas fa-bars"></i>
+                </span>
+                <h5 class="mb-0">Unity Serve Admin</h5>
+            </div>
+            
+            <div class="d-flex align-items-center">
+                <div class="search-box me-3">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="form-control search-input" placeholder="Search...">
+                </div>
+                
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="user-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="images/admin_profile.png" alt="Admin">
+                        <div>
+                            <span class="d-block fw-bold">Admin User</span>
+                            <span class="d-block text-muted small">Super Admin</span>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user-dropdown">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="index.html"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Dashboard Tab -->
+            <div class="tab-pane fade show active" id="dashboard">
+                <h2 class="mb-4">Dashboard</h2>
+                
+                <!-- Stats Cards -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="dashboard-card text-center">
+                            <div class="card-icon stat-users mx-auto">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3>254</h3>
+                            <p class="text-muted mb-0">Total Users</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dashboard-card text-center">
+                            <div class="card-icon stat-ngos mx-auto">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <h3>47</h3>
+                            <p class="text-muted mb-0">NGO Partners</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dashboard-card text-center">
+                            <div class="card-icon stat-donations mx-auto">
+                                <i class="fas fa-hand-holding-heart"></i>
+                            </div>
+                            <h3>583</h3>
+                            <p class="text-muted mb-0">Total Donations</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dashboard-card text-center">
+                            <div class="card-icon stat-events mx-auto">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <h3>12</h3>
+                            <p class="text-muted mb-0">Active Events</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts -->
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <div class="dashboard-card">
+                            <h5>Donation Trends</h5>
+                            <canvas id="donationChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="dashboard-card">
+                            <h5>Donation Categories</h5>
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activities -->
+                <div class="dashboard-card mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Recent Activities</h5>
+                        <a href="#" class="text-decoration-none">View All</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Activity</th>
+                                    <th>Category</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ravi Kumar</td>
+                                    <td>Food Donation</td>
+                                    <td>Food</td>
+                                    <td>Apr 12, 2025</td>
+                                    <td><span class="badge badge-success">Completed</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Nisha Patel</td>
+                                    <td>Book Donation</td>
+                                    <td>Education</td>
+                                    <td>Apr 11, 2025</td>
+                                    <td><span class="badge badge-pending">Pending</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Sehwag Foundation</td>
+                                    <td>NGO Registration</td>
+                                    <td>Organization</td>
+                                    <td>Apr 10, 2025</td>
+                                    <td><span class="badge badge-success">Approved</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Anita Desai</td>
+                                    <td>Healthcare Assistance</td>
+                                    <td>Healthcare</td>
+                                    <td>Apr 09, 2025</td>
+                                    <td><span class="badge badge-pending">In Process</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Suresh Menon</td>
+                                    <td>Cloth Donation</td>
+                                    <td>Clothing</td>
+                                    <td>Apr 08, 2025</td>
+                                    <td><span class="badge badge-success">Completed</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Users Tab -->
+            <div class="tab-pane fade" id="users">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">Registered Users</h2>
+                    <button class="btn btn-primary"><i class="fas fa-plus me-2"></i>Add User</button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-striped data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>Join Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>U001</td>
+                                <td>Raj Malhotra</td>
+                                <td>raj.m@example.com</td>
+                                <td>+91 8865432190</td>
+                                <td>123 MG Road, Mumbai</td>
+                                <td>Jan 15, 2025</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>U002</td>
+                                <td>Priya Singh</td>
+                                <td>priya.s@example.com</td>
+                                <td>+91 7745678901</td>
+                                <td>45 Park Street, Delhi</td>
+                                <td>Jan 18, 2025</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>U003</td>
+                                <td>Amit Patel</td>
+                                <td>amit.p@example.com</td>
+                                <td>+91 9934567890</td>
+                                <td>78 Gandhi Road, Ahmedabad</td>
+                                <td>Jan 20, 2025</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>U004</td>
+                                <td>Sunita Verma</td>
+                                <td>sunita.v@example.com</td>
+                                <td>+91 8823456789</td>
+                                <td>22 Civil Lines, Jaipur</td>
+                                <td>Jan 25, 2025</td>
+                                <td><span class="badge badge-rejected">Inactive</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>U005</td>
+                                <td>Rahul Sharma</td>
+                                <td>rahul.s@example.com</td>
+                                <td>+91 9912345678</td>
+                                <td>56 Model Town, Chandigarh</td>
+                                <td>Feb 02, 2025</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- NGOs Tab -->
+            <div class="tab-pane fade" id="ngos">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">NGO Partners</h2>
+                    <button class="btn btn-primary"><i class="fas fa-plus me-2"></i>Add NGO</button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-striped data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Organization</th>
+                                <th>Contact Person</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>NGO001</td>
+                                <td>Hope Foundation</td>
+                                <td>Kiran Bedi</td>
+                                <td>contact@hopefoundation.org</td>
+                                <td>+91 9845678901</td>
+                                <td>Delhi</td>
+                                <td><span class="badge badge-success">Verified</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>NGO002</td>
+                                <td>Care India</td>
+                                <td>Prakash Jha</td>
+                                <td>info@careindia.org</td>
+                                <td>+91 8834567890</td>
+                                <td>Mumbai</td>
+                                <td><span class="badge badge-success">Verified</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>NGO003</td>
+                                <td>Smile Foundation</td>
+                                <td>Meera Nair</td>
+                                <td>support@smilefoundation.org</td>
+                                <td>+91 7723456789</td>
+                                <td>Bangalore</td>
+                                <td><span class="badge badge-pending">Under Review</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>NGO004</td>
+                                <td>Akshaya Patra</td>
+                                <td>Vijay Reddy</td>
+                                <td>contact@akshayapatra.org</td>
+                                <td>+91 9956789012</td>
+                                <td>Hyderabad</td>
+                                <td><span class="badge badge-success">Verified</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>NGO005</td>
+                                <td>Give India</td>
+                                <td>Anjali Mehta</td>
+                                <td>info@giveindia.org</td>
+                                <td>+91 8867890123</td>
+                                <td>Chennai</td>
+                                <td><span class="badge badge-rejected">Rejected</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Healthcare Donations Tab -->
+            <div class="tab-pane fade" id="healthcareDonations">
+                <h2 class="mb-4">Healthcare Donations</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Donor</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Amount/Items</th>
+                                <th>Date</th><th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>HD001</td>
+                                <td>Rohit Menon</td>
+                                <td>Medical Supplies</td>
+                                <td>First-aid kits and medicines</td>
+                                <td>50 kits</td>
+                                <td>Mar 15, 2025</td>
+                                <td><span class="badge badge-success">Delivered</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>HD002</td>
+                                <td>Leela Krishnan</td>
+                                <td>Financial Assistance</td>
+                                <td>For cancer treatment</td>
+                                <td>₹50,000</td>
+                                <td>Mar 18, 2025</td>
+                                <td><span class="badge badge-pending">Processing</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>HD003</td>
+                                <td>Care Hospital</td>
+                                <td>Equipment</td>
+                                <td>Wheelchairs for elderly</td>
+                                <td>10 units</td>
+                                <td>Mar 20, 2025</td>
+                                <td><span class="badge badge-success">Delivered</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Education Donations Tab -->
+            <div class="tab-pane fade" id="educationDonations">
+                <h2 class="mb-4">Education Donations</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Donor</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Amount/Items</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ED001</td>
+                                <td>Anjali Shah</td>
+                                <td>Books</td>
+                                <td>School textbooks for grades 6-8</td>
+                                <td>120 books</td>
+                                <td>Feb 25, 2025</td>
+                                <td><span class="badge badge-success">Distributed</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ED002</td>
+                                <td>Vijay Enterprises</td>
+                                <td>Stationery</td>
+                                <td>Notebooks, pens, and other supplies</td>
+                                <td>500 sets</td>
+                                <td>Mar 05, 2025</td>
+                                <td><span class="badge badge-success">Distributed</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ED003</td>
+                                <td>Sameer Joshi</td>
+                                <td>Technology</td>
+                                <td>Used laptops for computer lab</td>
+                                <td>15 laptops</td>
+                                <td>Mar 12, 2025</td>
+                                <td><span class="badge badge-pending">In Transit</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Cloth Donations Tab -->
+            <div class="tab-pane fade" id="clothDonations">
+                <h2 class="mb-4">Clothing Donations</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Donor</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Quantity</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CD001</td>
+                                <td>Neha Reddy</td>
+                                <td>Winter Clothing</td>
+                                <td>Jackets, sweaters, and blankets</td>
+                                <td>75 items</td>
+                                <td>Jan 10, 2025</td>
+                                <td><span class="badge badge-success">Distributed</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CD002</td>
+                                <td>Fashion Retail Ltd.</td>
+                                <td>New Clothing</td>
+                                <td>Unsold inventory from last season</td>
+                                <td>200 items</td>
+                                <td>Feb 15, 2025</td>
+                                <td><span class="badge badge-pending">Sorting</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CD003</td>
+                                <td>Rohan Bhatt</td>
+                                <td>Children's Wear</td>
+                                <td>Clothes for ages 5-12</td>
+                                <td>50 items</td>
+                                <td>Mar 02, 2025</td>
+                                <td><span class="badge badge-success">Distributed</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Food Donations Tab -->
+            <div class="tab-pane fade" id="foodDonations">
+                <h2 class="mb-4">Food Donations</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Donor</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Quantity</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>FD001</td>
+                                <td>Taj Restaurant</td>
+                                <td>Prepared Meals</td>
+                                <td>Lunch meals for 100 people</td>
+                                <td>100 meals</td>
+                                <td>Apr 05, 2025</td>
+                                <td><span class="badge badge-success">Delivered</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FD002</td>
+                                <td>Metro Supermarket</td>
+                                <td>Groceries</td>
+                                <td>Rice, pulses, and cooking oil</td>
+                                <td>500 kg</td>
+                                <td>Apr 07, 2025</td>
+                                <td><span class="badge badge-pending">Packaging</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FD003</td>
+                                <td>Fresh Bakery</td>
+                                <td>Bread & Bakery</td>
+                                <td>Bread loaves and pastries</td>
+                                <td>75 units</td>
+                                <td>Apr 10, 2025</td>
+                                <td><span class="badge badge-success">Delivered</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Shelter Services Tab -->
+            <div class="tab-pane fade" id="shelterServices">
+                <h2 class="mb-4">Shelter Services</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Provider</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Capacity</th>
+                                <th>Availability</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>SS001</td>
+                                <td>Safe Haven Foundation</td>
+                                <td>Temporary Housing</td>
+                                <td>Central Delhi</td>
+                                <td>50 people</td>
+                                <td>15 spots</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SS002</td>
+                                <td>Rajan Hostel</td>
+                                <td>Student Housing</td>
+                                <td>Bangalore</td>
+                                <td>30 students</td>
+                                <td>Full</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SS003</td>
+                                <td>Coastal Relief Center</td>
+                                <td>Disaster Relief</td>
+                                <td>Chennai</td>
+                                <td>200 people</td>
+                                <td>180 spots</td>
+                                <td><span class="badge badge-pending">Setting Up</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Events Tab -->
+            <div class="tab-pane fade" id="events">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">Events & Campaigns</h2>
+                    <button class="btn btn-primary"><i class="fas fa-plus me-2"></i>Create Event</button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-striped data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Event Name</th>
+                                <th>Category</th>
+                                <th>Location</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>EV001</td>
+                                <td>Donation Box Campaign</td>
+                                <td>Fundraising</td>
+                                <td>Multiple</td>
+                                <td>Jan 22, 2025</td>
+                                <td>Feb 22, 2025</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>EV002</td>
+                                <td>Free Health Checkups</td>
+                                <td>Healthcare</td>
+                                <td>Delhi Community Center</td>
+                                <td>Jan 27, 2025</td>
+                                <td>Jan 28, 2025</td>
+                                <td><span class="badge badge-success">Active</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>EV003</td>
+                                <td>Book Collection Drive</td>
+                                <td>Education</td>
+                                <td>Multiple Schools</td>
+                                <td>Feb 15, 2025</td>
+                                <td>Mar 15, 2025</td>
+                                <td><span class="badge badge-pending">Planning</span></td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" title="View"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="action-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="action-btn delete-btn" title="Delete"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Requests Tab -->
+            <div class="tab-pane fade" id="requests">
+                <h2 class="mb-4">Pending Requests <span class="badge bg-danger">5</span></h2>
+                
+                <ul class="nav nav-tabs mb-3" id="requestTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="approval-tab" data-bs-toggle="tab" data-bs-target="#approval" type="button" role="tab">Pending Approval</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="assistance-tab" data-bs-toggle="tab" data-bs-target="#assistance" type="button" role="tab">Assistance Requests</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pickup-tab" data-bs-toggle="tab" data-bs-target="#pickup" type="button" role="tab">Pickup Requests</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="requestTabsContent">
+                    <div class="tab-pane fade show active" id="approval" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Type</th>
+                                        <th>Name</th>
+                                        <th>Details</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>REQ001</td>
+                                        <td>NGO Registration</td>
+                                        <td>Child Action</td>
+                                        <td>New NGO working for child welfare</td>
+                                        <td>Apr 10, 2025</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success">Approve</button>
+                                            <button class="btn btn-sm btn-danger">Reject</button>
+                                            <button class="btn btn-sm btn-secondary">Details</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>REQ002</td>
+                                        <td>Campaign</td>
+                                        <td>School Supplies Drive</td>
+                                        <td>Campaign for collecting school supplies</td>
+                                        <td>Apr 09, 2025</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success">Approve</button>
+                                            <button class="btn btn-sm btn-danger">Reject</button>
+                                            <button class="btn btn-sm btn-secondary">Details</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="assistance" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Requester</th>
+                                        <th>Type</th>
+                                        <th>Details</th>
+                                        <th>Date</th>
+                                        <th>Priority</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>AST001</td>
+                                        <td>Meena Kumari</td>
+                                        <td>Medical</td>
+                                        <td>Needs financial help for surgery</td>
+                                        <td>Apr 11, 2025</td>
+                                        <td><span class="badge bg-danger">High</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary">Assign</button>
+                                            <button class="btn btn-sm btn-secondary">Details</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>AST002</td>
+                                        <td>Vikas Patel</td>
+                                        <td>Food</td>
+                                        <td>Family of 5 needs food assistance</td>
+                                        <td>Apr 10, 2025</td>
+                                        <td><span class="badge bg-warning text-dark">Medium</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary">Assign</button>
+                                            <button class="btn btn-sm btn-secondary">Details</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="pickup" role="tabpanel">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Donor</th>
+                                        <th>Type</th>
+                                        <th>Location</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>PCK001</td>
+                                        <td>Rajesh Agarwal</td>
+                                        <td>Clothing</td>
+                                        <td>23 MG Road, Mumbai</td>
+                                        <td>Apr 12, 2025</td>
+                                        <td><span class="badge badge-pending">Scheduled</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary">Assign Volunteer</button>
+                                            <button class="btn btn-sm btn-secondary">Details</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Tab -->
+            <div class="tab-pane fade" id="settings">
+                <h2 class="mb-4">Admin Settings</h2>
+                
+                <div class="row">
+                    <div class="col-md-8">
+                        <!-- System Settings -->
+                        <div class="dashboard-card mb-4">
+                            <h5 class="mb-4">System Settings</h5>
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">Site Title</label>
+                                    <input type="text" class="form-control" value="Unity Serve Admin">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Admin Email</label>
+                                    <input type="email" class="form-control" value="admin@unityserve.org">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Notification Preferences</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="emailNotif" checked>
+                                        <label class="form-check-label" for="emailNotif">
+                                            Email Notifications
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="smsNotif">
+                                        <label class="form-check-label" for="smsNotif">
+                                            SMS Notifications
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Security Settings -->
+                        <div class="dashboard-card">
+                            <h5 class="mb-4">Security Settings</h5>
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">Current Password</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">New Password</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Confirm New Password</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Two-Factor Authentication</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="twoFactorAuth">
+                                        <label class="form-check-label" for="twoFactorAuth">Enable Two-Factor Authentication</label>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Update Password</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <!-- Admin User Management -->
+                        <div class="dashboard-card mb-4">
+                            <h5 class="mb-4">Admin Users</h5>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Admin User
+                                    <span class="badge bg-primary rounded-pill">Super Admin</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Donation Manager
+                                    <span class="badge bg-secondary rounded-pill">Manager</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Event Coordinator
+                                    <span class="badge bg-secondary rounded-pill">Manager</span>
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary mt-3">Manage Admin Users</button>
+                        </div>
+                        
+                        <!-- System Info -->
+                        <div class="dashboard-card">
+                            <h5 class="mb-4<h5 class="mb-4">System Information</h5>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Version</label>
+                                <p>Unity Serve Admin v1.0.0</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Last Update</label>
+                                <p>April 14, 2025</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Server Status</label>
+                                <p><span class="badge bg-success">Operational</span></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Database</label>
+                                <p><span class="badge bg-success">Connected</span></p>
+                            </div>
+                            <button class="btn btn-secondary">View System Logs</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    
+    <script>
+        // Toggle Sidebar
+        document.getElementById('toggle-sidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('sidebar-collapsed');
+            document.getElementById('content').classList.toggle('content-expanded');
+        });
+        
+        // Initialize DataTables
+        $(document).ready(function() {
+            $('.data-table').DataTable({
+                responsive: true,
+                pageLength: 10,
+                lengthChange: false,
+                searching: true,
+                ordering: true
+            });
+            
+            // Initialize Charts
+            const donationCtx = document.getElementById('donationChart');
+            if (donationCtx) {
+                new Chart(donationCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Healthcare',
+                            data: [30, 45, 60, 75, 65, 80],
+                            borderColor: '#4ea8ff',
+                            tension: 0.3,
+                            borderWidth: 2,
+                            fill: false
+                        }, {
+                            label: 'Education',
+                            data: [25, 35, 40, 50, 60, 55],
+                            borderColor: '#c8aa32',
+                            tension: 0.3,
+                            borderWidth: 2,
+                            fill: false
+                        }, {
+                            label: 'Food & Clothing',
+                            data: [40, 55, 50, 65, 75, 85],
+                            borderColor: '#e86327',
+                            tension: 0.3,
+                            borderWidth: 2,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Donation Trends by Category (Last 6 Months)'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Number of Donations'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            const categoryCtx = document.getElementById('categoryChart');
+            if (categoryCtx) {
+                new Chart(categoryCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Healthcare', 'Education', 'Clothing', 'Food', 'Shelter'],
+                        datasets: [{
+                            data: [30, 20, 25, 15, 10],
+                            backgroundColor: [
+                                '#4ea8ff',
+                                '#c8aa32',
+                                '#6c757d',
+                                '#e86327',
+                                '#28a745'
+                            ],
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Donations by Category (%)'
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        
+        // Bootstrap Tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    </script>
+</body>
+</html>

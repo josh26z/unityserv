@@ -27,12 +27,52 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Sign In Button Styling -->
+    <style>
+        /* Sign In Button Styling */
+        .signin-link {
+            background-color: #6c757d;
+            color: white !important;
+            border-radius: 5px;
+            padding: 8px 15px !important;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .signin-link:hover {
+            background-color: #5a6268;
+            color: white !important;
+        }
+
+        .donate-link {
+            background-color: #e86327;
+            color: white !important;
+            border-radius: 5px;
+            padding: 8px 15px !important;
+            transition: all 0.3s ease;
+        }
+
+        .donate-link:hover {
+            background-color: #d55a20;
+            color: white !important;
+        }
+
+        /* Responsive adjustments for mobile */
+        @media (max-width: 991.98px) {
+            .signin-link, .donate-link {
+                display: inline-block;
+                margin: 5px;
+            }
+        }
+    </style>
 </head>
 
 <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
 
 <div class="site-wrap" id="home-section">
 
+    <!-- UPDATED HEADER WITH SIGN IN BUTTON -->
     <header class="site-navbar js-sticky-header site-navbar-target" role="banner">
         <div class="container">
             <div class="row align-items-center justify-content-between">
@@ -50,6 +90,8 @@
                         <li><a href="#donate-section" class="nav-link">Join Us</a></li>
                         <li><a href="#blog-section" class="nav-link">Events</a></li>
                         <li><a href="#contact-section" class="nav-link">Contact</a></li>
+                        <!-- UPDATED SIGN IN BUTTON - Now links to sign-in.html page -->
+                        <li><a href="sign-in.html" class="nav-link signin-link">SIGN IN</a></li>
                         <li><a href="#donation-section" class="nav-link donate-link">DONATE</a></li>
                     </ul>
                 </nav>
@@ -74,7 +116,7 @@
         </div>
         <div class="motive-box">
             <h2>MOTIVE</h2>
-            <p>Unity Serve’s mission is to foster collaboration and inspire positive change by providing a platform that connects donors, NGOs, and individuals in need. Through innovative use of technology, AI, and cloud solutions, we aim to create a transparent, secure, and efficient system that facilitates donation, organ donation, and health initiatives for a better tomorrow.</p>
+            <p>Unity Serve's mission is to foster collaboration and inspire positive change by providing a platform that connects donors, NGOs, and individuals in need. Through innovative use of technology, AI, and cloud solutions, we aim to create a transparent, secure, and efficient system that facilitates donation, organ donation, and health initiatives for a better tomorrow.</p>
         </div>
         <div class="mission-box">
             <h2>MISSION</h2>
@@ -291,7 +333,7 @@
                 <div>
                     <div class="block-testimony-1 text-center">
                         <blockquote class="mb-4">
-                            <p>&ldquo;Unity Serve has made a remarkable impact in my life. I never imagined that a simple click could help connect me to people in need and provide my resources to those who truly need them. Volunteering through this platform has been a fulfilling experience, and seeing the real-time change we are making together motivates me every day. It’s truly heartwarming to be part of a community that cares and acts.&rdquo;</p>
+                            <p>&ldquo;Unity Serve has made a remarkable impact in my life. I never imagined that a simple click could help connect me to people in need and provide my resources to those who truly need them. Volunteering through this platform has been a fulfilling experience, and seeing the real-time change we are making together motivates me every day. It's truly heartwarming to be part of a community that cares and acts.&rdquo;</p>
                         </blockquote>
                         <h3 class="font-size-20 text-white">Sneha Gupta</h3>
                     </div>
@@ -299,7 +341,7 @@
                 <div>
                     <div class="block-testimony-1 text-center">
                         <blockquote class="mb-4">
-                            <p>&ldquo;I’ve always wanted to give back to society, but I struggled to find ways to contribute effectively. Unity Serve gave me a clear path to donate food, money, and even my time. It’s been incredibly easy to use, and I can see exactly where my efforts are going. It’s inspiring to be part of something so impactful and well-organized. I feel more connected to my community than ever.&rdquo;</p>
+                            <p>&ldquo;I've always wanted to give back to society, but I struggled to find ways to contribute effectively. Unity Serve gave me a clear path to donate food, money, and even my time. It's been incredibly easy to use, and I can see exactly where my efforts are going. It's inspiring to be part of something so impactful and well-organized. I feel more connected to my community than ever.&rdquo;</p>
                         </blockquote>
                         <h3 class="font-size-20 text-white">Aarav Patel</h3>
                     </div>
@@ -307,7 +349,7 @@
                 <div>
                     <div class="block-testimony-1 text-center">
                         <blockquote class="mb-4">
-                            <p>&ldquo;Unity Serve is not just a platform; it’s a movement. Being part of a community that focuses on collective action for a better future has been an incredibly rewarding experience. The platform is user-friendly, and I appreciate how they make volunteering and donating so straightforward. I look forward to contributing in even more ways as I see the real-world impact unfold&rdquo;</p>
+                            <p>&ldquo;Unity Serve is not just a platform; it's a movement. Being part of a community that focuses on collective action for a better future has been an incredibly rewarding experience. The platform is user-friendly, and I appreciate how they make volunteering and donating so straightforward. I look forward to contributing in even more ways as I see the real-world impact unfold&rdquo;</p>
                         </blockquote>
                         <h3 class="font-size-20 text-white">Pooja Nair</h3>
                     </div>
@@ -315,7 +357,7 @@
                 <div>
                     <div class="block-testimony-1 text-center">
                         <blockquote class="mb-4">
-                            <p>&ldquo;As a recipient of the services provided by Unity Serve, I can’t express how grateful I am. The platform connected me to the resources I needed during a tough time—whether it was food, emergency support, or even emotional help. The timely and efficient assistance I received truly made a difference. I’m now motivated to give back in any way I can&rdquo;</p>
+                            <p>&ldquo;As a recipient of the services provided by Unity Serve, I can't express how grateful I am. The platform connected me to the resources I needed during a tough time—whether it was food, emergency support, or even emotional help. The timely and efficient assistance I received truly made a difference. I'm now motivated to give back in any way I can&rdquo;</p>
                         </blockquote>
                         <h3 class="font-size-20 text-white">Rohan Deshmukh</h3>
                     </div>
@@ -323,7 +365,7 @@
                 <div>
                     <div class="block-testimony-1 text-center">
                         <blockquote class="mb-4">
-                            <p>&ldquo;The ability to donate blood and organs through Unity Serve’s platform is something I never thought I could be a part of so easily. The transparency and efficiency they provide are outstanding, making me feel confident that my donations are reaching the right people. I’m proud to be part of a movement that encourages not just giving, but giving wisely and effectively &rdquo;</p>
+                            <p>&ldquo;The ability to donate blood and organs through Unity Serve's platform is something I never thought I could be a part of so easily. The transparency and efficiency they provide are outstanding, making me feel confident that my donations are reaching the right people. I'm proud to be part of a movement that encourages not just giving, but giving wisely and effectively &rdquo;</p>
                         </blockquote>
                         <h3 class="font-size-20 text-white">Meera Bhatt</h3>
                     </div>
@@ -442,7 +484,6 @@
   </ul>
 </div>
 
-
         <!-- Contact & Social Media -->
         <div style="flex: 1; min-width: 200px; margin-bottom: 20px; text-align: left;">
             <h3 style="font-size: 18px; font-weight: normal;">Contact Us</h3>
@@ -471,9 +512,6 @@
     <p style="font-size: 12px; margin-top: 20px;">© 2025 Unity Serve. All rights reserved.</p>
 </footer>
 
-
-  
-
   
 <!-- JavaScript Libraries -->
 <script src="js/jquery-3.3.1.min.js"></script>
@@ -487,7 +525,6 @@
 <script src="js/jquery.animateNumber.min.js"></script>
 <script src="js/aos.js"></script>
 <script src="js/main.js"></script>
-
 
 <!-- Modal Functionality Script -->
 <script>
@@ -515,6 +552,7 @@
 
 <script type="module">
     // Import the functions you need from the SDKs you need
+    // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
     // TODO: Add SDKs for Firebase products that you want to use
@@ -536,7 +574,6 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
   </script>
-
 
 </body>
 </html>
