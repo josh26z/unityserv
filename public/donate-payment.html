@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Make a Donation - UnityServe</title>
+    <link rel="icon" href="images/ngo_logo.png" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700|Anton" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- FontAwesome for Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <!-- Additional CSS Libraries -->
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
+    <link rel="stylesheet" href="css/aos.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* Payment Form Specific Styles */
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Header styles */
+        .site-navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .site-logo .text-primary {
+            color: #4ea8ff !important;
+        }
+        
+        .signin-link, .donate-link {
+            display: inline-block;
+            background-color: #6c757d;
+            color: white !important;
+            border-radius: 5px;
+            padding: 8px 15px !important;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .signin-link:hover {
+            background-color: #5a6268;
+            color: white !important;
+        }
+        
+        .donate-link {
+            background-color: #e86327;
+        }
+        
+        .donate-link:hover {
+            background-color: #d55a20;
+            color: white !important;
+        }
+        
+        /* Payment container styling */
+        .payment-container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0;
+            background-color: transparent;
+        }
+        
+        .payment-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .payment-header h1 {
+            color: #4ea8ff;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .payment-header p {
+            font-size: 1.2rem;
+            color: #555;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Progress bar */
+        .donation-progress {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .progress-stats p {
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+        
+        .progress {
+            height: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            background-color: #4ea8ff;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .donor-count {
+            background-color: rgba(78, 168, 255, 0.1);
+            color: #4ea8ff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        
+        .time-remaining {
+            color: #6c757d;
+        }
+        
+        /* Payment form and Impact section */
+        .payment-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .payment-form-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+        
+        .impact-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+        
+        .section-title {
+            font-weight: 700;
+            color: #4ea8ff;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        /* Amount buttons styling */
+        .donation-amount-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .amount-option {
+            flex: 1;
+            min-width: 70px;
+        }
+        
+        .amount-option input[type="radio"] {
+            display: none;
+        }
+        
+        .amount-option label {
+            display: block;
+            padding: 10px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .amount-option input[type="radio"]:checked + label {
+            border-color: #4ea8ff;
+            background-color: rgba(78, 168, 255, 0.1);
+            color: #4ea8ff;
+        }
+        
+        .custom-amount-input {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .custom-amount-input span {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .custom-amount-input input {
+            padding-left: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        /* Donation frequency buttons */
+        .donation-frequency {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .frequency-option {
+            flex: 1;
+        }
+        
+        .frequency-option input[type="radio"] {
+            display: none;
+        }
+        
+        .frequency-option label {
+            display: block;
+            padding: 10px;
+            text-align: center;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #555;
+            border: 1px solid #ddd;
+            margin: 0;
+        }
+        
+        .frequency-option input[type="radio"]:checked + label {
+            background-color: #4ea8ff;
+            color: white;
+            border-color: #4ea8ff;
+        }
+        
+        /* Payment method styling */
+        .payment-methods {
+            margin-bottom: 20px;
+        }
+        
+        .payment-method-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-method-option:hover {
+            border-color: #4ea8ff;
+        }
+        
+        .payment-method-option input[type="radio"] {
+            margin-right: 15px;
+        }
+        
+        .payment-method-option.selected {
+            border-color: #4ea8ff;
+            background-color: rgba(78, 168, 255, 0.05);
+        }
+        
+        .payment-icon {
+            margin-right: 10px;
+            font-size: 1.5rem;
+            color: #555;
+        }
+        
+        /* Credit card form styling */
+        .credit-card-form {
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .card-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .card-element {
+            flex: 1;
+        }
+        
+        .card-element-half {
+            flex: 1;
+        }
+        
+        /* Donation button styling */
+        .btn-donate {
+            background-color: #4ea8ff;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 8px;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn-donate:hover {
+            background-color: #3d97ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(77, 168, 255, 0.3);
+        }
+        
+        /* Impact cards styling */
+        .impact-cards {
+            margin-top: 20px;
+        }
+        
+        .impact-card {
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            margin-bottom: 15px;
+            border-left: 4px solid #4ea8ff;
+        }
+        
+        .impact-card-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .impact-card-title i {
+            color: #4ea8ff;
+            margin-right: 10px;
+        }
+        
+        .impact-card-description {
+            color: #666;
+            margin-bottom: 0;
+        }
+        
+        /* Donor testimonial styling */
+        .donor-testimonial {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            position: relative;
+        }
+        
+        .donor-testimonial::before {
+            content: '\201C';
+            font-size: 4rem;
+            color: #4ea8ff;
+            position: absolute;
+            top: -20px;
+            left: 10px;
+            opacity: 0.2;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        
+        .testimonial-author {
+            font-weight: 700;
+        }
+        
+        /* Secure payment note */
+        .secure-payment-note {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .secure-payment-note i {
+            color: #28a745;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .secure-payment-note p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Newsletter subscription styling */
+        .newsletter-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .newsletter-title {
+            font-weight: 700;
+            color: #4ea8ff;
+            margin-bottom: 15px;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        
+        .newsletter-form button {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            background-color: #4ea8ff;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            font-weight: 600;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 767px) {
+            .payment-container {
+                padding: 15px;
+            }
+            
+            .card-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .newsletter-form input {
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+            
+            .newsletter-form button {
+                border-radius: 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header with Navigation -->
+    <header class="site-navbar js-sticky-header site-navbar-target" role="banner">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="site-logo d-flex align-items-center">
+                    <img src="images/ngo_logo.png" alt="Unity Serve Logo" class="site-logo-img me-2">
+                    <a href="index.html" class="text-black fw-bold fs-2">
+                        <span class="text-primary">UNITY SERVE</span>
+                    </a>
+                </div>
+                <nav class="site-navigation text-center ml-auto" role="navigation">
+                    <ul class="site-menu main-menu js-clone-nav ml-auto d-none d-lg-flex">
+                        <li><a href="index.html" class="nav-link">Home</a></li>
+                        <li><a href="index.html#about-section" class="nav-link">About Us</a></li>
+                        <li><a href="index.html#discover-section" class="nav-link">Services</a></li>
+                        <li><a href="index.html#donate-section" class="nav-link">Join Us</a></li>
+                        <li><a href="index.html#blog-section" class="nav-link">Events</a></li>
+                        <li><a href="index.html#contact-section" class="nav-link">Contact</a></li>
+                        <li><a href="sign-in.html" class="nav-link signin-link">SIGN IN</a></li>
+                        <li><a href="#" class="nav-link donate-link active">DONATE</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Payment Container -->
+    <div class="payment-container">
+        <!-- Header Section -->
+        <div class="payment-header">
+            <h1>MAKE A DIFFERENCE TODAY</h1>
+            <p>Your generous contribution helps us provide essential support to communities in need. Together, we can create lasting change.</p>
+        </div>
+        
+        <!-- Progress Section -->
+        <div class="donation-progress">
+            <div class="progress-stats">
+                <p>₹84,50,000 raised</p>
+                <p>Goal: ₹1,00,00,000</p>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 84.5%" aria-valuenow="84.5" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="progress-info">
+                <div class="donor-count">
+                    <i class="fas fa-users"></i> 1,284 Donors
+                </div>
+                <div class="time-remaining">
+                    <i class="far fa-clock"></i> 15 days remaining
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Section -->
+        <div class="payment-content">
+            <!-- Payment Form Section -->
+            <div class="payment-form-section">
+                <h2 class="section-title">YOUR DONATION</h2>
+                <form id="donationForm">
+                    <!-- Donation Amount Options -->
+                    <div class="form-group">
+                        <label class="mb-2 fw-bold">Select Amount</label>
+                        <div class="donation-amount-options">
+                            <div class="amount-option">
+                                <input type="radio" name="donationAmount" id="amount1000" value="1000">
+                                <label for="amount1000">₹1,000</label>
+                            </div>
+                            <div class="amount-option">
+                                <input type="radio" name="donationAmount" id="amount5000" value="5000">
+                                <label for="amount5000">₹5,000</label>
+                            </div>
+                            <div class="amount-option">
+                                <input type="radio" name="donationAmount" id="amount10000" value="10000" checked>
+                                <label for="amount10000">₹10,000</label>
+                            </div>
+                            <div class="amount-option">
+                                <input type="radio" name="donationAmount" id="amount25000" value="25000">
+                                <label for="amount25000">₹25,000</label>
+                            </div>
+                        </div>
+                        
+                        <div class="custom-amount-input">
+                            <span>₹</span>
+                            <input type="number" class="form-control" id="customAmount" placeholder="Other Amount" min="100">
+                        </div>
+                    </div>
+                    
+                    <!-- Donation Frequency -->
+                    <div class="form-group">
+                        <label class="mb-2 fw-bold">Donation Frequency</label>
+                        <div class="donation-frequency">
+                            <div class="frequency-option">
+                                <input type="radio" name="donationFrequency" id="oneTime" value="one-time" checked>
+                                <label for="oneTime">One Time</label>
+                            </div>
+                            <div class="frequency-option">
+                                <input type="radio" name="donationFrequency" id="monthly" value="monthly">
+                                <label for="monthly">Monthly</label>
+                            </div>
+                            <div class="frequency-option">
+                                <input type="radio" name="donationFrequency" id="annually" value="annually">
+                                <label for="annually">Annually</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Methods -->
+                    <div class="form-group">
+                        <label class="mb-2 fw-bold">Payment Method</label>
+                        <div class="payment-methods">
+                            <div class="payment-method-option selected">
+                                <input type="radio" name="paymentMethod" id="creditCard" value="credit-card" checked>
+                                <i class="far fa-credit-card payment-icon"></i>
+                                <label for="creditCard">Credit / Debit Card</label>
+                            </div>
+                            <div class="payment-method-option">
+                                <input type="radio" name="paymentMethod" id="netBanking" value="net-banking">
+                                <i class="fas fa-university payment-icon"></i>
+                                <label for="netBanking">Net Banking</label>
+                            </div>
+                            <div class="payment-method-option">
+                                <input type="radio" name="paymentMethod" id="upi" value="upi">
+                                <i class="fas fa-mobile-alt payment-icon"></i>
+                                <label for="upi">UPI Payment</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Credit Card Form -->
+                    <div class="credit-card-form">
+                        <div class="form-group">
+                            <label for="cardName">Cardholder Name</label>
+                            <input type="text" class="form-control" id="cardName" placeholder="Name on card">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number</label>
+                            <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456">
+                        </div>
+                        
+                        <div class="form-group card-row">
+                            <div class="card-element-half">
+                                <label for="expiryDate">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY">
+                            </div>
+                            <div class="card-element-half">
+                                <label for="cvv">CVV</label>
+                                <input type="text" class="form-control" id="cvv" placeholder="123">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Personal Information -->
+                    <div class="form-group">
+                        <label class="mb-2 fw-bold mt-4">Personal Information</label>
+                        <div class="card-row">
+                            <div class="card-element">
+                                <label for="firstName">First Name</label>
+                                <input type="text" class="form-control" id="firstName">
+                            </div>
+                            <div class="card-element">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" class="form-control" id="lastName">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" class="form-control" id="email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone">
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="taxReceipt" checked>
+                            <label class="form-check-label" for="taxReceipt">
+                                Send me a tax receipt
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="emailUpdates" checked>
+                            <label class="form-check-label" for="emailUpdates">
+                                Keep me updated about how my donation is making a difference
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Donation Button -->
+                    <button type="submit" class="btn btn-donate">DONATE NOW</button>
+                    
+                    <!-- Secure Payment Note -->
+                    <div class="secure-payment-note">
+                        <i class="fas fa-lock"></i>
+                        <p>All transactions are secure and encrypted. Your financial information is never stored on our servers.</p>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Impact Section -->
+            <div class="impact-section">
+                <h2 class="section-title">YOUR IMPACT</h2>
+                
+                <p>Your generous donation directly supports our mission to create positive change in communities across India. Here's how your contribution helps:</p>
+                
+                <div class="impact-cards">
+                    <div class="impact-card">
+                        <div class="impact-card-title">
+                            <i class="fas fa-utensils"></i> Food Security
+                        </div>
+                        <p class="impact-card-description">₹1,000 provides nutritious meals for 20 people in need.</p>
+                    </div>
+                    
+                    <div class="impact-card">
+                        <div class="impact-card-title">
+                            <i class="fas fa-book"></i> Education
+                        </div>
+                        <p class="impact-card-description">₹5,000 supplies educational materials for 15 underprivileged children.</p>
+                    </div>
+                    
+                    <div class="impact-card">
+                        <div class="impact-card-title">
+                            <i class="fas fa-heartbeat"></i> Healthcare
+                        </div>
+                        <p class="impact-card-description">₹10,000 provides critical medical supplies and services for 10 individuals.</p>
+                    </div>
+                    
+                    <div class="impact-card">
+                        <div class="impact-card-title">
+                            <i class="fas fa-home"></i> Shelter
+                        </div>
+                        <p class="impact-card-description">₹25,000 helps secure temporary housing for 5 families during emergencies.</p>
+                    </div>
+                </div>
+                
+                <!-- Donor Testimonial -->
+                <div class="donor-testimonial">
+                    <p class="testimonial-text">"Making a substantial donation to UnityServe was one of the most fulfilling decisions I've ever made. The transparency in how they utilize funds and the direct impact they create is remarkable. I can truly see how my contribution has transformed lives."</p>
+                    <p class="testimonial-author">— Vikram Mehta, Philanthropist</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Newsletter Section -->
+        <div class="newsletter-section">
+            <h3 class="newsletter-title">JOIN OUR NEWSLETTER</h3>
+            <p>Stay updated about our initiatives, success stories, and upcoming events.</p>
+            <div class="newsletter-form">
+                <input type="email" class="form-control" placeholder="Your Email Address">
+                <button type="button" class="btn">Subscribe</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="background-color: #222; color: #fff; padding: 40px 20px; text-align: center;">
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; max-width: 1200px; margin: auto;">
+
+            <!-- About Us with Logo -->
+            <div style="flex: 1; min-width: 200px; margin-bottom: 20px; text-align: left;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="images/ngo_logo.png" alt="Unity Serve Logo" style="width: 50px; height: 50px; border-radius: 50%;">
+                    <h2 style="font-size: 22px; font-weight: bold; margin: 0;">Unity Serve</h2>
+                </div>
+                <p style="font-size: 14px; margin-top: 10px;">We are a group of young individuals <br>committed to being productive for <br> others in need.</p>
+            </div>
+
+            <!-- Features Section with Hyperlinks -->
+            <div style="flex: 1; min-width: 200px; margin-bottom: 20px; text-align: left;">
+                <h3 style="font-size: 18px; font-weight: normal;">Features</h3>
+                <ul style="list-style: none; padding: 0; font-size: 14px; line-height: 1.8;">
+                    <li><a href="services.html" style="color: #fff; text-decoration: none;">Services</a></li>
+                    <li><a href="join-us.html" style="color: #fff; text-decoration: none;">Join Us</a></li>
+                    <li><a href="our-team.html" style="color: #fff; text-decoration: none;">Our Team</a></li>
+                    <li><a href="testimonials.html" style="color: #fff; text-decoration: none;">Testimonials</a></li>
+                    <li><a href="events.html" style="color: #fff; text-decoration: none;">Upcoming Events</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact & Social Media -->
+            <div style="flex: 1; min-width: 200px; margin-bottom: 20px; text-align: left;">
+                <h3 style="font-size: 18px; font-weight: normal;">Contact Us</h3>
+                <p style="font-size: 14px;">Email: unityservengo@gmail.com</p>
+                <p style="font-size: 14px;">Call: +91-863-036-0001</p>
+
+                <h4 style="font-size: 16px; font-weight: normal; margin-top: 20px;">Follow Us</h4>
+                <div style="margin-top: 10px;">
+                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;<a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <!-- Newsletter Subscription -->
+            <div style="flex: 1; min-width: 250px; margin-bottom: 20px; text-align: left;">
+                <h3 style="font-size: 18px; font-weight: normal;">Subscribe to Newsletter</h3>
+                <input type="email" placeholder="Enter Email" style="width: 100%; padding: 10px; font-size: 14px; border-radius: 5px; border: none; margin-bottom: 10px;">
+                <button style="width: 100%; padding: 10px; background-color: #4ea8ff; color: white; border: none; font-size: 14px; border-radius: 5px; cursor: pointer;">
+                    Subscribe
+                </button>
+            </div>
+        </div>
+
+        <p style="font-size: 12px; margin-top: 20px;">© 2025 Unity Serve. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.sticky.js"></script>
+
+    <!-- Donation Payment Specific JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Amount selection toggle
+            const amountOptions = document.querySelectorAll('input[name="donationAmount"]');
+            const customAmountInput = document.getElementById('customAmount');
+            
+            amountOptions.forEach(option => {
+                option.addEventListener('change', function() {
+                    if (this.checked) {
+                        customAmountInput.value = '';
+                    }
+                });
+            });
+            
+            customAmountInput.addEventListener('input', function() {
+                if (this.value) {
+                    amountOptions.forEach(option => {
+                        option.checked = false;
+                    });
+                }
+            });
+            
+            // Payment method selection
+            const paymentMethodOptions = document.querySelectorAll('.payment-method-option');
+            
+            paymentMethodOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Reset all options
+                    paymentMethodOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.querySelector('input[type="radio"]').checked = false;
+                    });
+                    
+                    // Select clicked option
+                    this.classList.add('selected');
+                    this.querySelector('input[type="radio"]').checked = true;
+                    
+                    // Show/hide appropriate payment form
+                    const selectedMethod = this.querySelector('input[type="radio"]').value;
+                    
+                    // Add logic for showing different payment forms here
+                    if (selectedMethod === 'credit-card') {
+                        document.querySelector('.credit-card-form').style.display = 'block';
+                    } else {
+                        document.querySelector('.credit-card-form').style.display = 'none';
+                    }
+                });
+            });
+            
+            // Form submission
+            document.getElementById('donationForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get selected amount
+                let donationAmount = 0;
+                const selectedAmount = document.querySelector('input[name="donationAmount"]:checked');
+                
+                if (selectedAmount) {
+                    donationAmount = selectedAmount.value;
+                } else if (customAmountInput.value) {
+                    donationAmount = customAmountInput.value;
+                }
+                
+                // Get donation frequency
+                const donationFrequency = document.querySelector('input[name="donationFrequency"]:checked').value;
+                
+                // Get payment method
+                const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+                
+                // Basic validation
+                if (!donationAmount || donationAmount < 100) {
+                    alert('Please select or enter a valid donation amount (minimum ₹100).');
+                    return;
+                }
+                
+                // Card validation (if credit card is selected)
+                if (paymentMethod === 'credit-card') {
+                    const cardName = document.getElementById('cardName').value;
+                    const cardNumber = document.getElementById('cardNumber').value;
+                    const expiryDate = document.getElementById('expiryDate').value;
+                    const cvv = document.getElementById('cvv').value;
+                    
+                    if (!cardName || !cardNumber || !expiryDate || !cvv) {
+                        alert('Please fill in all credit card details.');
+                        return;
+                    }
+                    
+                    // Basic card number validation (should be more sophisticated in production)
+                    if (cardNumber.replace(/\s/g, '').length !== 16) {
+                        alert('Please enter a valid 16-digit card number.');
+                        return;
+                    }
+                }
+                
+                // Personal information validation
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                
+                if (!firstName || !lastName || !email) {
+                    alert('Please provide your name and email address.');
+                    return;
+                }
+                
+                // Here you would typically process the payment through a payment gateway
+                // For demo purposes, we'll show a success message
+                
+                // Create donation summary
+                const donationSummary = `
+                    Donation Amount: ₹${donationAmount}
+                    Frequency: ${donationFrequency}
+                    Payment Method: ${paymentMethod}
+                    Name: ${firstName} ${lastName}
+                    Email: ${email}
+                    Phone: ${phone || 'Not provided'}
+                `;
+                
+                console.log('Donation processed:', donationSummary);
+                
+                // Show success message
+                showSuccessMessage(donationAmount);
+            });
+            
+            // Show success message
+            function showSuccessMessage(amount) {
+                // Hide the form
+                document.querySelector('.payment-form-section').innerHTML = `
+                    <div style="text-align: center; padding: 30px 0;">
+                        <div style="width: 80px; height: 80px; margin: 0 auto 20px; background-color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-check" style="color: white; font-size: 40px;"></i>
+                        </div>
+                        <h2 style="color: #28a745; margin-bottom: 20px;">Thank You!</h2>
+                        <p style="font-size: 1.2rem; margin-bottom: 10px;">Your donation of ₹${amount} has been processed successfully.</p>
+                        <p>A receipt has been sent to your email address.</p>
+                        <p style="margin-top: 30px;">Your generosity will make a meaningful difference in the lives of those we serve.</p>
+                        <a href="index.html" class="btn btn-primary mt-4">Return to Home</a>
+                    </div>
+                `;
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+            
+            // Format credit card number with spaces
+            document.getElementById('cardNumber').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                let formattedValue = '';
+                
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value[i];
+                }
+                
+                e.target.value = formattedValue;
+            });
+            
+            // Format expiry date (MM/YY)
+            document.getElementById('expiryDate').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                
+                if (value.length > 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                }
+                
+                e.target.value = value;
+            });
+            
+            // Limit CVV to 3 or 4 digits
+            document.getElementById('cvv').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
+            });
+        });
+    </script>
+</body>
+</html>

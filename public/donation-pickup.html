@@ -1,153 +1,692 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donation Pickup - NGO Access</title>
+    <title>Donation Pickup Schedule - UnityServe</title>
+    <link rel="icon" href="images/ngo_logo.png" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700|Anton" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- FontAwesome for Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <!-- Additional CSS Libraries -->
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
+    <link rel="stylesheet" href="css/aos.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
     <style>
+        /* Pickup Schedule Page Specific Styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Nunito', sans-serif;
             background-color: #f5f5f5;
-            margin: 0;
-            padding: 20px;
         }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        h1, h2 {
-            text-align: center;
-        }
-        .filters, .restaurants {
-            margin-top: 30px;
-        }
-        select, button {
-            padding: 12px;
-            margin-right: 15px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-        button {
-            background-color: #4CAF50;
+        
+        .page-banner {
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('images/food_donation_banner.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 0;
             color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .restaurant {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #e0ffe0;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            transition: opacity 0.3s;
-        }
-        .restaurant.greyed-out {
-            opacity: 0.5;
-            background-color: #f0f0f0;
-        }
-        .back-button {
-            margin-top: 30px;
-            display: block;
             text-align: center;
+        }
+        
+        .page-banner h1 {
+            font-size: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 1rem;
+        }
+        
+        .page-banner p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .content-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+        
+        .content-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            color: #4ea8ff;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .pickup-date {
+            background-color: #4ea8ff;
+            color: white;
+            border-radius: 8px;
+            padding: 10px 15px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: #c8aa32;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+        
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            top: 15px;
+            border-radius: 50%;
+            background-color: white;
+            border: 4px solid #4ea8ff;
+            z-index: 1;
+        }
+        
+        .timeline-item.left {
+            left: 0;
+        }
+        
+        .timeline-item.right {
+            left: 50%;
+        }
+        
+        .timeline-item.right::after {
+            left: -10px;
+        }
+        
+        .timeline-content {
+            padding: 20px;
+            background-color: white;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .timeline-time {
+            font-weight: 700;
+            color: #4ea8ff;
+            margin-bottom: 10px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .status-scheduled {
+            background-color: #ffc107;
+            color: #333;
+        }
+        
+        .status-completed {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .status-inprogress {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .pickup-details {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .pickup-details ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 0;
+        }
+        
+        .pickup-details li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .pickup-details li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #4ea8ff;
+        }
+        
+        .map-container {
+            height: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .signin-link, .donate-link {
+            display: inline-block;
+            background-color: #6c757d;
+            color: white !important;
+            border-radius: 5px;
+            padding: 8px 15px !important;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .signin-link:hover {
+            background-color: #5a6268;
+            color: white !important;
+        }
+        
+        .donate-link {
+            background-color: #e86327;
+        }
+        
+        .donate-link:hover {
+            background-color: #d55a20;
+            color: white !important;
+        }
+        
+        /* Responsive timeline */
+        @media screen and (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-item.right {
+                left: 0;
+            }
+            
+            .timeline-item::after {
+                left: 21px;
+                top: 15px;
+            }
+            
+            .timeline-item.right::after {
+                left: 21px;
+            }
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>Donation Pickup - NGO Access</h1>
-        <div class="filters">
-            <h2>Filter by Location & Availability</h2>
-            <select id="locationFilter">
-                <option value="all">All Locations</option>
-                <option value="bhopal">Bhopal</option>
-                <option value="sehore">Sehore</option>
-                <option value="astha">Astha</option>
-                <option value="indore">Indore</option>
-            </select>
-            <select id="availabilityFilter">
-                <option value="all">All</option>
-                <option value="yes">Available Now</option>
-                <option value="no">Unavailable</option>
-            </select>
-            <button onclick="applyFilters()">Apply Filters</button>
-        </div>
-        
-        <div class="restaurants" id="restaurantList">
-            <!-- Sample restaurant cards -->
-            <div class="restaurant" data-location="bhopal" data-available="yes">
-                <span><strong>Spice Villa - Bhopal</strong> (Priority Access)</span>
-                <button>Request Pickup</button>
-            </div>
-
-            <div class="restaurant greyed-out" data-location="sehore" data-available="no">
-                <span><strong>Green Garden - Sehore</strong> (Unavailable)</span>
-                <button disabled>Currently Unavailable</button>
-            </div>
-
-            <div class="restaurant" data-location="astha" data-available="yes">
-                <span><strong>Astha Dine - Astha</strong> (Priority Access)</span>
-                <button>Request Pickup</button>
-            </div>
-
-            <div class="restaurant greyed-out" data-location="indore" data-available="no">
-                <span><strong>Indore Bites - Indore</strong> (Unavailable)</span>
-                <button disabled>Currently Unavailable</button>
+    <!-- Header with Navigation -->
+    <header class="site-navbar js-sticky-header site-navbar-target" role="banner">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="site-logo d-flex align-items-center">
+                    <img src="images/ngo_logo.png" alt="Unity Serve Logo" class="site-logo-img me-2">
+                    <a href="index.html" class="text-black fw-bold fs-2">
+                        <span class="text-primary">UNITY SERVE</span>
+                    </a>
+                </div>
+                <nav class="site-navigation text-center ml-auto" role="navigation">
+                    <ul class="site-menu main-menu js-clone-nav ml-auto d-none d-lg-flex">
+                        <li><a href="index.html" class="nav-link">Home</a></li>
+                        <li><a href="index.html#about-section" class="nav-link">About Us</a></li>
+                        <li><a href="index.html#discover-section" class="nav-link active">Services</a></li>
+                        <li><a href="index.html#donate-section" class="nav-link">Join Us</a></li>
+                        <li><a href="index.html#blog-section" class="nav-link">Events</a></li>
+                        <li><a href="index.html#contact-section" class="nav-link">Contact</a></li>
+                        <li><a href="sign-in.html" class="nav-link signin-link">SIGN IN</a></li>
+                        <li><a href="index.html#donation-section" class="nav-link donate-link">DONATE</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
-        
-        <a href="index.html" class="back-button">
-            <button>⬅️ Back to Home</button>
-        </a>
+    </header>
+
+    <!-- Page Banner -->
+    <div class="page-banner">
+        <div class="container">
+            <h1>Donation Pickup Schedule</h1>
+            <p>Track your donation pickups and see the positive impact you're making in your community.</p>
+        </div>
     </div>
 
+    <!-- Main Content -->
+    <div class="content-container">
+        <!-- Overview Section -->
+        <div class="content-card">
+            <h2 class="section-title">Your Upcoming Pickups</h2>
+            
+            <div class="alert alert-info" role="alert">
+                <i class="fas fa-info-circle me-2"></i> You have 3 scheduled donation pickups. Our volunteers are ready to collect your generous donations.
+            </div>
+            
+            <!-- Pickup Date -->
+            <div class="pickup-date">
+                <i class="fas fa-calendar me-2"></i> April 18, 2025
+            </div>
+            
+            <!-- Timeline -->
+            <div class="timeline">
+                <!-- Morning Pickup -->
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <div class="timeline-time">9:00 AM - 11:00 AM</div>
+                        <span class="status-badge status-scheduled">Scheduled</span>
+                        <h5>Food Donation Pickup</h5>
+                        <p>Our volunteer team will arrive at your location to collect your food donation.</p>
+                        
+                        <div class="pickup-details">
+                            <h6>Items for Pickup:</h6>
+                            <ul>
+                                <li>Rice (5 kg)</li>
+                                <li>Canned beans (10 cans)</li>
+                                <li>Pasta (3 packages)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Afternoon Pickup -->
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <div class="timeline-time">1:00 PM - 3:00 PM</div>
+                        <span class="status-badge status-scheduled">Scheduled</span>
+                        <h5>Clothing Donation Pickup</h5>
+                        <p>We'll collect your clothing donation and distribute it to those in need.</p>
+                        
+                        <div class="pickup-details">
+                            <h6>Items for Pickup:</h6>
+                            <ul>
+                                <li>Winter clothes (25 items)</li>
+                                <li>Children's wear (15 items)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pickup Date 2 -->
+            <div class="pickup-date">
+                <i class="fas fa-calendar me-2"></i> April 20, 2025
+            </div>
+            
+            <!-- Timeline 2 -->
+            <div class="timeline">
+                <!-- Book Donation Pickup -->
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <div class="timeline-time">10:00 AM - 12:00 PM</div>
+                        <span class="status-badge status-scheduled">Scheduled</span>
+                        <h5>Book Donation Pickup</h5>
+                        <p>Our volunteers will collect your book donation for local schools and libraries.</p>
+                        
+                        <div class="pickup-details">
+                            <h6>Items for Pickup:</h6>
+                            <ul>
+                                <li>School textbooks (30 books)</li>
+                                <li>Children's storybooks (15 books)</li>
+                                <li>Novels and reference books (10 books)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Past Pickups Section -->
+        <div class="content-card">
+            <h2 class="section-title">Past Pickups</h2>
+            
+            <!-- Pickup Date -->
+            <div class="pickup-date">
+                <i class="fas fa-calendar me-2"></i> April 10, 2025
+            </div>
+            
+            <!-- Timeline -->
+            <div class="timeline">
+                <!-- Completed Pickup -->
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <div class="timeline-time">2:00 PM - 4:00 PM</div>
+                        <span class="status-badge status-completed">Completed</span>
+                        <h5>Food & Groceries Donation</h5>
+                        <p>Your donation has been collected and distributed to 25 families in need.</p>
+                        
+                        <div class="pickup-details">
+                            <h6>Impact:</h6>
+                            <ul>
+                                <li>Benefited 25 families in Saket community</li>
+                                <li>Provided meals for approximately 100 people</li>
+                                <li>Volunteer: Rajesh Kumar</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pickup Date 2 -->
+            <div class="pickup-date">
+                <i class="fas fa-calendar me-2"></i> March 25, 2025
+            </div>
+            
+            <!-- Timeline 2 -->
+            <div class="timeline">
+                <!-- Completed Pickup -->
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <div class="timeline-time">10:00 AM - 12:00 PM</div>
+                        <span class="status-badge status-completed">Completed</span>
+                        <h5>Medical Supplies Donation</h5>
+                        <p>Your medical supplies have been distributed to local healthcare centers.</p>
+                        
+                        <div class="pickup-details">
+                            <h6>Impact:</h6>
+                            <ul>
+                                <li>Supported 3 rural healthcare centers</li>
+                                <li>Provided first-aid supplies for approximately 200 people</li>
+                                <li>Volunteer: Priya Sharma</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Map & Collection Centers -->
+        <div class="content-card">
+            <h2 class="section-title">Collection Centers Map</h2>
+            <p>If you prefer to drop off your donations in person, here are our collection centers:</p>
+            
+            <!-- Map placeholder - In a real implementation, you would use Google Maps or similar -->
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d224346.54004238277!2d77.0428539886929!3d28.527556833911906!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x52c2b7494e204dce!2sNew%20Delhi%2C%20Delhi%2C%20India!5e0!3m2!1sen!2sus!4v1681506822432!5m2!1sen!2sus" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">UnityServe Main Center</h5>
+                            <p class="card-text">123 Main St, Delhi</p>
+                            <p class="mb-1"><strong>Hours:</strong></p>
+                            <p class="mb-0">Monday - Friday: 9:00 AM - 6:00 PM</p>
+                            <p class="mb-0">Saturday: 10:00 AM - 4:00 PM</p>
+                            <p>Sunday: Closed</p>
+                            <p class="mb-0"><strong>Contact:</strong> +91-123-456-7890</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Community Food Bank</h5>
+                            <p class="card-text">456 Park Avenue, Mumbai</p>
+                            <p class="mb-1"><p class="mb-1"><strong>Hours:</strong></p>
+                            <p class="mb-0">Monday - Friday: 9:00 AM - 6:00 PM</p>
+                            <p class="mb-0">Saturday: 10:00 AM - 4:00 PM</p>
+                            <p>Sunday: Closed</p>
+                            <p class="mb-0"><strong>Contact:</strong> +91-987-654-3210</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Hope Center</h5>
+                            <p class="card-text">789 Gandhi Road, Bangalore</p>
+                            <p class="mb-1"><strong>Hours:</strong></p>
+                            <p class="mb-0">Monday - Friday: 10:00 AM - 7:00 PM</p>
+                            <p class="mb-0">Saturday: 11:00 AM - 5:00 PM</p>
+                            <p>Sunday: Closed</p>
+                            <p class="mb-0"><strong>Contact:</strong> +91-456-789-0123</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Food For All</h5>
+                            <p class="card-text">321 River View, Chennai</p>
+                            <p class="mb-1"><strong>Hours:</strong></p>
+                            <p class="mb-0">Monday - Friday: 9:00 AM - 5:00 PM</p>
+                            <p class="mb-0">Saturday: 10:00 AM - 3:00 PM</p>
+                            <p>Sunday: Closed</p>
+                            <p class="mb-0"><strong>Contact:</strong> +91-789-012-3456</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Donation Info & FAQ -->
+        <div class="content-card">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item mb-3">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            How do I schedule a donation pickup?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            You can schedule a donation pickup by filling out our donation form for the specific type of donation (food, clothing, books, etc.). Select "Pickup from my location" as your preferred method and choose a convenient date and time slot. Our team will confirm the pickup details via email.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item mb-3">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            What if I need to reschedule a pickup?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            If you need to reschedule a pickup, please contact our support team at least 24 hours before the scheduled time. You can reach us at support@unityserve.org or call +91-863-036-0001. We'll work with you to find a new time that's convenient for both you and our volunteer team.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item mb-3">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            How do I prepare items for pickup?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <p>Please prepare your items in the following way to ensure a smooth pickup:</p>
+                            <ul>
+                                <li><strong>Food Donations:</strong> Pack non-perishable items in a sturdy box or bag. For perishable items, ensure they're properly refrigerated until pickup.</li>
+                                <li><strong>Clothing Donations:</strong> Clean and fold clothes, placing them in bags or boxes.</li>
+                                <li><strong>Book Donations:</strong> Pack books in manageable-sized boxes (not too heavy).</li>
+                                <li>Label boxes/bags with the type of donation.</li>
+                                <li>If possible, place the items near your entrance for easy access.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item mb-3">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            How do I know where my donation goes?
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            After your donation is collected and distributed, we'll send you an impact report via email. This report includes details about which communities or organizations received your donation and how it was used to help those in need. We believe in transparency and want you to see the positive impact of your generosity.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFive">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                            Can I get a tax receipt for my donation?
+                        </button>
+                    </h2>
+                    <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Yes, all donations are eligible for tax deductions. Once your donation is collected, we'll send you a tax receipt via email. If you need a physical copy, please mention this in the "Additional Notes" section when scheduling your pickup, and our volunteer will bring a printed receipt when collecting your donation.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Need Help Section -->
+        <div class="content-card">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h3>Need help with your donation pickup?</h3>
+                    <p>Our support team is ready to assist you with any questions or concerns about your donation pickup. Contact us via phone, email, or the chat feature on our website.</p>
+                    <div class="mt-3">
+                        <a href="tel:+918630360001" class="btn btn-outline-primary me-2"><i class="fas fa-phone-alt me-2"></i>+91-863-036-0001</a>
+                        <a href="mailto:support@unityserve.org" class="btn btn-outline-primary"><i class="fas fa-envelope me-2"></i>support@unityserve.org</a>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <img src="images/customer-support.png" alt="Customer Support" class="img-fluid" style="max-height: 150px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="background-color: #222; color: #fff; padding: 40px 20px; text-align: center;">
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; max-width: 1200px; margin: auto;">
+
+            <!-- About Us with Logo -->
+            <div style="flex: 1; min-width: 200px; margin-bottom: 20px; text-align: left;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="images/ngo_logo.png" alt="Unity Serve Logo" style="width: 50px; height: 50px; border-radius: 50%;">
+                    <h2 style="font-size: 22px; font-weight: bold; margin: 0;">Unity Serve</h2>
+                </div>
+                <p style="font-size: 14px; margin-top: 10px;">We are a group of young individuals <br>committed to being productive for <br> others in need.</p>
+            </div>
+
+            <!-- Features Section with Hyperlinks -->
+            <div style="flex: 1; min-width: 200px; margin-bottom: 20px; text-align: left;">
+                <h3 style="font-size: 18px; font-weight: normal;">Features</h3>
+                <ul style="list-style: none; padding: 0; font-size: 14px; line-height: 1.8;">
+                    <li><a href="services.html" style="color: #fff; text-decoration: none;">Services</a></li>
+                    <li><a href="join-us.html" style="color: #fff; text-decoration: none;">Join Us</a></li>
+                    <li><a href="our-team.html" style="color: #fff; text-decoration: none;">Our Team</a></li>
+                    <li><a href="testimonials.html" style="color: #fff; text-decoration: none;">Testimonials</a></li>
+                    <li><a href="events.html" style="color: #fff; text-decoration: none;">Upcoming Events</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact & Social Media -->
+            <div style="flex: 1; min-width: 200px; margin-bottom: 20px; text-align: left;">
+                <h3 style="font-size: 18px; font-weight: normal;">Contact Us</h3>
+                <p style="font-size: 14px;">Email: unityservengo@gmail.com</p>
+                <p style="font-size: 14px;">Call: +91-863-036-0001</p>
+
+                <h4 style="font-size: 16px; font-weight: normal; margin-top: 20px;">Follow Us</h4>
+                <div style="margin-top: 10px;">
+                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color: #fff; font-size: 20px; margin: 0 10px;"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <!-- Newsletter Subscription -->
+            <div style="flex: 1; min-width: 250px; margin-bottom: 20px; text-align: left;">
+                <h3 style="font-size: 18px; font-weight: normal;">Subscribe to Newsletter</h3>
+                <input type="email" placeholder="Enter Email" style="width: 100%; padding: 10px; font-size: 14px; border-radius: 5px; border: none; margin-bottom: 10px;">
+                <button style="width: 100%; padding: 10px; background-color: #4ea8ff; color: white; border: none; font-size: 14px; border-radius: 5px; cursor: pointer;">
+                    Subscribe
+                </button>
+            </div>
+        </div>
+
+        <p style="font-size: 12px; margin-top: 20px;">© 2025 Unity Serve. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.sticky.js"></script>
+    
     <script>
-        function applyFilters() {
-            const location = document.getElementById('locationFilter').value;
-            const availability = document.getElementById('availabilityFilter').value;
-
-            const restaurants = Array.from(document.querySelectorAll('.restaurant'));
-
-            const sortedRestaurants = restaurants.sort((a, b) => {
-                return b.dataset.available.localeCompare(a.dataset.available);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Bootstrap components
+            var accordionItems = document.querySelectorAll('.accordion-item');
+            
+            // Simple animation for the timeline items
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach(item => {
+                item.style.opacity = "0";
+                item.style.transform = "translateY(20px)";
+                
+                setTimeout(() => {
+                    item.style.transition = "all 0.5s ease";
+                    item.style.opacity = "1";
+                    item.style.transform = "translateY(0)";
+                }, 300);
             });
-
-            sortedRestaurants.forEach((restaurant) => {
-                const matchesLocation = location === 'all' || restaurant.dataset.location === location;
-                const matchesAvailability = availability === 'all' || restaurant.dataset.available === availability;
-
-                if (matchesLocation && matchesAvailability) {
-                    restaurant.style.display = 'flex';
-                } else {
-                    restaurant.style.display = 'none';
-                }
-            });
-        }
-
-        setInterval(() => {
-            // Simulate real-time changes in availability
-            const restaurants = document.querySelectorAll('.restaurant');
-            restaurants.forEach((restaurant) => {
-                const randomAvailability = Math.random() > 0.5 ? 'yes' : 'no';
-                restaurant.dataset.available = randomAvailability;
-                restaurant.classList.toggle('greyed-out', randomAvailability === 'no');
-                restaurant.querySelector('button').disabled = randomAvailability === 'no';
-                restaurant.querySelector('button').textContent = randomAvailability === 'yes' ? 'Request Pickup' : 'Currently Unavailable';
-            });
-            applyFilters();
-        }, 5000); // Update every 5 seconds
-
-        window.onload = applyFilters;
+        });
     </script>
 </body>
 </html>

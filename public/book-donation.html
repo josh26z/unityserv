@@ -1,91 +1,1089 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate for Education - UnityServe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* General Styles */
+        :root {
+            --primary-color: #f05f40; /* Orange from UnityServe */
+            --primary-dark: #dd4b2b;
+            --primary-light: #ff7d61;
+            --secondary-color: #212529; /* Dark gray/black from UnityServe */
+            --accent-color: #6c757d; /* Gray from UnityServe */
+            --text-light: #6c757d;
+            --text-dark: #212529;
+            --bg-light: #f8f9fa;
+            --success-color: #5dd3b8; /* Mint green from submit button */
+            --success-dark: #4bc0a5;
+            --white: #ffffff;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Merriweather', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f8f9fa;
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        /* Preloader */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--bg-light);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Main Container */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            width: 90%;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .main-container.loaded {
+            opacity: 1;
+        }
+        
+        /* Header Section with Image */
+        .header-section {
+            width: 100%;
+            height: 200px;
+            background-image: url('/api/placeholder/1600/400');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(240, 95, 64, 0.9), rgba(33, 37, 41, 0.9));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            color: white;
             text-align: center;
         }
-
-        /* Container */
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-        }
-
-        /* Dropdown & Button Styles */
-        label {
-            font-size: 18px;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        select, button {
-            margin-top: 15px;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            width: 100%;
-        }
-
-        button {
-            background-color: #a9eee3;
-            color: rgb(0, 0, 0);
-            cursor: pointer;
-            border: none;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background-color: #062b828e;
-        }
-    </style>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Donation</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-    <div class="container">
-        <h1>Donate for Education</h1>
         
-        <label for="donation-type">Select what you want to donate:</label>
-        <select id="donation-type">
-            <option value="">-- Choose an option --</option>
-            <option value="books">Books</option>
-            <option value="stationery">Stationery (Pens, Notebooks, Pencils)</option>
-            <option value="uniforms">School Uniforms</option>
-            <option value="bags">School Bags</option>
-            <option value="monetary">Monetary Help</option>
-        </select>
-
-        <button onclick="submitDonation()">Submit</button>
-    </div>
-
-    <script>
-        function submitDonation() {
-            let selectedValue = document.getElementById("donation-type").value;
-            if (selectedValue) {
-                alert("Thank you for choosing to donate " + selectedValue + "!");
-            } else {
-                alert("Please select an option before submitting.");
+        .overlay-icon {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .overlay h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        
+        .overlay p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        /* Right Section with Form */
+        .form-section {
+            width: 100%;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .form-header h2 {
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        
+        .form-header p {
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-top: 1rem;
+            font-weight: 300;
+        }
+        
+        /* Form Steps */
+        .step-container {
+            display: none;
+        }
+        
+        .step-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .category-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-card {
+            flex: 1 0 calc(50% - 15px);
+            min-width: 120px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            background-color: rgba(240, 95, 64, 0.05);
+        }
+        
+        .category-card.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(240, 95, 64, 0.1);
+        }
+        
+        .category-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .category-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+        
+        .category-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+        
+        .category-description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        
+        /* Item Selection */
+        .item-selection {
+            background-color: var(--bg-light);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .item-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .item-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .item-option:last-child {
+            border-bottom: none;
+        }
+        
+        .item-option:hover {
+            background-color: rgba(240, 95, 64, 0.05);
+        }
+        
+        .item-option.selected {
+            background-color: rgba(240, 95, 64, 0.1);
+        }
+        
+        .item-option input[type="radio"] {
+            margin-right: 15px;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        /* Select Element */
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Merriweather', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: var(--transition);
+            background-color: white;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 15px;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(240, 95, 64, 0.2);
+        }
+        
+        /* Quantity Control */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
+            background-color: var(--bg-light);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .quantity-btn:hover {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .quantity-input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            margin: 0 10px;
+            padding: 0;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Merriweather', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: var(--transition);
+            background-color: white;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(240, 95, 64, 0.2);
+        }
+        
+        input:focus + .input-icon {
+            color: var(--primary-color);
+        }
+        
+        /* Navigation Buttons */
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .nav-btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 1px solid #ddd;
+        }
+        
+        .nav-btn.next {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn.next:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .nav-btn.prev:hover {
+            background-color: #e0e0e0;
+        }
+        
+        /* Submit Button */
+        .submit-btn {
+            display: block;
+            width: 100%;
+            background-color: var(--success-color);
+            color: var(--secondary-color);
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--success-dark);
+            transform: translateY(-3px);
+        }
+        
+        /* Summary Box */
+        .summary-box {
+            background-color: var(--bg-light);
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .summary-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .summary-value {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        /* Success Message */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .success-title {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .success-text {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        /* Information Cards */
+        .info-cards {
+            display: flex;
+            gap: 15px;
+            margin-top: 2.5rem;
+        }
+        
+        .info-card {
+            flex: 1;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            background-color: var(--bg-light);
+            transition: var(--transition);
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+        
+        .info-card:hover .info-icon {
+            transform: scale(1.1);
+        }
+        
+        .info-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .info-card p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .main-container {
+                width: 95%;
+            }
+            
+            .form-section {
+                padding: 1.5rem;
             }
         }
-    </script>
-    
+        
+        @media (max-width: 600px) {
+            .category-cards {
+                flex-direction: column;
+            }
+            
+            .category-card {
+                flex: 1 0 100%;
+            }
+            
+            .info-cards {
+                flex-direction: column;
+            }
+            
+            .form-navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
 
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+    
+    <div class="main-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="overlay">
+                <i class="fas fa-book-open overlay-icon"></i>
+                <h1>Donate for Education</h1>
+            </div>
+        </div>
+        
+        <!-- Form Section -->
+        <div class="form-section">
+            <div class="form-header">
+                <p>Select what educational materials you would like to donate. Your generosity helps create opportunities for children and adults in our communities.</p>
+            </div>
+            
+            <form id="donation-form">
+                <!-- Step 1: Category Selection -->
+                <div class="step-container active" id="step-1">
+                    <h3 class="step-title">Step 1: Select a Category</h3>
+                    <div class="category-cards">
+                        <label class="category-card" for="books">
+                            <input type="radio" id="books" name="category" value="books">
+                            <div class="category-icon"><i class="fas fa-book"></i></div>
+                            <div class="category-name">Books</div>
+                            <div class="category-description">Educational books for all age groups</div>
+                        </label>
+                        
+                        <label class="category-card" for="stationery">
+                            <input type="radio" id="stationery" name="category" value="stationery">
+                            <div class="category-icon"><i class="fas fa-pencil-alt"></i></div>
+                            <div class="category-name">Stationery</div>
+                            <div class="category-description">Notebooks, pens, pencils, and more</div>
+                        </label>
+                        
+                        <label class="category-card" for="technology">
+                            <input type="radio" id="technology" name="category" value="technology">
+                            <div class="category-icon"><i class="fas fa-laptop"></i></div>
+                            <div class="category-name">Technology</div>
+                            <div class="category-description">Computers, tablets, and other devices</div>
+                        </label>
+                        
+                        <label class="category-card" for="furniture">
+                            <input type="radio" id="furniture" name="category" value="furniture">
+                            <div class="category-icon"><i class="fas fa-chair"></i></div>
+                            <div class="category-name">Furniture</div>
+                            <div class="category-description">Desks, chairs, and other classroom furniture</div>
+                        </label>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <div></div> <!-- Empty div for spacing -->
+                        <button type="button" class="nav-btn next" id="to-step-2">Continue <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Item Selection -->
+                <div class="step-container" id="step-2">
+                    <h3 class="step-title">Step 2: Select an Item</h3>
+                    
+                    <!-- Books Items -->
+                    <div class="item-selection" id="books-items" style="display: none;">
+                        <div class="item-list">
+                            <label class="item-option" for="textbooks">
+                                <input type="radio" id="textbooks" name="item" value="textbooks">
+                                <span class="item-name">Textbooks</span>
+                            </label>
+                            
+                            <label class="item-option" for="children-books">
+                                <input type="radio" id="children-books" name="item" value="children-books">
+                                <span class="item-name">Children's Books</span>
+                            </label>
+                            
+                            <label class="item-option" for="reference-books">
+                                <input type="radio" id="reference-books" name="item" value="reference-books">
+                                <span class="item-name">Reference Books</span>
+                            </label>
+                            
+                            <label class="item-option" for="educational-magazines">
+                                <input type="radio" id="educational-magazines" name="item" value="educational-magazines">
+                                <span class="item-name">Educational Magazines</span>
+                            </label>
+                            
+                            <label class="item-option" for="fiction-books">
+                                <input type="radio" id="fiction-books" name="item" value="fiction-books">
+                                <span class="item-name">Fiction Books</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Stationery Items -->
+                    <div class="item-selection" id="stationery-items" style="display: none;">
+                        <div class="item-list">
+                            <label class="item-option" for="notebooks">
+                                <input type="radio" id="notebooks" name="item" value="notebooks">
+                                <span class="item-name">Notebooks</span>
+                            </label>
+                            
+                            <label class="item-option" for="pens">
+                                <input type="radio" id="pens" name="item" value="pens">
+                                <span class="item-name">Pens</span>
+                            </label>
+                            
+                            <label class="item-option" for="pencils">
+                                <input type="radio" id="pencils" name="item" value="pencils">
+                                <span class="item-name">Pencils</span>
+                            </label>
+                            
+                            <label class="item-option" for="markers">
+                                <input type="radio" id="markers" name="item" value="markers">
+                                <span class="item-name">Markers</span>
+                            </label>
+                            
+                            <label class="item-option" for="art-supplies">
+                                <input type="radio" id="art-supplies" name="item" value="art-supplies">
+                                <span class="item-name">Art Supplies</span>
+                            </label>
+                            
+                            <label class="item-option" for="rulers">
+                                <input type="radio" id="rulers" name="item" value="rulers">
+                                <span class="item-name">Rulers & Measuring Tools</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Technology Items -->
+                    <div class="item-selection" id="technology-items" style="display: none;">
+                        <div class="item-list">
+                            <label class="item-option" for="laptops">
+                                <input type="radio" id="laptops" name="item" value="laptops">
+                                <span class="item-name">Laptops</span>
+                            </label>
+                            
+                            <label class="item-option" for="tablets">
+                                <input type="radio" id="tablets" name="item" value="tablets">
+                                <span class="item-name">Tablets</span>
+                            </label>
+                            
+                            <label class="item-option" for="projectors">
+                                <input type="radio" id="projectors" name="item" value="projectors">
+                                <span class="item-name">Projectors</span>
+                            </label>
+                            
+                            <label class="item-option" for="calculators">
+                                <input type="radio" id="calculators" name="item" value="calculators">
+                                <span class="item-name">Calculators</span>
+                            </label>
+                            
+                            <label class="item-option" for="headphones">
+                                <input type="radio" id="headphones" name="item" value="headphones">
+                                <span class="item-name">Headphones</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Furniture Items -->
+                    <div class="item-selection" id="furniture-items" style="display: none;">
+                        <div class="item-list">
+                            <label class="item-option" for="desks">
+                                <input type="radio" id="desks" name="item" value="desks">
+                                <span class="item-name">Student Desks</span>
+                            </label>
+                            
+                            <label class="item-option" for="chairs">
+                                <input type="radio" id="chairs" name="item" value="chairs">
+                                <span class="item-name">Classroom Chairs</span>
+                            </label>
+                            
+                            <label class="item-option" for="bookshelves">
+                                <input type="radio" id="bookshelves" name="item" value="bookshelves">
+                                <span class="item-name">Bookshelves</span>
+                            </label>
+                            
+                            <label class="item-option" for="tables">
+                                <input type="radio" id="tables" name="item" value="tables">
+                                <span class="item-name">Tables</span>
+                            </label>
+                            
+                            <label class="item-option" for="whiteboards">
+                                <input type="radio" id="whiteboards" name="item" value="whiteboards">
+                                <span class="item-name">Whiteboards</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="nav-btn prev" id="to-step-1"><i class="fas fa-arrow-left"></i> Back</button>
+                        <button type="button" class="nav-btn next" id="to-step-3">Continue <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Quantity & Details -->
+                <div class="step-container" id="step-3">
+                    <h3 class="step-title">Step 3: Specify Quantity</h3>
+                    
+                    <div class="form-group">
+                        <label>How many would you like to donate?</label>
+                        <div class="quantity-control">
+                            <div class="quantity-btn minus" id="quantity-minus">-</div>
+                            <input type="number" id="quantity" name="quantity" class="quantity-input" value="1" min="1" max="100">
+                            <div class="quantity-btn plus" id="quantity-plus">+</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="donor-name">Your Name:</label>
+                        <div class="input-group">
+                            <input type="text" id="donor-name" name="donor-name" required>
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="donor-email">Your Email:</label>
+                        <div class="input-group">
+                            <input type="email" id="donor-email" name="donor-email" required>
+                            <i class="fas fa-envelope input-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="donor-phone">Your Phone Number:</label>
+                        <div class="input-group">
+                            <input type="tel" id="donor-phone" name="donor-phone">
+                            <i class="fas fa-phone input-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="nav-btn prev" id="to-step-2"><i class="fas fa-arrow-left"></i> Back</button>
+                        <button type="button" class="nav-btn next" id="to-step-4">Review <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Review & Submit -->
+                <div class="step-container" id="step-4">
+                    <h3 class="step-title">Step 4: Review & Submit</h3>
+                    
+                    <div class="summary-box">
+                        <div class="summary-item">
+                            <span class="summary-label">Category:</span>
+                            <span class="summary-value" id="summary-category">Not selected</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Item:</span>
+                            <span class="summary-value" id="summary-item">Not selected</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Quantity:</span>
+                            <span class="summary-value" id="summary-quantity">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Donor:</span>
+                            <span class="summary-value" id="summary-name">Not provided</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Contact:</span>
+                            <span class="summary-value" id="summary-contact">Not provided</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Submit Donation</button>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="nav-btn prev" id="to-step-3"><i class="fas fa-arrow-left"></i> Back</button>
+                    </div>
+                </div>
+                
+                <!-- Success Message -->
+                <div class="success-message" id="success-message">
+                    <i class="fas fa-check-circle success-icon"></i>
+                    <h2 class="success-title">Thank You!</h2>
+                    <p class="success-text">Your generous donation has been registered. Our team will contact you shortly to arrange the details.</p>
+                    <button type="button" class="submit-btn" id="reset-form">Make Another Donation</button>
+                </div>
+            </form>
+            
+            <!-- Information Cards -->
+            <div class="info-cards">
+                <div class="info-card">
+                    <i class="fas fa-graduation-cap info-icon"></i>
+                    <h3>1,000+</h3>
+                    <p>Students helped annually</p>
+                </div>
+                
+                <div class="info-card">
+                    <i class="fas fa-school info-icon"></i>
+                    <h3>50+</h3>
+                    <p>Schools supported</p>
+                </div>
+                
+                <div class="info-card">
+                    <i class="fas fa-hands-helping info-icon"></i>
+                    <h3>Join Us</h3>
+                    <p>Be part of the change</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script>
+        // Preloader
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('preloader').style.display = 'none';
+                document.querySelector('.main-container').classList.add('loaded');
+            }, 800);
+        });
+        
+        // DOM Content Loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Steps Navigation
+            const steps = document.querySelectorAll('.step-container');
+            let currentStep = 1;
+            
+            // Show specific step
+            function showStep(stepNumber) {
+                steps.forEach(step => step.classList.remove('active'));
+                document.getElementById(`step-${stepNumber}`).classList.add('active');
+                currentStep = stepNumber;
+            }
+            
+            // Category Selection
+            const categoryCards = document.querySelectorAll('.category-card');
+            const itemSelections = {
+                'books': document.getElementById('books-items'),
+                'stationery': document.getElementById('stationery-items'),
+                'technology': document.getElementById('technology-items'),
+                'furniture': document.getElementById('furniture-items')
+            };
+            
+            categoryCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    categoryCards.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    this.querySelector('input[type="radio"]').checked = true;
+                });
+            });
+            
+            // Item Selection
+            const itemOptions = document.querySelectorAll('.item-option');
+            
+            itemOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    itemOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    this.querySelector('input[type="radio"]').checked = true;
+                });
+            });
+            
+            // Quantity Controls
+            document.getElementById('quantity-minus').addEventListener('click', function() {
+                const input = document.getElementById('quantity');
+                const currentValue = parseInt(input.value);
+                if (currentValue > parseInt(input.min)) {
+                    input.value = currentValue - 1;
+                }
+            });
+            
+            document.getElementById('quantity-plus').addEventListener('click', function() {
+                const input = document.getElementById('quantity');
+                const currentValue = parseInt(input.value);
+                if (currentValue < parseInt(input.max)) {
+                    input.value = currentValue + 1;
+                }
+            });
+            
+            // Step Navigation Buttons
+            document.getElementById('to-step-2').addEventListener('click', function() {
+                const selectedCategory = document.querySelector('input[name="category"]:checked');
+                
+                if (!selectedCategory) {
+                    alert('Please select a category');
+                    return;
+                }
+                
+                // Hide all item selections first
+                Object.values(itemSelections).forEach(selection => {
+                    selection.style.display = 'none';
+                });
+                
+                // Show the selected category's items
+                const categoryValue = selectedCategory.value;
+                itemSelections[categoryValue].style.display = 'block';
+                
+                showStep(2);
+            });
+            
+            document.getElementById('to-step-1').addEventListener('click', function() {
+                showStep(1);
+            });
+            
+            document.getElementById('to-step-3').addEventListener('click', function() {
+                const selectedItem = document.querySelector('input[name="item"]:checked');
+                
+                if (!selectedItem) {
+                    alert('Please select an item');
+                    return;
+                }
+                
+                showStep(3);
+            });
+            
+            document.getElementById('to-step-2').addEventListener('click', function() {
+                showStep(2);
+            });
+            
+            document.getElementById('to-step-4').addEventListener('click', function() {
+                const quantity = document.getElementById('quantity').value;
+                const name = document.getElementById('donor-name').value;
+                const email = document.getElementById('donor-email').value;
+                
+                if (!quantity || !name || !email) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                // Update summary
+                const selectedCategory = document.querySelector('input[name="category"]:checked');
+                const selectedItem = document.querySelector('input[name="item"]:checked');
+                
+                const categoryName = selectedCategory.parentElement.querySelector('.category-name').textContent;
+                const itemName = selectedItem.parentElement.querySelector('.item-name').textContent;
+                
+                document.getElementById('summary-category').textContent = categoryName;
+                document.getElementById('summary-item').textContent = itemName;
+                document.getElementById('summary-quantity').textContent = quantity;
+                document.getElementById('summary-name').textContent = name;
+                document.getElementById('summary-contact').textContent = `${email} | ${document.getElementById('donor-phone').value || 'No phone provided'}`;
+                
+                showStep(4);
+            });
+            
+            document.getElementById('to-step-3').addEventListener('click', function() {
+                showStep(3);
+            });
+            
+            // Form submission
+            document.getElementById('donation-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show loading on button
+                const submitBtn = document.querySelector('.submit-btn');
+                const originalText = submitBtn.innerText;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                submitBtn.disabled = true;
+                
+                // Simulate form submission
+                setTimeout(function() {
+                    steps.forEach(step => step.style.display = 'none');
+                    document.getElementById('success-message').style.display = 'block';
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 1500);
+            });
+            
+            // Reset form
+            document.getElementById('reset-form').addEventListener('click', function() {
+                document.getElementById('donation-form').reset();
+                
+                categoryCards.forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                itemOptions.forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                document.getElementById('quantity').value = 1;
+                
+                document.getElementById('success-message').style.display = 'none';
+                steps.forEach(step => step.style.display = '');
+                showStep(1);
+            });
+        });
+    </script>
 </body>
 </html>
