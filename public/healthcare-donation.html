@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Firebase App (the core Firebase SDK) is always required and must be first -->
+<!-- Replace your current Firebase scripts with these -->
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script> <!-- For Firestore -->
+<!-- Add other Firebase services that you want to use -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Healthcare Services - Support Our Mission</title>
@@ -816,22 +821,51 @@
             
             // Form submission
             document.getElementById('healthcare-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Show loading on button
-                const submitBtn = document.getElementById('submit-form');
-                const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-                submitBtn.disabled = true;
-                
-                // Simulate form submission
-                setTimeout(function() {
-                    formSections.forEach(section => {
-                        section.style.display = 'none';
-                    });
-                    document.getElementById('success-message').style.display = 'block';
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submit-form');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    submitBtn.disabled = true;
+    
+    // Get form values
+    const service = document.querySelector('input[name="service"]:checked').value;
+    const serviceName = document.querySelector('input[name="service"]:checked').parentElement.querySelector('.service-name').textContent;
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const message = document.getElementById('message').value;
+    
+    // Create data object for Firestore
+    const formData = {
+        serviceType: service,
+        serviceName: serviceName,
+        name: name,
+        email: email,
+        phone: phone || 'Not provided',
+        message: message || 'None',
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        status: 'pending'
+    };
+    
+    // Add to Firestore
+    db.collection('healthcareRequests').add(formData)
+        .then((docRef) => {
+            console.log("Document written with ID: ", docRef.id);
+            
+            // Hide form sections and show success message
+            document.querySelectorAll('.form-section-content').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById('success-message').style.display = 'block';
+        })
+        .catch((error) => {
+            console.error("Error adding document: ", error);
+            alert('There was an error submitting your request. Please try again.');
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false
                 }, 2000);
             });
             
@@ -865,6 +899,23 @@
                 });
             });
         });
+        const firebaseConfig = {
+  apiKey: "AIzaSyDamfMwJ3tdO1YduL6IfJ-nK_xpWwzfR3I",
+  authDomain: "unityserve-demo-2f30f.firebaseapp.com",
+  databaseURL: "https://unityserve-demo-2f30f-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "unityserve-demo-2f30f",
+  storageBucket: "unityserve-demo-2f30f.firebasestorage.app",
+  messagingSenderId: "365353192644",
+  appId: "1:365353192644:web:104908f7e2c22db1d44d91",
+  measurementId: "G-J4SBKX337D"
+};
+
+// Initialize Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+
     </script>
 </body>
 </html>
