@@ -1,4 +1,5 @@
 UnityServe-NGO-Website
+Joshua thanta illa
 
 This project aims at being a complete, end-to-end solution for the functioning of a Dehradun based NGO, Badlaav Foundation, which is a not-for-profit organization founded in order to improve the lives and livelihoods of people from the vulnerable, marginalized and under-developed sections of the society. This single-page landing website was created to increase the awareness of the NGO (Badlaav Founadation) and reach as much people as possible. It was essential to have global presence that is to have online presence.
 
