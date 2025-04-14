@@ -1,6 +1,6 @@
 # 🌐 Unity Serve – Donation Platform
 
-Unity Serve is a humanitarian web platform built to connect donors with NGOs and individuals in need. The platform supports donations of **organs, blood, clothes, food**, and more. With Firebase as the backend, it ensures secure authentication, real-time data handling, and reliable hosting — all centered around making social good easy and accessible.
+Unity Serve is a humanitarian web platform built to connect donors with NGOs and individuals in need. The platform supports donations of **blood, books, clothes, food**, and more. With Firebase as the backend, it ensures secure authentication, real-time data handling, and reliable hosting — all centered around making social good easy and accessible.
 
 ## 🚀 Live Demo
 
@@ -12,7 +12,7 @@ Unity Serve is a humanitarian web platform built to connect donors with NGOs and
 
 Unity Serve simplifies and streamlines the donation process through:
 
-- 📝 **Donation forms** for various needs (organs, blood, clothes, food)
+- 📝 **Donation forms** for various needs (blood, books, clothes, food)
 - 🔐 **Firebase Authentication** for secured admin login
 - 🔍 **Admin Dashboard** to view and act upon submitted donor applications
 - 📡 **Firebase Hosting** for global reach
@@ -36,7 +36,7 @@ Unity Serve simplifies and streamlines the donation process through:
 
 ## ✨ Key Features
 
-- 📄 **Organ & Blood Donation Forms**  
+- 📄 **Donation Forms**  
   All forms capture user inputs and send them directly to **Firestore subcollections**, organized under specific categories.
 
 - 🔐 **Firebase Authentication**  
