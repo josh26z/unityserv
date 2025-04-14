@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unity Serve - Payment Portal</title>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700|Anton" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4ea8ff;
+            --secondary-color: #212529;
+            --accent-color: #e86327;
+            --yellow-color: #c4ad56;
+            --success-color: #5dd3b8;
+            --gray-color: #6c757d;
+            --light-color: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        /* Card Container */
+        .payment-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Secure Payment Badge */
+        .secure-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(to right, #f59e0b, #d97706);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 0.25rem 0.75rem;
+            border-bottom-left-radius: 0.5rem;
+            z-index: 10;
+        }
+
+        /* Header Section */
+        .card-header {
+            padding: 1.5rem 1.5rem 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .logo-container {
+            width: 4rem;
+            height: 4rem;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            padding: 0.25rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-inner {
+            width: 3.5rem;
+            height: 3.5rem;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-title {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .brand-subtitle {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        .datetime-bar {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Content Section */
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .step-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .step-title {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-subtitle {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        /* Info Box */
+        .info-box {
+            background-color: #ebf5ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box p {
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+
+        .form-input-container {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            padding-left: 2.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(78, 168, 255, 0.25);
+        }
+
+        .form-input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 1rem;
+            padding-left: 2.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 1rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(78, 168, 255, 0.25);
+        }
+
+        /* Quick Amount Buttons */
+        .quick-amount-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .quick-amount-btn {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: none;
+            padding: 0.5rem 0;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 0.875rem;
+        }
+
+        .quick-amount-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(78, 168, 255, 0.25);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            width: 100%;
+        }
+
+        .btn-icon {
+            margin-right: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 6px rgba(78, 168, 255, 0.25);
+        }
+
+        .btn-primary:hover {
+            background-color: #3d97ff;
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: white;
+            box-shadow: 0 4px 6px rgba(232, 99, 39, 0.25);
+        }
+
+        .btn-accent:hover {
+            background-color: #d55a20;
+        }
+
+        .btn-secondary {
+            background-color: var(--gray-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        /* QR Code Container */
+        .qr-container {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 2px solid #f59e0b;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .qr-inner {
+            background-color: #ebf5ff;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .upi-id-tag {
+            background: linear-gradient(to right, #4ea8ff, #3d97ff);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            font-size: 0.875rem;
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(78, 168, 255, 0.3);
+        }
+
+        .upi-id-tag i {
+            margin-right: 0.5rem;
+        }
+
+        /* Alert Box */
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .alert-icon {
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .alert-warning {
+            background-color: #fff7ed;
+            border: 1px solid #ffedd5;
+            color: #7c2d12;
+        }
+
+        .alert-info {
+            background-color: #eff6ff;
+            border: 1px solid #dbeafe;
+            color: #1e40af;
+        }
+
+        .alert-success {
+            background-color: #ecfdf5;
+            border: 1px solid #d1fae5;
+            color: #065f46;
+        }
+
+        .alert-error {
+            background-color: #fef2f2;
+            border: 1px solid #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .payment-methods-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .payment-methods-icons {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .payment-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .icon-gpay {
+            background-color: #e8f0fe;
+            color: #4285f4;
+        }
+
+        .icon-phonepe {
+            background-color: #eeeaff;
+            color: #5f259f;
+        }
+
+        .icon-paytm {
+            background-color: #e6f7ff;
+            color: #00baf2;
+        }
+
+        .icon-bhim {
+            background-color: #e6fff0;
+            color: #00aa4f;
+        }
+
+        /* Receipt */
+        .receipt {
+            background: linear-gradient(135deg, #f0fff4, #e6fffa);
+            border: 1px solid #d1fae5;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .receipt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px dashed #a7f3d0;
+        }
+
+        .receipt-header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .receipt-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background-color: #a7f3d0;
+            color: #047857;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+        }
+
+        .receipt-id-label {
+            font-size: 0.75rem;
+            color: #047857;
+        }
+
+        .receipt-id {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .receipt-amount-label {
+            font-size: 0.75rem;
+            color: #047857;
+            text-align: right;
+        }
+
+        .receipt-amount {
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .receipt-details {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .receipt-label {
+            color: #6b7280;
+        }
+
+        .receipt-value {
+            font-weight: 500;
+        }
+
+        .receipt-status {
+            color: #047857;
+        }
+
+        /* Transaction History */
+        .history-container {
+            margin-top: 2rem;
+        }
+
+        .history-title {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+            font-size: 1.125rem;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+        }
+
+        .history-table th {
+            background-color: #f3f4f6;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #4b5563;
+        }
+
+        .history-table tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .history-table tr:last-child {
+            border-bottom: none;
+        }
+
+        /* Success Animation */
+        .success-icon {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-circle {
+            width: 5rem;
+            height: 5rem;
+            background-color: #ecfdf5;
+            border-radius: 50%;
+            border: 4px solid #d1fae5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .success-inner {
+            width: 4rem;
+            height: 4rem;
+            background-color: #a7f3d0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #047857;
+            font-size: 2rem;
+        }
+
+        /* Card Footer */
+        .card-footer {
+            padding: 1rem 1.5rem;
+            background-color: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .social-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4b5563;
+        }
+
+        /* Step Containers and Transitions */
+        .step-container {
+            display: none;
+        }
+
+        .step-container.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Footer Note */
+        .footer-note {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-card">
+        <!-- Secure Payment Badge -->
+        <div class="secure-badge">SECURE PAYMENT</div>
+
+        <!-- Header Section -->
+        <div class="card-header">
+            <div class="logo-container">
+                <div class="logo-inner">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ea8ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+            </div>
+            <h1 class="brand-title">Unity Serve</h1>
+            <span class="brand-subtitle">Payment Portal</span>
+            
+            <!-- Real-time Date and Time -->
+            <div class="datetime-bar">
+                <i class="fas fa-clock"></i>
+                <span id="current-date-time">Loading date and time...</span>
+            </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="card-content">
+            <!-- Step 1: Amount Entry -->
+            <div class="step-container active" id="step-1">
+                <div class="step-header">
+                    <h2 class="step-title">Make UPI Payment</h2>
+                    <p class="step-subtitle">Fast, secure, and convenient</p>
+                </div>
+                
+                <div class="info-box">
+                    <p>Your generous donation helps us provide essential services to those in need. Every contribution makes a difference!</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Enter Amount (₹)</label>
+                    <div class="form-input-container">
+                        <span class="form-input-icon">₹</span>
+                        <input type="number" id="amount-input" class="form-input" placeholder="Enter amount">
+                    </div>
+                </div>
+                
+                <div class="quick-amount-container">
+                    <button class="quick-amount-btn" data-amount="100">₹100</button>
+                    <button class="quick-amount-btn" data-amount="500">₹500</button>
+                    <button class="quick-amount-btn" data-amount="1000">₹1000</button>
+                    <button class="quick-amount-btn" data-amount="5000">₹5000</button>
+                </div>
+                
+                <button class="btn btn-accent" id="proceed-btn">
+                    <i class="fas fa-credit-card btn-icon"></i>
+                    Proceed to Pay
+                </button>
+                
+                <div id="amount-error" class="alert alert-error" style="display: none; margin-top: 1rem;">
+                    <i class="fas fa-exclamation-circle alert-icon"></i>
+                    <div>
+                        <p>Please enter a valid amount</p>
+                    </div>
+                </div>
+                
+                <div class="payment-methods">
+                    <p class="payment-methods-title">Supported Payment Methods</p>
+                    <div class="payment-methods-icons">
+                        <div class="payment-icon icon-gpay">GPay</div>
+                        <div class="payment-icon icon-phonepe">PhPe</div>
+                        <div class="payment-icon icon-paytm">Paytm</div>
+                        <div class="payment-icon icon-bhim">BHIM</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: QR Code and Verification -->
+            <div class="step-container" id="step-2">
+                <div class="step-header">
+                    <h2 class="step-title">Complete Your Payment</h2>
+                    <p class="step-subtitle">Scan the QR code with your UPI app</p>
+                </div>
+                
+                <div class="qr-container">
+                    <div class="qr-inner">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=jithinjacob17@oksbi" class="qr-code" alt="UPI QR Code">
+                    </div>
+                    <div class="upi-id-tag">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>jithinjacob17@oksbi</span>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-circle alert-icon"></i>
+                    <div>
+                        <p id="amount-display" class="font-bold">Amount to Pay: ₹0</p>
+                        <p class="text-sm mt-1">After payment, please enter the transaction details below</p>
+                    </div>
+                </div>
+                
+                <form id="verification-form">
+                    <div class="form-group">
+                        <label class="form-label">Your Name*</label>
+                        <div class="form-input-container">
+                            <i class="fas fa-user form-input-icon"></i>
+                            <input type="text" id="name-input" class="form-input" placeholder="Enter your name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">UPI Transaction ID*</label>
+                        <div class="form-input-container">
+                            <i class="fas fa-check-square form-input-icon"></i>
+                            <input type="text" id="transaction-id-input" class="form-input" placeholder="Enter Transaction ID" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Payment Method*</label>
+                        <div class="form-input-container">
+                            <i class="fas fa-mobile-alt form-input-icon"></i>
+                            <select id="payment-method-select" class="form-select" required>
+                                <option value="">Select payment app</option>
+                                <option value="Google Pay">Google Pay</option>
+                                <option value="PhonePe">PhonePe</option>
+                                <option value="Paytm">Paytm</option>
+                                <option value="Amazon Pay">Amazon Pay</option>
+                                <option value="BHIM">BHIM</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check-circle btn-icon"></i>
+                            Verify Payment
+                        </button>
+                        
+                        <button type="button" id="back-to-step-1" class="btn btn-secondary" style="flex: 0 0 auto; width: auto; padding-left: 1rem; padding-right: 1rem;">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="verification-error" class="alert alert-error" style="display: none; margin-top: 1rem;">
+                    <i class="fas fa-exclamation-circle alert-icon"></i>
+                    <div>
+                        <p>Please fill all required fields</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Success & Receipt -->
+            <div class="step-container" id="step-3">
+                <div class="success-icon">
+                    <div class="success-circle">
+                        <div class="success-inner">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-header">
+                    <h2 class="step-title" style="color: #047857;">Payment Successful</h2>
+                    <p class="step-subtitle">Thank you for your generous donation!</p>
+                </div>
+                
+                <div class="receipt">
+                    <div class="receipt-header">
+                        <div class="receipt-header-left">
+                            <div class="receipt-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div>
+                                <div class="receipt-id-label">Transaction ID</div>
+                                <div class="receipt-id" id="receipt-transaction-id">-</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="receipt-amount-label">Amount</div>
+                            <div class="receipt-amount" id="receipt-amount">₹0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="receipt-details">
+                        <div class="receipt-row">
+                            <span class="receipt-label">Name:</span>
+                            <span class="receipt-value" id="receipt-name">-</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span class="receipt-label">Payment Method:</span>
+                            <span class="receipt-value" id="receipt-payment-method">-</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span class="receipt-label">Date & Time:</span>
+                            <span class="receipt-value" id="receipt-datetime">-</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span class="receipt-label">Status:</span>
+                            <span class="receipt-status">Completed</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle alert-icon"></i>
+                    <p class="text-sm">Your receipt has been saved to our system. You will also receive a confirmation email shortly. Thank you for your support!</p>
+                </div>
+                
+                <button class="btn btn-accent" id="new-payment-btn">
+                    <i class="fas fa-redo btn-icon"></i>
+                    Make Another Donation
+                </button>
+                
+                <div id="history-container" class="history-container" style="display: none;">
+                    <h3 class="history-title">Your Donation History</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Transaction ID</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body">
+                                <!-- Transaction history rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer">
+            <div class="social-links">
+                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p>© 2025 Unity Serve. All rights reserved.</p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // DOM Elements
+        const step1 = document.getElementById('step-1');
+        const step2 = document.getElementById('step-2');
+        const step3 = document.getElementById('step-3');
+        
+        const amountInput = document.getElementById('amount-input');
+        const amountDisplay = document.getElementById('amount-display');
+        const amountError = document.getElementById('amount-error');
+        
+        const nameInput = document.getElementById('name-input');
+        const transactionIdInput = document.getElementById('transaction-id-input');
+        const paymentMethodSelect = document.getElementById('payment-method-select');
+        const verificationError = document.getElementById('verification-error');
+        
+        const receiptTransactionId = document.getElementById('receipt-transaction-id');
+        const receiptAmount = document.getElementById('receipt-amount');
+        const receiptName = document.getElementById('receipt-name');
+        const receiptPaymentMethod = document.getElementById('receipt-payment-method');
+        const receiptDatetime = document.getElementById('receipt-datetime');
+        
+        const proceedBtn = document.getElementById('proceed-btn');
+        const backToStep1Btn = document.getElementById('back-to-step-1');
+        const verificationForm = document.getElementById('verification-form');
+        const newPaymentBtn = document.getElementById('new-payment-btn');
+        
+        const quickAmountBtns = document.querySelectorAll('.quick-amount-btn');
+        const historyContainer = document.getElementById('history-container');
+        const historyTableBody = document.getElementById('history-table-body');
+        const currentDateTimeDisplay = document.getElementById('current-date-time');
+        
+        // Transaction storage
+        let transactions = [];
+
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+            currentDateTimeDisplay.textContent = now.toLocaleString('en-US', options);
+            setTimeout(updateDateTime, 1000);
+        }
+        updateDateTime();
+
+        // Event Listeners
+        proceedBtn.addEventListener('click', () => {
+            const amount = amountInput.value.trim();
+            if (amount === '' || parseFloat(amount) <= 0) {
+                amountError.style.display = 'flex';
+                return;
+            }
+            
+            amountError.style.display = 'none';
+            
+            // Update amount display in step 2
+            amountDisplay.textContent = `Amount to Pay: ₹${amount}`;
+            
+            // Show step 2
+            step1.classList.remove('active');
+            step2.classList.add('active');
+        });
+        
+        backToStep1Btn.addEventListener('click', () => {
+            step2.classList.remove('active');
+            step1.classList.add('active');
+        });
+        
+        verificationForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = nameInput.value.trim();
+            const transactionId = transactionIdInput.value.trim();
+            const paymentMethod = paymentMethodSelect.value;
+            
+            if (!name || !transactionId || !paymentMethod) {
+                verificationError.style.display = 'flex';
+                return;
+            }
+            
+            verificationError.style.display = 'none';
+            
+            // Add transaction to history
+            const transaction = {
+                id: transactions.length + 1,
+                name,
+                amount: parseFloat(amountInput.value),
+                transactionId,
+                paymentMethod,
+                date: new Date().toLocaleString()
+            };
+            
+            transactions.push(transaction);
+            
+            // Update receipt in step 3
+            receiptTransactionId.textContent = transactionId;
+            receiptAmount.textContent = `₹${amountInput.value}`;
+            receiptName.textContent = name;
+            receiptPaymentMethod.textContent = paymentMethod;
+            receiptDatetime.textContent = new Date().toLocaleString();
+            
+            // Update transaction history
+            updateTransactionHistory();
+            
+            // Show step 3
+            step2.classList.remove('active');
+            step3.classList.add('active');
+        });
+        
+        newPaymentBtn.addEventListener('click', () => {
+            // Reset form fields
+            amountInput.value = '';
+            nameInput.value = '';
+            transactionIdInput.value = '';
+            paymentMethodSelect.value = '';
+            
+            // Remove active class from quick amount buttons
+            quickAmountBtns.forEach(btn => btn.classList.remove('active'));
+            
+            // Hide error messages
+            amountError.style.display = 'none';
+            verificationError.style.display = 'none';
+            
+            // Show step 1
+            step3.classList.remove('active');
+            step1.classList.add('active');
+        });
+        
+        // Quick amount buttons
+        quickAmountBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                quickAmountBtns.forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button
+                btn.classList.add('active');
+                
+                // Set amount input value
+                amountInput.value = btn.dataset.amount;
+            });
+        });
+        
+        // Update transaction history
+        function updateTransactionHistory() {
+            if (transactions.length > 0) {
+                historyContainer.style.display = 'block';
+                
+                // Clear table body
+                historyTableBody.innerHTML = '';
+                
+                // Add transaction rows in reverse order (newest first)
+                transactions.slice().reverse().forEach(tx => {
+                    const row = document.createElement('tr');
+                    
+                    const dateCell = document.createElement('td');
+                    dateCell.textContent = tx.date;
+                    
+                    const amountCell = document.createElement('td');
+                    amountCell.textContent = `₹${tx.amount}`;
+                    amountCell.style.fontWeight = '500';
+                    
+                    const transactionIdCell = document.createElement('td');
+                    transactionIdCell.textContent = tx.transactionId;
+                    transactionIdCell.style.fontFamily = 'monospace';
+                    
+                    row.appendChild(dateCell);
+                    row.appendChild(amountCell);
+                    row.appendChild(transactionIdCell);
+                    
+                    historyTableBody.appendChild(row);
+                });
+            }
+        }
+    </script>
