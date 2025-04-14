@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UnityServe Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700|Anton" rel="stylesheet">
+    <style>
+        /* General Styles (unchanged) */
+        :root {
+            --primary-color: #4ea8ff;
+            --primary-dark: #3d97ff;
+            --primary-light: #70baff;
+            --secondary-color: #212529;
+            --accent-color: #6c757d;
+            --donate-color: #e86327;
+            --banner-color: #c4ad56;
+            --text-light: #6c757d;
+            --text-dark: #212529;
+            --bg-light: #f8f9fa;
+            --success-color: #5dd3b8;
+            --success-dark: #4bc0a5;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --white: #ffffff;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        /* Admin Container */
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 1.5rem 0;
+            position: fixed;
+            height: 100vh;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-header h2 {
+            font-family: 'Anton', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .sidebar-header p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+        
+        .menu-item {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .menu-item.active {
+            background-color: var(--primary-color);
+        }
+        
+        .menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 2rem;
+            transition: var(--transition);
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .content-header h1 {
+            font-family: 'Anton', sans-serif;
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Cards */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 5px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-card .icon.primary {
+            background-color: rgba(78, 168, 255, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .stat-card .icon.success {
+            background-color: rgba(93, 211, 184, 0.1);
+            color: var(--success-color);
+        }
+        
+        .stat-card .icon.warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .stat-card .icon.danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .stat-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* Data Tables */
+        .data-table-container {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .table-header h3 {
+            font-family: 'Anton', sans-serif;
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            width: 250px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background-color: rgba(78, 168, 255, 0.05);
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status.pending {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .status.completed {
+            background-color: rgba(93, 211, 184, 0.1);
+            color: var(--success-color);
+        }
+        
+        .status.cancelled {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-color);
+            margin: 0 0.3rem;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .action-btn.edit:hover {
+            color: var(--success-color);
+        }
+        
+        .action-btn.delete:hover {
+            color: var(--danger-color);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            font-family: 'Anton', sans-serif;
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+        
+        .close-modal:hover {
+            color: var(--danger-color);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Nunito', sans-serif;
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(78, 168, 255, 0.2);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-outline {
+            background: none;
+            border: 1px solid #ddd;
+            color: var(--text-dark);
+        }
+        
+        .btn-outline:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+            
+            .sidebar-header h2, 
+            .sidebar-header p,
+            .menu-item span {
+                display: none;
+            }
+            
+            .menu-item {
+                justify-content: center;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .search-box input {
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>UnityServe</h2>
+                <p>Admin Dashboard</p>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="menu-item" data-section="book-donations">
+                    <i class="fas fa-book"></i>
+                    <span>Book Donations</span>
+                </div>
+                <div class="menu-item" data-section="food-donations">
+                    <i class="fas fa-utensils"></i>
+                    <span>Food Donations</span>
+                </div>
+                <div class="menu-item" data-section="healthcare-requests">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>Healthcare Requests</span>
+                </div>
+                <div class="menu-item" data-section="ngos">
+                    <i class="fas fa-hands-helping"></i>
+                    <span>NGOs</span>
+                </div>
+                <div class="menu-item" data-section="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <h1>Dashboard Overview</h1>
+                <div class="user-info">
+                    <span>Welcome, Admin</span>
+                    <button class="btn btn-outline" style="margin-left: 1rem;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="icon primary">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3 id="book-donations-count">0</h3>
+                    <p>Book Donations</p>
+                </div>
+                <div class="stat-card">
+                    <div class="icon success">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3 id="food-donations-count">0</h3>
+                    <p>Food Donations</p>
+                </div>
+                <div class="stat-card">
+                    <div class="icon warning">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3 id="healthcare-requests-count">0</h3>
+                    <p>Healthcare Requests</p>
+                </div>
+                <div class="stat-card">
+                    <div class="icon danger">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3 id="ngos-count">0</h3>
+                    <p>Registered NGOs</p>
+                </div>
+            </div>
+            
+            <!-- Recent Activities -->
+            <div class="data-table-container">
+                <div class="table-header">
+                    <h3>Recent Activities</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Details</th>
+                            <th>Donor/Requester</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-activities">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Book Donations Section (Hidden by default) -->
+            <div class="data-table-container" id="book-donations-section" style="display: none;">
+                <div class="table-header">
+                    <h3>Book Donations</h3>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="book-search" placeholder="Search book donations...">
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Donor</th>
+                            <th>Contact</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="book-donations-data">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Food Donations Section (Hidden by default) -->
+            <div class="data-table-container" id="food-donations-section" style="display: none;">
+                <div class="table-header">
+                    <h3>Food Donations</h3>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="food-search" placeholder="Search food donations...">
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Food Items</th>
+                            <th>Donor</th>
+                            <th>Contact</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="food-donations-data">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Healthcare Requests Section (Hidden by default) -->
+            <div class="data-table-container" id="healthcare-requests-section" style="display: none;">
+                <div class="table-header">
+                    <h3>Healthcare Requests</h3>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="healthcare-search" placeholder="Search healthcare requests...">
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Type</th>
+                            <th>Service Name</th>
+                            <th>Requester</th>
+                            <th>Contact</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="healthcare-requests-data">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- NGOs Section (Hidden by default) -->
+            <div class="data-table-container" id="ngos-section" style="display: none;">
+                <div class="table-header">
+                    <h3>Registered NGOs</h3>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="ngos-search" placeholder="Search NGOs...">
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Domains</th>
+                            <th>Location</th>
+                            <th>Contact</th>
+                            <th>Volunteers</th>
+                            <th>Registered On</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ngos-data">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Users Section (Hidden by default) -->
+            <div class="data-table-container" id="users-section" style="display: none;">
+                <div class="table-header">
+                    <h3>System Users</h3>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="users-search" placeholder="Search users...">
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Joined On</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-data">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal (used for both edit and confirm) -->
+    <div class="modal" id="action-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Edit Record</h3>
+                <button class="close-modal">×</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <button class="btn btn-outline close-modal">Cancel</button>
+                <button class="btn btn-primary" id="save-changes" style="display: none;">Save Changes</button>
+                <button class="btn btn-danger" id="confirm-delete" style="display: none;">Confirm Delete</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase and App Script -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDamfMwJ3tdO1YduL6IfJ-nK_xpWwzfR3I",
+            authDomain: "unityserve-demo-2f30f.firebaseapp.com",
+            databaseURL: "https://unityserve-demo-2f30f-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "unityserve-demo-2f30f",
+            storageBucket: "unityserve-demo-2f30f.appspot.com",
+            messagingSenderId: "365353192644",
+            appId: "1:365353192644:web:104908f7e2c22db1d44d91",
+            measurementId: "G-J4SBKX337D"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        
+        // Current editing document reference
+        let currentEditingDoc = null;
+        
+        // DOM Content Loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Menu navigation
+            const menuItems = document.querySelectorAll('.menu-item');
+            const sections = {
+                'dashboard': document.getElementById('dashboard-section'),
+                'book-donations': document.getElementById('book-donations-section'),
+                'food-donations': document.getElementById('food-donations-section'),
+                'healthcare-requests': document.getElementById('healthcare-requests-section'),
+                'ngos': document.getElementById('ngos-section'),
+                'users': document.getElementById('users-section')
+            };
+            
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const section = this.getAttribute('data-section');
+                    
+                    // Update active menu item
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update content header
+                    document.querySelector('.content-header h1').textContent = 
+                        section === 'dashboard' ? 'Dashboard Overview' : 
+                        section.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                    
+                    // Show/hide sections
+                    Object.values(sections).forEach(sec => {
+                        if (sec) sec.style.display = 'none';
+                    });
+                    
+                    if (section === 'dashboard') {
+                        document.querySelectorAll('.data-table-container').forEach(container => {
+                            if (container.id !== 'book-donations-section' && 
+                                container.id !== 'food-donations-section' && 
+                                container.id !== 'healthcare-requests-section' && 
+                                container.id !== 'ngos-section' && 
+                                container.id !== 'users-section') {
+                                container.style.display = 'block';
+                            }
+                        });
+                    } else {
+                        document.getElementById(`${section}-section`).style.display = 'block';
+                    }
+                    
+                    // Load data for the section if not already loaded
+                    if (section !== 'dashboard') {
+                        loadCollectionData(section.replace('-', ''));
+                    }
+                });
+            });
+            
+            // Modal controls
+            const modal = document.getElementById('action-modal');
+            const closeModalButtons = document.querySelectorAll('.close-modal');
+            
+            closeModalButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+            });
+            
+            window.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Save changes button
+            document.getElementById('save-changes').addEventListener('click', saveChanges);
+            
+            // Confirm delete button
+            document.getElementById('confirm-delete').addEventListener('click', confirmDelete);
+            
+            // Load initial data
+            loadDashboardData();
+            
+            // Check auth state
+            auth.onAuthStateChanged(user => {
+                if (!user) {
+                    // Redirect to login if not authenticated
+                    window.location.href = 'login.html';
+                }
+            });
+
+            // Search functionality
+            ['book-search', 'food-search', 'healthcare-search', 'ngos-search', 'users-search'].forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('input', function() {
+                        const searchTerm = this.value.toLowerCase();
+                        const collectionName = id.split('-')[0] + (id.includes('healthcare') ? 'Requests' : id.includes('book') ? 'Donations' : id.includes('food') ? 'Donations' : '');
+                        filterTable(collectionName, searchTerm);
+                    });
+                }
+            });
+        });
+        
+        // Filter table based on search
+        function filterTable(collectionName, searchTerm) {
+            const table = document.getElementById(`${collectionName}-data`);
+            const rows = table.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+        
+        // Load dashboard data
+        function loadDashboardData() {
+            // Load counts
+            Promise.all([
+                db.collection('bookDonations').get(),
+                db.collection('foodDonations').get(),
+                db.collection('healthcareRequests').get(),
+                db.collection('ngos').get()
+            ]).then(([bookSnap, foodSnap, healthSnap, ngoSnap]) => {
+                document.getElementById('book-donations-count').textContent = bookSnap.size;
+                document.getElementById('food-donations-count').textContent = foodSnap.size;
+                document.getElementById('healthcare-requests-count').textContent = healthSnap.size;
+                document.getElementById('ngos-count').textContent = ngoSnap.size;
+            }).catch(error => {
+                console.error('Error loading dashboard counts:', error);
+            });
+            
+            // Load recent activities
+            Promise.all([
+                db.collection('bookDonations').orderBy('timestamp', 'desc').limit(2).get(),
+                db.collection('foodDonations').orderBy('timestamp', 'desc').limit(2).get(),
+                db.collection('healthcareRequests').orderBy('timestamp', 'desc').limit(1).get()
+            ]).then(([bookSnap, foodSnap, healthSnap]) => {
+                const activitiesTable = document.getElementById('recent-activities');
+                activitiesTable.innerHTML = '';
+                
+                const activities = [];
+                
+                bookSnap.forEach(doc => {
+                    const data = doc.data();
+                    activities.push({
+                        type: 'Book Donation',
+                        details: `${data.category} - ${data.item}`,
+                        donor: data.donorName,
+                        date: data.timestamp,
+                        status: data.status || 'Pending',
+                        id: doc.id,
+                        collection: 'bookDonations'
+                    });
+                });
+                
+                foodSnap.forEach(doc => {
+                    const data = doc.data();
+                    activities.push({
+                        type: 'Food Donation',
+                        details: data.donationTypeLabel || data.donationType,
+                        donor: data.donorName || 'N/A',
+                        date: data.timestamp,
+                        status: data.status || 'Pending',
+                        id: doc.id,
+                        collection: 'foodDonations'
+                    });
+                });
+                
+                healthSnap.forEach(doc => {
+                    const data = doc.data();
+                    activities.push({
+                        type: 'Healthcare Request',
+                        details: `${data.serviceType} - ${data.serviceName}`,
+                        donor: data.name,
+                        date: data.timestamp,
+                        status: data.status || 'Pending',
+                        id: doc.id,
+                        collection: 'healthcareRequests'
+                    });
+                });
+                
+                // Sort by date and limit to 5
+                activities.sort((a, b) => (b.date?.seconds || 0) - (a.date?.seconds || 0));
+                activities.slice(0, 5).forEach(activity => {
+                    activitiesTable.innerHTML += `
+                        <tr>
+                            <td><i class="fas fa-${activity.collection.includes('book') ? 'book' : activity.collection.includes('food') ? 'utensils' : 'heartbeat'}"></i> ${activity.type}</td>
+                            <td>${activity.details}</td>
+                            <td>${activity.donor}</td>
+                            <td>${activity.date ? new Date(activity.date.seconds * 1000).toLocaleDateString() : 'N/A'}</td>
+                            <td><span class="status ${activity.status.toLowerCase()}">${activity.status}</span></td>
+                            <td>
+                                <button class="action-btn edit" data-id="${activity.id}" data-collection="${activity.collection}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                // Add event listeners to edit buttons
+                document.querySelectorAll('.action-btn.edit').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        openEditModal(
+                            this.getAttribute('data-collection'), 
+                            this.getAttribute('data-id')
+                        );
+                    });
+                });
+            }).catch(error => {
+                console.error('Error loading recent activities:', error);
+            });
+        }
+        
+        // Load collection data
+        function loadCollectionData(collectionName) {
+            const tableId = `${collectionName}-data`;
+            const table = document.getElementById(tableId);
+            
+            db.collection(collectionName).orderBy('timestamp', 'desc').get()
+                .then(snapshot => {
+                    table.innerHTML = '';
+                    
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        
+                        if (collectionName === 'bookDonations') {
+                            table.innerHTML += `
+                                <tr>
+                                    <td>${data.category || 'N/A'}</td>
+                                    <td>${data.item || 'N/A'}</td>
+                                    <td>${data.quantity || 'N/A'}</td>
+                                    <td>${data.donorName || 'N/A'}</td>
+                                    <td>${data.donorEmail || 'N/A'}<br>${data.donorPhone || 'N/A'}</td>
+                                    <td>${data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</td>
+                                    <td><span class="status ${data.status || 'pending'}">${data.status || 'Pending'}</span></td>
+                                    <td>
+                                        <button class="action-btn edit" data-id="${doc.id}" data-collection="${collectionName}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete" data-id="${doc.id}" data-collection="${collectionName}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        } else if (collectionName === 'foodDonations') {
+                            const foodItems = data.foodItems?.map(item => 
+                                `${item.name} (${item.quantity} ${item.unit})`
+                            ).join('<br>') || 'N/A';
+                            
+                            table.innerHTML += `
+                                <tr>
+                                    <td>${data.donationTypeLabel || data.donationType || 'N/A'}</td>
+                                    <td>${foodItems}</td>
+                                    <td>${data.donorName || 'N/A'}</td>
+                                    <td>${data.donorEmail || 'N/A'}<br>${data.donorPhone || 'N/A'}</td>
+                                    <td>${data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</td>
+                                    <td><span class="status ${data.status || 'pending'}">${data.status || 'Pending'}</span></td>
+                                    <td>
+                                        <button class="action-btn edit" data-id="${doc.id}" data-collection="${collectionName}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete" data-id="${doc.id}" data-collection="${collectionName}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        } else if (collectionName === 'healthcareRequests') {
+                            table.innerHTML += `
+                                <tr>
+                                    <td>${data.serviceType || 'N/A'}</td>
+                                    <td>${data.serviceName || 'N/A'}</td>
+                                    <td>${data.name || 'N/A'}</td>
+                                    <td>${data.email || 'N/A'}<br>${data.phone || 'N/A'}</td>
+                                    <td>${data.message ? data.message.substring(0, 50) + (data.message.length > 50 ? '...' : '') : 'N/A'}</td>
+                                    <td>${data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString() : 'N/A'}</td>
+                                    <td><span class="status ${data.status || 'pending'}">${data.status || 'Pending'}</span></td>
+                                    <td>
+                                        <button class="action-btn edit" data-id="${doc.id}" data-collection="${collectionName}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete" data-id="${doc.id}" data-collection="${collectionName}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        } else if (collectionName === 'ngos') {
+                            const domains = data.domains?.join(', ') || 'N/A';
+                            const volunteers = data.volunteers || 0;
+                            
+                            table.innerHTML += `
+                                <tr>
+                                    <td>${data.ngoName || 'N/A'}</td>
+                                    <td>${domains}</td>
+                                    <td>${data.location || 'N/A'}</td>
+                                    <td>${data.email || 'N/A'}<br>${data.phone || 'N/A'}</td>
+                                    <td>${volunteers}</td>
+                                    <td>${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}</td>
+                                    <td>
+                                        <button class="action-btn edit" data-id="${doc.id}" data-collection="${collectionName}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete" data-id="${doc.id}" data-collection="${collectionName}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        } else if (collectionName === 'users') {
+                            table.innerHTML += `
+                                <tr>
+                                    <td>${data.name || 'N/A'}</td>
+                                    <td>${data.email || 'N/A'}</td>
+                                    <td>${data.phone || 'N/A'}</td>
+                                    <td>${data.role || 'user'}</td>
+                                    <td>${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}</td>
+                                    <td>
+                                        <button class="action-btn edit" data-id="${doc.id}" data-collection="${collectionName}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete" data-id="${doc.id}" data-collection="${collectionName}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+                    });
+                    
+                    // Add event listeners to action buttons
+                    document.querySelectorAll('.action-btn.edit').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            openEditModal(
+                                this.getAttribute('data-collection'), 
+                                this.getAttribute('data-id')
+                            );
+                        });
+                    });
+                    
+                    document.querySelectorAll('.action-btn.delete').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            openConfirmModal(
+                                this.getAttribute('data-collection'), 
+                                this.getAttribute('data-id')
+                            );
+                        });
+                    });
+                }).catch(error => {
+                    console.error(`Error loading ${collectionName} data:`, error);
+                    table.innerHTML = `<tr><td colspan="8">Error loading data: ${error.message}</td></tr>`;
+                });
+        }
+        
+        // Open edit modal
+        function openEditModal(collectionName, docId) {
+            const modal = document.getElementById('action-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            const saveChangesBtn = document.getElementById('save-changes');
+            const confirmDeleteBtn = document.getElementById('confirm-delete');
+            
+            // Set modal for editing
+            modalTitle.textContent = `Edit ${collectionName.replace(/([A-Z])/g, ' $1').trim()}`;
+            saveChangesBtn.style.display = 'inline-block';
+            confirmDeleteBtn.style.display = 'none';
+            
+            db.collection(collectionName).doc(docId).get()
+                .then(doc => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        currentEditingDoc = { collection: collectionName, id: docId };
+                        modalBody.innerHTML = '';
+                        
+                        if (collectionName === 'bookDonations') {
+                            modalBody.innerHTML = `
+                                <div class="form-group">
+                                    <label>Category</label>
+                                    <input type="text" id="edit-category" value="${data.category || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Item</label>
+                                    <input type="text" id="edit-item" value="${data.item || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Quantity</label>
+                                    <input type="number" id="edit-quantity" value="${data.quantity || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Donor Name</label>
+                                    <input type="text" id="edit-donorName" value="${data.donorName || ''}">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Donor Email</label>
+                                        <input type="email" id="edit-donorEmail" value="${data.donorEmail || ''}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Donor Phone</label>
+                                        <input type="text" id="edit-donorPhone" value="${data.donorPhone || ''}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select id="edit-status">
+                                        <option value="pending" ${data.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                        <option value="completed" ${data.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                        <option value="cancelled" ${data.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                                    </select>
+                                </div>
+                            `;
+                        } else if (collectionName === 'foodDonations') {
+                            // Simplified for demo; real implementation would handle foodItems array
+                            modalBody.innerHTML = `
+                                <div class="form-group">
+                                    <label>Donation Type</label>
+                                    <input type="text" id="edit-donationType" value="${data.donationType || data.donationTypeLabel || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Food Items (JSON format)</label>
+                                    <textarea id="edit-foodItems">${JSON.stringify(data.foodItems || [], null, 2)}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Donor Name</label>
+                                    <input type="text" id="edit-donorName" value="${data.donorName || ''}">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Donor Email</label>
+                                        <input type="email" id="edit-donorEmail" value="${data.donorEmail || ''}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Donor Phone</label>
+                                        <input type="text" id="edit-donorPhone" value="${data.donorPhone || ''}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select id="edit-status">
+                                        <option value="pending" ${data.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                        <option value="completed" ${data.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                        <option value="cancelled" ${data.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                                    </select>
+                                </div>
+                            `;
+                        } else if (collectionName === 'healthcareRequests') {
+                            modalBody.innerHTML = `
+                                <div class="form-group">
+                                    <label>Service Type</label>
+                                    <input type="text" id="edit-serviceType" value="${data.serviceType || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Service Name</label>
+                                    <input type="text" id="edit-serviceName" value="${data.serviceName || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Requester Name</label>
+                                    <input type="text" id="edit-name" value="${data.name || ''}">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email" id="edit-email" value="${data.email || ''}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Phone</label>
+                                        <input type="text" id="edit-phone" value="${data.phone || ''}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Message</label>
+                                    <textarea id="edit-message">${data.message || ''}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select id="edit-status">
+                                        <option value="pending" ${data.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                        <option value="completed" ${data.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                        <option value="cancelled" ${data.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                                    </select>
+                                </div>
+                            `;
+                        } else if (collectionName === 'ngos') {
+                            modalBody.innerHTML = `
+                                <div class="form-group">
+                                    <label>NGO Name</label>
+                                    <input type="text" id="edit-ngoName" value="${data.ngoName || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Domains (comma-separated)</label>
+                                    <input type="text" id="edit-domains" value="${data.domains?.join(', ') || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Location</label>
+                                    <input type="text" id="edit-location" value="${data.location || ''}">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email" id="edit-email" value="${data.email || ''}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Phone</label>
+                                        <input type="text" id="edit-phone" value="${data.phone || ''}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Volunteers</label>
+                                    <input type="number" id="edit-volunteers" value="${data.volunteers || 0}">
+                                </div>
+                            `;
+                        } else if (collectionName === 'users') {
+                            modalBody.innerHTML = `
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="text" id="edit-name" value="${data.name || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="edit-email" value="${data.email || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone</label>
+                                    <input type="text" id="edit-phone" value="${data.phone || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Role</label>
+                                    <select id="edit-role">
+                                        <option value="user" ${data.role === 'user' ? 'selected' : ''}>User</option>
+                                        <option value="admin" ${data.role === 'admin' ? 'selected' : ''}>Admin</option>
+                                    </select>
+                                </div>
+                            `;
+                        }
+                        
+                        modal.style.display = 'flex';
+                    } else {
+                        alert('Document not found.');
+                    }
+                }).catch(error => {
+                    console.error('Error opening edit modal:', error);
+                    alert('Error loading document: ' + error.message);
+                });
+        }
+        
+        // Save changes
+        function saveChanges() {
+            if (!currentEditingDoc) return;
+            
+            const { collection, id } = currentEditingDoc;
+            const modal = document.getElementById('action-modal');
+            let updateData = {};
+            
+            try {
+                if (collection === 'bookDonations') {
+                    updateData = {
+                        category: document.getElementById('edit-category').value,
+                        item: document.getElementById('edit-item').value,
+                        quantity: parseInt(document.getElementById('edit-quantity').value) || 0,
+                        donorName: document.getElementById('edit-donorName').value,
+                        donorEmail: document.getElementById('edit-donorEmail').value,
+                        donorPhone: document.getElementById('edit-donorPhone').value,
+                        status: document.getElementById('edit-status').value,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                } else if (collection === 'foodDonations') {
+                    updateData = {
+                        donationType: document.getElementById('edit-donationType').value,
+                        foodItems: JSON.parse(document.getElementById('edit-foodItems').value || '[]'),
+                        donorName: document.getElementById('edit-donorName').value,
+                        donorEmail: document.getElementById('edit-donorEmail').value,
+                        donorPhone: document.getElementById('edit-donorPhone').value,
+                        status: document.getElementById('edit-status').value,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                } else if (collection === 'healthcareRequests') {
+                    updateData = {
+                        serviceType: document.getElementById('edit-serviceType').value,
+                        serviceName: document.getElementById('edit-serviceName').value,
+                        name: document.getElementById('edit-name').value,
+                        email: document.getElementById('edit-email').value,
+                        phone: document.getElementById('edit-phone').value,
+                        message: document.getElementById('edit-message').value,
+                        status: document.getElementById('edit-status').value,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                } else if (collection === 'ngos') {
+                    updateData = {
+                        ngoName: document.getElementById('edit-ngoName').value,
+                        domains: document.getElementById('edit-domains').value.split(',').map(d => d.trim()).filter(d => d),
+                        location: document.getElementById('edit-location').value,
+                        email: document.getElementById('edit-email').value,
+                        phone: document.getElementById('edit-phone').value,
+                        volunteers: parseInt(document.getElementById('edit-volunteers').value) || 0,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                } else if (collection === 'users') {
+                    updateData = {
+                        name: document.getElementById('edit-name').value,
+                        email: document.getElementById('edit-email').value,
+                        phone: document.getElementById('edit-phone').value,
+                        role: document.getElementById('edit-role').value,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                }
+                
+                db.collection(collection).doc(id).update(updateData)
+                    .then(() => {
+                        modal.style.display = 'none';
+                        loadCollectionData(collection);
+                        if (collection === 'bookDonations' || collection === 'foodDonations' || collection === 'healthcareRequests') {
+                            loadDashboardData();
+                        }
+                        alert('Record updated successfully.');
+                    })
+                    .catch(error => {
+                        console.error('Error updating document:', error);
+                        alert('Error updating record: ' + error.message);
+                    });
+            } catch (error) {
+                console.error('Error preparing update data:', error);
+                alert('Error preparing update: ' + error.message);
+            }
+        }
+        
+        // Open confirmation modal for deletion
+        function openConfirmModal(collectionName, docId) {
+            const modal = document.getElementById('action-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            const saveChangesBtn = document.getElementById('save-changes');
+            const confirmDeleteBtn = document.getElementById('confirm-delete');
+            
+            // Set modal for confirmation
+            modalTitle.textContent = `Confirm Deletion`;
+            modalBody.innerHTML = `
+                <p>Are you sure you want to delete this ${collectionName.replace(/([A-Z])/g, ' $1').trim().toLowerCase()} record? This action cannot be undone.</p>
+            `;
+            saveChangesBtn.style.display = 'none';
+            confirmDeleteBtn.style.display = 'inline-block';
+            
+            // Store the document to delete
+            currentEditingDoc = { collection: collectionName, id: docId };
+            
+            modal.style.display = 'flex';
+        }
+        
+        // Confirm deletion
+        function confirmDelete() {
+            if (!currentEditingDoc) return;
+            
+            const { collection, id } = currentEditingDoc;
+            const modal = document.getElementById('action-modal');
+            
+            db.collection(collection).doc(id).delete()
+                .then(() => {
+                    modal.style.display = 'none';
+                    loadCollectionData(collection);
+                    if (collection === 'bookDonations' || collection === 'foodDonations' || collection === 'healthcareRequests') {
+                        loadDashboardData();
+                    }
+                    alert('Record deleted successfully.');
+                })
+                .catch(error => {
+                    console.error('Error deleting document:', error);
+                    alert('Error deleting record: ' + error.message);
+                });
+        }
+    </script>
+</body>
+</html>
