@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Dashboard - Unity Serve</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        /* All styles from ngo-dashboard.html moved here */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --error-color: #e74c3c;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --error-color: #e74c3c;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .sidebar {
+            background-color: var(--secondary-color);
+            min-height: 100vh;
+            color: white;
+            position: fixed;
+            width: 250px;
+            padding-top: 20px;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .sidebar .logo {
+            padding: 0 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .sidebar .logo img {
+            height: 50px;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            transition: var(--transition);
+            border-radius: 0;
+            margin-bottom: 5px;
+        }
+
+        .sidebar .nav-link:hover, 
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .header {
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--secondary-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info .user-name {
+            font-weight: 600;
+        }
+
+        .user-info .user-role {
+            font-size: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .badge-pending {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+
+        .badge-approved {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .badge-rejected {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            margin-right: 5px;
+        }
+
+        .view-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .view-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .accept-btn {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .accept-btn:hover {
+            background-color: #27ae60;
+        }
+
+        .taken-badge {
+            background-color: #7f8c8d;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-card h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .stats-card .stats-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stats-card .stats-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .modal-header {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            width: 150px;
+            min-width: 150px;
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .auth-required {
+            display: block;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--secondary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-login:hover {
+            background-color: #2980b9;
+        }
+
+        .login-error {
+            color: var(--error-color);
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        #loadingIndicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+
+            .sidebar .nav-link span {
+                display: none;
+            }
+
+            .sidebar .nav-link i {
+                margin-right: 0;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .sidebar .logo {
+                padding: 10px;
+            }
+
+            .sidebar .logo img {
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardSection">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="images/ngo_logo.png" alt="Unity Serve Logo">
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#overview" onclick="showTab('overview')">
+                        <i class="bi bi-speedometer2"></i> <span>Overview</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#clothDonations" onclick="showTab('clothDonations')">
+                        <i class="bi bi-bag"></i> <span>Cloth Donations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#educationDonations" onclick="showTab('educationDonations')">
+                        <i class="bi bi-book"></i> <span>Education Donations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#foodDonations" onclick="showTab('foodDonations')">
+                        <i class="bi bi-egg-fried"></i> <span>Food Donations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#healthcareRequests" onclick="showTab('healthcareRequests')">
+                        <i class="bi bi-heart-pulse"></i> <span>Healthcare Requests</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#volunteers" onclick="showTab('volunteers')">
+                        <i class="bi bi-people"></i> <span>Volunteers</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#ngoList" onclick="showTab('ngoList')">
+                        <i class="bi bi-building"></i> <span>NGO List</span>
+                    </a>
+                </li>
+
+                <li class="nav-item mt-5">
+                    <a class="nav-link" href="#" id="logoutBtn">
+                        <i class="bi bi-box-arrow-right"></i> <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1>NGO Dashboard</h1>
+                <div class="user-info">
+                    <span id="userName" class="user-name"></span>
+                    <span class="user-role">NGO Admin</span>
+                </div>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2 class="mb-4">Dashboard Overview</h2>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3>Cloth Donations</h3>
+                            <div id="clothDonationsCount" class="stats-number">0</div>
+                            <div class="stats-label">Total submissions</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3>Education Donations</h3>
+                            <div id="educationDonationsCount" class="stats-number">0</div>
+                            <div class="stats-label">Total submissions</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3>Food Donations</h3>
+                            <div id="foodDonationsCount" class="stats-number">0</div>
+                            <div class="stats-label">Total submissions</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3>Healthcare Requests</h3>
+                            <div id="healthcareRequestsCount" class="stats-number">0</div>
+                            <div class="stats-label">Total requests</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Recent Cloth Donations
+                            </div>
+                            <div class="card-body">
+                                <div id="recentClothDonations">
+                                    <div class="text-center py-4">Loading data...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Recent Food Donations
+                            </div>
+                            <div class="card-body">
+                                <div id="recentFoodDonations">
+                                    <div class="text-center py-4">Loading data...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Available Volunteers
+                            </div>
+                            <div class="card-body">
+                                <div id="availableVolunteers">
+                                    <div class="text-center py-4">Loading data...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other tabs content -->
+            <!-- Cloth Donations Tab -->
+            <div id="clothDonations" class="tab-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Cloth Donations</h2>
+                    <div>
+                        <select id="clothStatusFilter" class="form-select">
+                            <option value="all">All Status</option>
+                            <option value="new">New</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Clothing Types</th>
+                                        <th>Collection Method</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clothDonationsTableBody">
+                                    <tr>
+                                        <td colspan="8" class="text-center">Loading data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education Donations Tab -->
+            <div id="educationDonations" class="tab-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Education Donations</h2>
+                    <div>
+                        <select id="educationStatusFilter" class="form-select">
+                            <option value="all">All Status</option>
+                            <option value="new">New</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Donor Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Category</th>
+                                        <th>Item</th>
+                                        <th>Quantity</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="educationDonationsTableBody">
+                                    <tr>
+                                        <td colspan="8" class="text-center">Loading data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Food Donations Tab -->
+            <div id="foodDonations" class="tab-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Food Donations</h2>
+                    <div>
+                        <select id="foodStatusFilter" class="form-select">
+                            <option value="all">All Status</option>
+                            <option value="new">New</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Donor Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Category</th>
+                                        <th>Item</th>
+                                        <th>Quantity</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="foodDonationsTableBody">
+                                    <tr>
+                                        <td colspan="8" class="text-center">Loading data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Healthcare Requests Tab -->
+            <div id="healthcareRequests" class="tab-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Healthcare Requests</h2>
+                    <div>
+                        <select id="healthcareStatusFilter" class="form-select">
+                            <option value="all">All Status</option>
+                            <option value="new">New</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Service Type</th>
+                                        <th>Service Name</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="healthcareRequestsTableBody">
+                                    <tr>
+                                        <td colspan="8" class="text-center">Loading data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Volunteers Tab -->
+            <div id="volunteers" class="tab-content">
+                <h2 class="mb-4">Available Volunteers</h2>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Skills/Areas</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="volunteersTableBody">
+                                    <tr>
+                                        <td colspan="5" class="text-center">Loading data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NGO List Tab -->
+            <div id="ngoList" class="tab-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>NGO Partners</h2>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>NGO Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Location</th>
+                                        <th>Domains</th>
+                                        <th>Volunteers</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ngoListTableBody">
+                                    <tr>
+                                        <td colspan="7" class="text-center">Loading data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+     <!-- Bootstrap and Firebase Scripts -->
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+     <!-- Add Firebase SDKs -->
+     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+ 
+     <script>
+         // Firebase configuration
+         const firebaseConfig = {
+             apiKey: "AIzaSyDamfMwJ3tdO1YduL6IfJ-nK_xpWwzfR3I",
+             authDomain: "unityserve-demo-2f30f.firebaseapp.com",
+             databaseURL: "https://unityserve-demo-2f30f-default-rtdb.asia-southeast1.firebasedatabase.app",
+             projectId: "unityserve-demo-2f30f",
+             storageBucket: "unityserve-demo-2f30f.appspot.com",
+             messagingSenderId: "365353192644",
+             appId: "1:365353192644:web:104908f7e2c22db1d44d91",
+             measurementId: "G-J4SBKX337D"
+         };
+         
+ 
+         // Initialize Firebase
+         firebase.initializeApp(firebaseConfig);
+         const db = firebase.firestore();
+         const auth = firebase.auth();
+         // Initialize modals after DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Modal instances
+    const modals = {
+        clothDonation: new bootstrap.Modal(document.getElementById('clothDonationModal')),
+        educationDonation: new bootstrap.Modal(document.getElementById('educationDonationModal')),
+        foodDonation: new bootstrap.Modal(document.getElementById('foodDonationModal')),
+        healthcareRequest: new bootstrap.Modal(document.getElementById('healthcareRequestModal')),
+        volunteer: new bootstrap.Modal(document.getElementById('volunteerModal')),
+        ngo: new bootstrap.Modal(document.getElementById('ngoModal'))
+    };
+
+    // Make modals available globally
+    window.modals = modals;
+    document.getElementById('clothStatusFilter').addEventListener('change', loadClothDonations);
+    document.getElementById('educationStatusFilter').addEventListener('change', loadEducationDonations);
+    document.getElementById('foodStatusFilter').addEventListener('change', loadFoodDonations);
+    document.getElementById('healthcareStatusFilter').addEventListener('change', loadHealthcareRequests);
+
+    // Check authentication state
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            currentUser = user;
+            document.getElementById('userName').textContent = user.displayName || user.email;
+            loadDashboardData();
+        } else {
+            window.location.href = 'login.html';
+        }
+    });
+});
+// Helper function to show data load error
+function showDataLoadError(elementId) {
+    document.getElementById(elementId).innerHTML = `
+        <tr>
+            <td colspan="10" class="text-center text-danger py-4">
+                Error loading data. Please try again later.
+            </td>
+        </tr>
+    `;
+}
+
+// Helper function to get badge class based on status
+function getBadgeClass(status) {
+    status = status || 'new';
+    switch(status.toLowerCase()) {
+        case 'approved':
+        case 'completed':
+            return 'badge-approved';
+        case 'rejected':
+            return 'badge-rejected';
+        case 'pending':
+        case 'new':
+        default:
+            return 'badge-pending';
+    }
+}
+
+// Helper function to format date
+function formatDate(dateStr) {
+    if (!dateStr) return 'N/A';
+    try {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    } catch (e) {
+        return dateStr;
+    }
+}
+ 
+         // Global variables
+         let currentUser = null;
+         const loadingIndicator = document.getElementById('loadingIndicator');
+ 
+         // Initialize the application when DOM is loaded
+         document.addEventListener('DOMContentLoaded', function() {
+             // Check authentication state
+             auth.onAuthStateChanged(user => {
+                 if (user) {
+                     // User is signed in
+                     currentUser = user;
+                     document.getElementById('userName').textContent = user.displayName || user.email;
+                     loadDashboardData();
+                 } else {
+                     // No user is signed in
+                     window.location.href = 'login.html'; // Redirect to login page
+                 }
+             });
+         });
+ 
+         // Logout functionality
+         document.getElementById('logoutBtn').addEventListener('click', function(e) {
+             e.preventDefault();
+             auth.signOut().then(() => {
+                 window.location.href = 'login.html';
+             }).catch(error => {
+                 console.error("Logout error:", error);
+                 alert("Error during logout: " + error.message);
+             });
+         });
+ 
+         // Tab switching function
+         window.showTab = function(tabId) {
+             document.querySelectorAll('.tab-content').forEach(tab => {
+                 tab.classList.remove('active');
+             });
+             document.getElementById(tabId).classList.add('active');
+ 
+             document.querySelectorAll('.nav-link').forEach(link => {
+                 link.classList.remove('active');
+             });
+ 
+             const navLinks = document.querySelectorAll('.nav-link');
+             for (let i = 0; i < navLinks.length; i++) {
+                 if (navLinks[i].getAttribute('href') === '#' + tabId) {
+                     navLinks[i].classList.add('active');
+                     break;
+                 }
+             }
+         };
+ 
+         // Load dashboard data
+         async function loadDashboardData() {
+    try {
+        loadingIndicator.style.display = 'flex';
+        
+        // Load counts for each collection
+        const [clothCount, educationCount, foodCount, healthcareCount] = await Promise.all([
+            getCollectionCount('clothDonations').catch(() => 0),
+            getCollectionCount('educationDonations').catch(() => 0),
+            getCollectionCount('foodDonations').catch(() => 0),
+            getCollectionCount('healthcareRequests').catch(() => 0)
+        ]);
+
+        document.getElementById('clothDonationsCount').textContent = clothCount;
+        document.getElementById('educationDonationsCount').textContent = educationCount;
+        document.getElementById('foodDonationsCount').textContent = foodCount;
+        document.getElementById('healthcareRequestsCount').textContent = healthcareCount;
+
+        // Load recent data with error handling for each section
+        await Promise.all([
+            loadRecentClothDonations().catch(console.error),
+            loadRecentFoodDonations().catch(console.error),
+            loadAvailableVolunteers().catch(console.error),
+            loadClothDonations().catch(console.error),
+            loadEducationDonations().catch(console.error),
+            loadFoodDonations().catch(console.error),
+            loadHealthcareRequests().catch(console.error),
+            loadVolunteers().catch(console.error),
+            loadNGOs().catch(console.error)
+        ]);
+
+    } catch (error) {
+        console.error("Error loading dashboard data:", error);
+        alert("Error loading dashboard data. Please try again.");
+    } finally {
+        loadingIndicator.style.display = 'none';
+    }
+}
+ 
+         // Helper function to get count of documents in a collection
+         async function getCollectionCount(collectionName) {
+             const snapshot = await db.collection(collectionName).get();
+             return snapshot.size;
+         }
+         // Load cloth donations for the cloth donations tab
+async function loadClothDonations() {
+    try {
+        const statusFilter = document.getElementById('clothStatusFilter').value;
+        let query = db.collection('clothDonations').orderBy('submitDate', 'desc');
+        
+        if (statusFilter !== 'all') {
+            query = query.where('status', '==', statusFilter);
+        }
+
+        const querySnapshot = await query.get();
+        
+        if (querySnapshot.empty) {
+            document.getElementById('clothDonationsTableBody').innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-4">No cloth donations found</td>
+                </tr>
+            `;
+            return;
+        }
+
+        let html = '';
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            html += `
+                <tr>
+                    <td>${data.fullName}</td>
+                    <td>${data.email}</td>
+                    <td>${data.phone}</td>
+                    <td>${Array.isArray(data.clothingTypes) ? data.clothingTypes.join(', ') : data.clothingTypes}</td>
+                    <td>${data.preferredCollection}</td>
+                    <td>${formatDate(data.submitDate)}</td>
+                    <td><span class="badge ${getBadgeClass(data.status)}">${data.status || 'new'}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewClothDonation('${doc.id}')">View</button>
+                        ${data.status !== 'accepted' && data.status !== 'completed' ? 
+                          `<button class="action-btn accept-btn" onclick="acceptDonation('clothDonations', '${doc.id}')">Accept</button>` : ''}
+                    </td>
+                </tr>
+            `;
+        });
+        document.getElementById('clothDonationsTableBody').innerHTML = html;
+    } catch (error) {
+        console.error("Error loading cloth donations:", error);
+        showDataLoadError('clothDonationsTableBody');
+    }
+}
+
+// Load education donations for the education donations tab
+async function loadEducationDonations() {
+    try {
+        const statusFilter = document.getElementById('educationStatusFilter').value;
+        let query = db.collection('educationDonations').orderBy('timestamp', 'desc');
+        
+        if (statusFilter !== 'all') {
+            query = query.where('status', '==', statusFilter);
+        }
+
+        const querySnapshot = await query.get();
+        
+        if (querySnapshot.empty) {
+            document.getElementById('educationDonationsTableBody').innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-4">No education donations found</td>
+                </tr>
+            `;
+            return;
+        }
+
+        let html = '';
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            html += `
+                <tr>
+                    <td>${data.donorName}</td>
+                    <td>${data.donorEmail}</td>
+                    <td>${data.donorPhone}</td>
+                    <td>${data.categoryName || data.category || 'N/A'}</td>
+                    <td>${data.itemName || data.item || 'N/A'}</td>
+                    <td>${data.quantity || 'N/A'}</td>
+                    <td><span class="badge ${getBadgeClass(data.status)}">${data.status || 'new'}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewEducationDonation('${doc.id}')">View</button>
+                        ${data.status !== 'accepted' && data.status !== 'completed' ? 
+                          `<button class="action-btn accept-btn" onclick="acceptDonation('educationDonations', '${doc.id}')">Accept</button>` : ''}
+                    </td>
+                </tr>
+            `;
+        });
+        document.getElementById('educationDonationsTableBody').innerHTML = html;
+    } catch (error) {
+        console.error("Error loading education donations:", error);
+        showDataLoadError('educationDonationsTableBody');
+    }
+}
+
+// Load food donations for the food donations tab
+async function loadFoodDonations() {
+    try {
+        const statusFilter = document.getElementById('foodStatusFilter').value;
+        let query = db.collection('foodDonations').orderBy('timestamp', 'desc');
+        
+        if (statusFilter !== 'all') {
+            query = query.where('status', '==', statusFilter);
+        }
+
+        const querySnapshot = await query.get();
+        
+        if (querySnapshot.empty) {
+            document.getElementById('foodDonationsTableBody').innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-4">No food donations found</td>
+                </tr>
+            `;
+            return;
+        }
+
+        let html = '';
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            html += `
+                <tr>
+                    <td>${data.donorName}</td>
+                    <td>${data.donorEmail}</td>
+                    <td>${data.donorPhone}</td>
+                    <td>${data.categoryValue || data.category || 'N/A'}</td>
+                    <td>${data.itemValue || data.item || 'N/A'}</td>
+                    <td>${data.quantity || 'N/A'}</td>
+                    <td><span class="badge ${getBadgeClass(data.status)}">${data.status || 'new'}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewFoodDonation('${doc.id}')">View</button>
+                        ${data.status !== 'accepted' && data.status !== 'completed' ? 
+                          `<button class="action-btn accept-btn" onclick="acceptDonation('foodDonations', '${doc.id}')">Accept</button>` : ''}
+                    </td>
+                </tr>
+            `;
+        });
+        document.getElementById('foodDonationsTableBody').innerHTML = html;
+    } catch (error) {
+        console.error("Error loading food donations:", error);
+        showDataLoadError('foodDonationsTableBody');
+    }
+}
+
+// Load healthcare requests for the healthcare tab
+async function loadHealthcareRequests() {
+    try {
+        const statusFilter = document.getElementById('healthcareStatusFilter').value;
+        let query = db.collection('healthcareRequests').orderBy('timestamp', 'desc');
+        
+        if (statusFilter !== 'all') {
+            query = query.where('status', '==', statusFilter);
+        }
+
+        const querySnapshot = await query.get();
+        
+        if (querySnapshot.empty) {
+            document.getElementById('healthcareRequestsTableBody').innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-4">No healthcare requests found</td>
+                </tr>
+            `;
+            return;
+        }
+
+        let html = '';
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            html += `
+                <tr>
+                    <td>${data.name}</td>
+                    <td>${data.email}</td>
+                    <td>${data.phone}</td>
+                    <td>${data.serviceType || 'N/A'}</td>
+                    <td>${data.serviceName || 'N/A'}</td>
+                    <td>${formatDate(data.timestamp)}</td>
+                    <td><span class="badge ${getBadgeClass(data.status)}">${data.status || 'new'}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewHealthcareRequest('${doc.id}')">View</button>
+                        ${data.status !== 'accepted' && data.status !== 'completed' ? 
+                          `<button class="action-btn accept-btn" onclick="acceptDonation('healthcareRequests', '${doc.id}')">Accept</button>` : ''}
+                    </td>
+                </tr>
+            `;
+        });
+        document.getElementById('healthcareRequestsTableBody').innerHTML = html;
+    } catch (error) {
+        console.error("Error loading healthcare requests:", error);
+        showDataLoadError('healthcareRequestsTableBody');
+    }
+}
+
+// Load volunteers for the volunteers tab
+async function loadVolunteers() {
+    try {
+        const querySnapshot = await db.collection('users')
+            .where('role', '==', 'volunteer')
+            .orderBy('name')
+            .get();
+        
+        if (querySnapshot.empty) {
+            document.getElementById('volunteersTableBody').innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-4">No volunteers found</td>
+                </tr>
+            `;
+            return;
+        }
+
+        let html = '';
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            html += `
+                <tr>
+                    <td>${data.name}</td>
+                    <td>${data.email}</td>
+                    <td>${data.phone || 'N/A'}</td>
+                    <td>${data.skills ? data.skills.join(', ') : 'Not specified'}</td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewVolunteer('${doc.id}')">View</button>
+                    </td>
+                </tr>
+            `;
+        });
+        document.getElementById('volunteersTableBody').innerHTML = html;
+    } catch (error) {
+        console.error("Error loading volunteers:", error);
+        showDataLoadError('volunteersTableBody');
+    }
+}
+
+// Load NGOs for the NGO list tab
+async function loadNGOs() {
+    try {
+        const querySnapshot = await db.collection('ngos')
+            .orderBy('ngoName')
+            .get();
+        
+        if (querySnapshot.empty) {
+            document.getElementById('ngoListTableBody').innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-4">No NGOs found</td>
+                </tr>
+            `;
+            return;
+        }
+
+        let html = '';
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            html += `
+                <tr>
+                    <td>${data.ngoName}</td>
+                    <td>${data.email}</td>
+                    <td>${data.phone || 'N/A'}</td>
+                    <td>${data.location || 'N/A'}</td>
+                    <td>${Array.isArray(data.domains) ? data.domains.join(', ') : 'N/A'}</td>
+                    <td>${data.volunteers || 0}</td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewNGO('${doc.id}')">View</button>
+                    </td>
+                </tr>
+            `;
+        });
+        document.getElementById('ngoListTableBody').innerHTML = html;
+    } catch (error) {
+        console.error("Error loading NGOs:", error);
+        showDataLoadError('ngoListTableBody');
+    }
+}
+         // Load available volunteers for overview section
+async function loadAvailableVolunteers() {
+    try {
+        const querySnapshot = await db.collection('users')
+            .where('role', '==', 'volunteer')
+            .where('availability', '==', 'available')
+            .limit(5)
+            .get();
+
+        let html = '';
+        if (querySnapshot.empty) {
+            html = '<p class="text-center">No available volunteers found</p>';
+        } else {
+            html = '<div class="list-group">';
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                html += `
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">${data.name}</h6>
+                            <small>${data.skills ? data.skills.join(', ') : 'No skills specified'}</small>
+                        </div>
+                        <p class="mb-1">${data.email}</p>
+                        <small>Phone: ${data.phone || 'Not provided'}</small>
+                    </div>
+                `;
+            });
+            html += '</div>';
+        }
+        document.getElementById('availableVolunteers').innerHTML = html;
+    } catch (error) {
+        console.error("Error loading volunteers:", error);
+        document.getElementById('availableVolunteers').innerHTML = 
+            '<p class="text-center text-danger">Error loading volunteers</p>';
+    }
+}
+         // Load recent food donations
+async function loadRecentFoodDonations() {
+    const querySnapshot = await db.collection('foodDonations')
+        .orderBy('timestamp', 'desc')
+        .limit(5)
+        .get();
+
+    let html = '';
+    if (querySnapshot.empty) {
+        html = '<p class="text-center">No recent food donations</p>';
+    } else {
+        html = '<div class="list-group">';
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            html += `
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">${data.donorName}</h6>
+                        <small>${formatDate(data.timestamp)}</small>
+                    </div>
+                    <p class="mb-1">Item: ${data.itemValue || data.item || 'N/A'}</p>
+                    <small>Status: <span class="badge ${getBadgeClass(data.status)}">${data.status || 'new'}</span></small>
+                </div>
+            `;
+        });
+        html += '</div>';
+    }
+    document.getElementById('recentFoodDonations').innerHTML = html;
+}
+ 
+         // Load recent cloth donations
+         async function loadRecentClothDonations() {
+             const querySnapshot = await db.collection('clothDonations')
+                 .orderBy('submitDate', 'desc')
+                 .limit(5)
+                 .get();
+ 
+             let html = '';
+             if (querySnapshot.empty) {
+                 html = '<p class="text-center">No recent cloth donations</p>';
+             } else {
+                 html = '<div class="list-group">';
+                 querySnapshot.forEach(doc => {
+                     const data = doc.data();
+                     html += `
+                         <div class="list-group-item">
+                             <div class="d-flex w-100 justify-content-between">
+                                 <h6 class="mb-1">${data.fullName}</h6>
+                                 <small>${formatDate(data.submitDate)}</small>
+                             </div>
+                             <p class="mb-1">Clothing: ${Array.isArray(data.clothingTypes) ? data.clothingTypes.join(', ') : data.clothingTypes}</p>
+                             <small>Status: <span class="badge ${getBadgeClass(data.status)}">${data.status || 'new'}</span></small>
+                         </div>
+                     `;
+                 });
+                 html += '</div>';
+             }
+             document.getElementById('recentClothDonations').innerHTML = html;
+         }
+ 
+         // Format date helper function
+         function formatDate(dateStr) {
+             if (!dateStr) return 'N/A';
+             try {
+                 const date = new Date(dateStr);
+                 return date.toLocaleDateString('en-US', {
+                     year: 'numeric',
+                     month: 'short',
+                     day: 'numeric'
+                 });
+             } catch (e) {
+                 return dateStr;
+             }
+         }
+ 
+         // Get badge class based on status
+         function getBadgeClass(status) {
+             status = status || 'new';
+             switch(status.toLowerCase()) {
+                 case 'approved':
+                 case 'completed':
+                     return 'badge-approved';
+                 case 'rejected':
+                     return 'badge-rejected';
+                 case 'pending':
+                 case 'new':
+                 default:
+                     return 'badge-pending';
+             }
+         }
+
+        function formatDate(dateStr) {
+            try {
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) {
+                    return dateStr; 
+                }
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            } catch (e) {
+                return dateStr;
+            }
+        }
+// Accept donation function
+window.acceptDonation = async function(collectionName, id) {
+            try {
+                loadingIndicator.style.display = 'flex';
+                
+                const docRef = db.collection(collectionName).doc(id);
+                const doc = await docRef.get();
+                
+                if (!doc.exists) {
+                    alert("Item not found!");
+                    loadingIndicator.style.display = 'none';
+                    return;
+                }
+                
+                const data = doc.data();
+                if (data.status === 'accepted' || data.status === 'taken') {
+                    alert(`This item has already been ${data.status} by ${data.acceptedBy || "another NGO"}`);
+                    loadingIndicator.style.display = 'none';
+                    return;
+                }
+                
+                await docRef.update({
+                    status: 'accepted',
+                    acceptedBy: currentUser.displayName || currentUser.email,
+                    acceptedDate: new Date().toISOString()
+                });
+                
+                await loadDashboardData();
+                alert("You have successfully accepted this donation!");
+                loadingIndicator.style.display = 'none';
+            } catch (error) {
+                console.error("Error accepting donation:", error);
+                alert("Error accepting donation: " + error.message);
+                loadingIndicator.style.display = 'none';
+            }
+        };
+
+        // View details functions (viewClothDonation, viewEducationDonation, etc.)
+        window.viewClothDonation = async function(id) {
+            try {
+                loadingIndicator.style.display = 'flex';
+                
+                const doc = await db.collection('clothDonations').doc(id).get();
+                
+                if (doc.exists) {
+                    const data = doc.data();
+
+                    const submitDate = data.submitDate ? formatDate(data.submitDate) : 'N/A';
+                    const preferredDate = data.preferredDate ? formatDate(data.preferredDate) : 'N/A';
+
+                    const clothingTypes = Array.isArray(data.clothingTypes)
+                        ? data.clothingTypes.join(', ')
+                        : data.clothingTypes || 'N/A';
+
+                    let html = `
+                        <div class="detail-row">
+                            <div class="detail-label">Name:</div>
+                            <div class="detail-value">${data.fullName}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Email:</div>
+                            <div class="detail-value">${data.email}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Phone:</div>
+                            <div class="detail-value">${data.phone}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Address:</div>
+                            <div class="detail-value">${data.address}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Zip Code:</div>
+                            <div class="detail-value">${data.zipCode}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Clothing Types:</div>
+                            <div class="detail-value">${clothingTypes}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Condition:</div>
+                            <div class="detail-value">${data.condition || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Quantity:</div>
+                            <div class="detail-value">${data.quantity || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Collection Method:</div>
+                            <div class="detail-value">${data.preferredCollection || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Preferred Date:</div>
+                            <div class="detail-value">${preferredDate}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Status:</div>
+                            <div class="detail-value">
+                                <span class="badge ${getBadgeClass(data.status)}">${data.status || 'new'}</span>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Submission Date:</div>
+                            <div class="detail-value">${submitDate}</div>
+                        </div>
+                    `;
+
+                    if (data.additionalInfo) {
+                        html += `
+                            <div class="detail-row">
+                                <div class="detail-label">Additional Info:</div>
+                                <div class="detail-value">${data.additionalInfo}</div>
+                            </div>
+                        `;
+                    }
+
+                    document.getElementById('clothDonationDetails').innerHTML = html;
+                    modals.clothDonation.show();
+                } else {
+                    alert("Donation not found!");
+                }
+                
+                loadingIndicator.style.display = 'none';
+            } catch (error) {
+                console.error("Error viewing cloth donation:", error);
+                loadingIndicator.style.display = 'none';
+                alert("Error loading donation details");
+            }
+        };
+
+        window.viewEducationDonation = async function(id) {
+            try {
+                loadingIndicator.style.display = 'flex';
+
+                const docRef = doc(db, "educationDonations", id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+
+                    const timestamp = data.timestamp ? formatDate(data.timestamp) : 'N/A';
+
+                    let html = `
+                        <div class="detail-row">
+                            <div class="detail-label">Donor Name:</div>
+                            <div class="detail-value">${data.donorName}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Email:</div>
+                            <div class="detail-value">${data.donorEmail}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Phone:</div>
+                            <div class="detail-value">${data.donorPhone}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Category:</div>
+                            <div class="detail-value">${data.categoryName || data.category || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Item:</div>
+                            <div class="detail-value">${data.itemName || data.item || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Quantity:</div>
+                            <div class="detail-value">${data.quantity || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Status:</div>
+                            <div class="detail-value">
+                                <span class="badge ${getBadgeClass(data.status)}">${data.status || 'new'}</span>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Submission Date:</div>
+                            <div class="detail-value">${timestamp}</div>
+                        </div>
+                    `;
+
+                    document.getElementById('educationDonationDetails').innerHTML = html;
+                    modals.educationDonation.show();
+                } else {
+                    alert("Donation not found!");
+                }
+
+                loadingIndicator.style.display = 'none';
+            } catch (error) {
+                console.error("Error viewing education donation:", error);
+                loadingIndicator.style.display = 'none';
+                alert("Error loading donation details");
+            }
+        };
+
+        window.viewFoodDonation = async function(id) {
+            try {
+                loadingIndicator.style.display = 'flex';
+
+                const docRef = doc(db, "foodDonations", id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+
+                    const timestamp = data.timestamp ? formatDate(data.timestamp) : 'N/A';
+
+                    let html = `
+                        <div class="detail-row">
+                            <div class="detail-label">Donor Name:</div>
+                            <div class="detail-value">${data.donorName}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Email:</div>
+                            <div class="detail-value">${data.donorEmail}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Phone:</div>
+                            <div class="detail-value">${data.donorPhone}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Category:</div>
+                            <div class="detail-value">${data.categoryValue || data.category || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Item:</div>
+                            <div class="detail-value">${data.itemValue || data.item || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Quantity:</div>
+                            <div class="detail-value">${data.quantity || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Status:</div>
+                            <div class="detail-value">
+                                <span class="badge ${getBadgeClass(data.status)}">${data.status || 'new'}</span>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Submission Date:</div>
+                            <div class="detail-value">${timestamp}</div>
+                        </div>
+                    `;
+
+                    if (data.notes) {
+                        html += `
+                            <div class="detail-row">
+                                <div class="detail-label">Notes:</div>
+                                <div class="detail-value">${data.notes}</div>
+                            </div>
+                        `;
+                    }
+
+                    document.getElementById('foodDonationDetails').innerHTML = html;
+                    modals.foodDonation.show();
+                } else {
+                    alert("Donation not found!");
+                }
+
+                loadingIndicator.style.display = 'none';
+            } catch (error) {
+                console.error("Error viewing food donation:", error);
+                loadingIndicator.style.display = 'none';
+                alert("Error loading donation details");
+            }
+        };
+
+        window.viewHealthcareRequest = async function(id) {
+            try {
+                loadingIndicator.style.display = 'flex';
+
+                const docRef = doc(db, "healthcareRequests", id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+
+                    const timestamp = data.timestamp ? formatDate(data.timestamp) : 'N/A';
+
+                    let html = `
+                        <div class="detail-row">
+                            <div class="detail-label">Name:</div>
+                            <div class="detail-value">${data.name}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Email:</div>
+                            <div class="detail-value">${data.email}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Phone:</div>
+                            <div class="detail-value">${data.phone}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Service Type:</div>
+                            <div class="detail-value">${data.serviceType || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Service Name:</div>
+                            <div class="detail-value">${data.serviceName || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Status:</div>
+                            <div class="detail-value">
+                                <span class="badge ${getBadgeClass(data.status)}">${data.status || 'new'}</span>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Submission Date:</div>
+                            <div class="detail-value">${timestamp}</div>
+                        </div>
+                    `;
+
+                    if (data.message) {
+                        html += `
+                            <div class="detail-row">
+                                <div class="detail-label">Message:</div>
+                                <div class="detail-value">${data.message}</div>
+                            </div>
+                        `;
+                    }
+
+                    document.getElementById('healthcareRequestDetails').innerHTML = html;
+                    modals.healthcareRequest.show();
+                } else {
+                    alert("Request not found!");
+                }
+
+                loadingIndicator.style.display = 'none';
+            } catch (error) {
+                console.error("Error viewing healthcare request:", error);
+                loadingIndicator.style.display = 'none';
+                alert("Error loading request details");
+            }
+        };
+
+        window.viewVolunteer = async function(id) {
+            try {
+                loadingIndicator.style.display = 'flex';
+
+                const docRef = doc(db, "users", id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+
+                    const createdAt = data.createdAt ? formatDate(data.createdAt) : 'N/A';
+
+                    const skills = data.skills ? data.skills.join(', ') : 'Not specified';
+
+                    let html = `
+                        <div class="detail-row">
+                            <div class="detail-label">Name:</div>
+                            <div class="detail-value">${data.name}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Email:</div>
+                            <div class="detail-value">${data.email}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Phone:</div>
+                            <div class="detail-value">${data.phone || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Role:</div>
+                            <div class="detail-value">${data.role || 'volunteer'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Skills/Areas:</div>
+                            <div class="detail-value">${skills}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Created:</div>
+                            <div class="detail-value">${createdAt}</div>
+                        </div>
+                    `;
+
+                    if (data.availability) {
+                        html += `
+                            <div class="detail-row">
+                                <div class="detail-label">Availability:</div>
+                                <div class="detail-value">${data.availability}</div>
+                            </div>
+                        `;
+                    }
+
+                    document.getElementById('volunteerDetails').innerHTML = html;
+                    modals.volunteer.show();
+                } else {
+                    alert("Volunteer not found!");
+                }
+
+                loadingIndicator.style.display = 'none';
+            } catch (error) {
+                console.error("Error viewing volunteer:", error);
+                loadingIndicator.style.display = 'none';
+                alert("Error loading volunteer details");
+            }
+        };
+
+        window.viewNGO = async function(id) {
+            try {
+                loadingIndicator.style.display = 'flex';
+
+                const docRef = doc(db, "ngos", id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+
+                    const createdAt = data.createdAt ? formatDate(data.createdAt) : 'N/A';
+
+                    const domains = Array.isArray(data.domains) ? data.domains.join(', ') : 'N/A';
+
+                    let html = `
+                        <div class="detail-row">
+                            <div class="detail-label">NGO Name:</div>
+                            <div class="detail-value">${data.ngoName}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Email:</div>
+                            <div class="detail-value">${data.email}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Phone:</div>
+                            <div class="detail-value">${data.phone || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Location:</div>
+                            <div class="detail-value">${data.location || 'N/A'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Domains:</div>
+                            <div class="detail-value">${domains}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Volunteers:</div>
+                            <div class="detail-value">${data.volunteers || 0}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Created:</div>
+                            <div class="detail-value">${createdAt}</div>
+                        </div>
+                    `;
+
+                    document.getElementById('ngoDetails').innerHTML = html;
+                    modals.ngo.show();
+                } else {
+                    alert("NGO not found!");
+                }
+
+                loadingIndicator.style.display = 'none';
+            } catch (error) {
+                console.error("Error viewing NGO:", error);
+                loadingIndicator.style.display = 'none';
+                alert("Error loading NGO details");
+            }
+        };
+
+
+    </script>
+    <!-- Modal Dialogs -->
+<!-- Cloth Donation Modal -->
+<div class="modal fade" id="clothDonationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cloth Donation Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="clothDonationDetails">
+                <!-- Details loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Education Donation Modal -->
+<div class="modal fade" id="educationDonationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Education Donation Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="educationDonationDetails">
+                <!-- Details loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Food Donation Modal -->
+<div class="modal fade" id="foodDonationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Food Donation Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="foodDonationDetails">
+                <!-- Details loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Healthcare Request Modal -->
+<div class="modal fade" id="healthcareRequestModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Healthcare Request Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="healthcareRequestDetails">
+                <!-- Details loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Volunteer Modal -->
+<div class="modal fade" id="volunteerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Volunteer Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="volunteerDetails">
+                <!-- Details loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NGO Modal -->
+<div class="modal fade" id="ngoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">NGO Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="ngoDetails">
+                <!-- Details loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
