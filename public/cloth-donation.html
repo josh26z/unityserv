@@ -1,104 +1,934 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloth Donation</title>
-
+    <title>Cloth Donation - Unity Serve</title>
     <style>
-        /* General Styles */
+        /* Core CSS styles */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --error-color: #e74c3c;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header styles */
+        header {
+            background-color: white;
+            box-shadow: var(--box-shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header .container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            height: 100vh;
-            background-color: #f8f9fa;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        nav ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: var(--secondary-color);
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e5e5;
+        }
+
+        /* Page header styles */
+        .page-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 60px 0;
             text-align: center;
         }
 
-        /* Container */
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
+        .page-header h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
         }
 
-        /* Dropdown & Button Styles */
-        label {
+        .page-header p {
             font-size: 18px;
-            font-weight: bold;
+            opacity: 0.9;
+        }
+
+        /* Form section styles */
+        .donation-form-section {
+            padding: 60px 0;
+        }
+
+        .form-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        /* Success message styles */
+        .alert {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        /* Form styles */
+        form {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
             display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .required {
+            color: var(--error-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .consent-group {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: var(--border-radius);
+        }
+
+        /* Donation info sidebar */
+        .donation-info {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .donation-info h2 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .donation-info h3 {
+            margin-top: 25px;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+
+        .donation-info ul,
+        .donation-info ol {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .donation-info li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer styles */
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        /* Review page styles */
+        .review-donation {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .review-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .review-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .review-section h4 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        /* Success page styles */
+        .success-container {
+            max-width: 800px;
+            margin: 80px auto;
+            padding: 40px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+        
+        .success-title {
+            color: var(--primary-color);
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .success-message {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        
+        .next-steps {
+            background-color: #f9f9f9;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .next-steps h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .next-steps ul {
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+            padding-left: 20px;
+        }
+        
+        .next-steps li {
             margin-bottom: 10px;
         }
-
-        select, button {
-            margin-top: 15px;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            width: 100%;
+        
+        .btn-container {
+            margin-top: 30px;
         }
 
-        button {
-            background-color: #28a745;
-            color: white;
-            cursor: pointer;
-            border: none;
-            font-weight: bold;
+        /* Responsive design */
+        @media (min-width: 768px) {
+            .form-container {
+                grid-template-columns: 2fr 1fr;
+            }
         }
 
-        button:hover {
-            background-color: #218838;
+        /* Error state */
+        .error {
+            border-color: var(--error-color) !important;
         }
 
-        /* Back Link */
-        .back-link {
-            display: block;
-            margin-top: 15px;
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
+        #success-page {
+            display: none;
         }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
     </style>
 </head>
 <body>
+    
 
-    <div class="container">
-        <h1>Cloth Donation</h1>
-        
-        <label for="clothing-type">Select the type of clothes to donate:</label>
-        <select id="clothing-type">
-            <option value="">-- Choose an option --</option>
-            <option value="male">Clothes for Males</option>
-            <option value="female">Clothes for Females</option>
-            <option value="children">Clothes for Children</option>
-            <option value="elderly">Clothes for Elderly People</option>
-        </select>
+    <main>
+        <!-- Donation Form Page -->
+        <div id="donation-form-page">
+            <section class="page-header">
+                <div class="container">
+                    <h1>Cloth Donation</h1>
+                    <p>Your donations help us provide warmth and dignity to those in need</p>
+                </div>
+            </section>
 
-        <button onclick="submitClothDonation()">Submit</button>
+            <section class="donation-form-section">
+                <div class="container">
+                    <div class="form-container">
+                        <div>
+                            <div id="review-container" style="display: none;" class="review-donation">
+                                <h3>Review Your Donation</h3>
+                                <div id="review-content"></div>
+                                <div class="form-actions">
+                                    <button id="edit-form-btn" class="btn btn-secondary">Edit Details</button>
+                                    <button id="submit-final-btn" class="btn btn-primary">Confirm & Submit</button>
+                                </div>
+                            </div>
+                            
+                            <form id="clothDonationForm" style="display: block;">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name <span class="required">*</span></label>
+                                    <input type="text" id="fullName" name="fullName" required>
+                                    <div class="error-message" id="fullName-error"></div>
+                                </div>
 
-        <a href="index.html" class="back-link">← Back to Home</a>
-    </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address <span class="required">*</span></label>
+                                    <input type="email" id="email" name="email" required>
+                                    <div class="error-message" id="email-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="phone">Phone Number <span class="required">*</span></label>
+                                    <input type="tel" id="phone" name="phone" required>
+                                    <div class="error-message" id="phone-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="address">Address <span class="required">*</span></label>
+                                    <textarea id="address" name="address" rows="3" required></textarea>
+                                    <div class="error-message" id="address-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="zipCode">Zip Code <span class="required">*</span></label>
+                                    <input type="text" id="zipCode" name="zipCode" required>
+                                    <div class="error-message" id="zipCode-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Type of Clothing <span class="required">*</span></label>
+                                    <div class="checkbox-group">
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="menClothing" name="clothingTypes" value="Men's Clothing">
+                                            <label for="menClothing">Men's Clothing</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="womenClothing" name="clothingTypes" value="Women's Clothing">
+                                            <label for="womenClothing">Women's Clothing</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="childrenClothing" name="clothingTypes" value="Children's Clothing">
+                                            <label for="childrenClothing">Children's Clothing</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="winterClothing" name="clothingTypes" value="Winter Clothing">
+                                            <label for="winterClothing">Winter Clothing</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="formalClothing" name="clothingTypes" value="Formal Wear">
+                                            <label for="formalClothing">Formal Wear</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="shoes" name="clothingTypes" value="Shoes">
+                                            <label for="shoes">Shoes</label>
+                                        </div>
+                                    </div>
+                                    <div class="error-message" id="clothingTypes-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="condition">Condition of Items <span class="required">*</span></label>
+                                    <select id="condition" name="condition" required>
+                                        <option value="">Select condition</option>
+                                        <option value="New with tags">New with tags</option>
+                                        <option value="Like new">Like new</option>
+                                        <option value="Gently used">Gently used</option>
+                                        <option value="Well worn but functional">Well worn but functional</option>
+                                    </select>
+                                    <div class="error-message" id="condition-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="quantity">Approximate Quantity <span class="required">*</span></label>
+                                    <select id="quantity" name="quantity" required>
+                                        <option value="">Select quantity</option>
+                                        <option value="1-5 items">1-5 items</option>
+                                        <option value="6-10 items">6-10 items</option>
+                                        <option value="11-20 items">11-20 items</option>
+                                        <option value="More than 20 items">More than 20 items</option>
+                                    </select>
+                                    <div class="error-message" id="quantity-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="preferredCollection">Preferred Collection Method <span class="required">*</span></label>
+                                    <select id="preferredCollection" name="preferredCollection" required>
+                                        <option value="">Select collection method</option>
+                                        <option value="Drop off at center">Drop off at center</option>
+                                        <option value="Home pickup">Home pickup</option>
+                                    </select>
+                                    <div class="error-message" id="preferredCollection-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="preferredDate">Preferred Collection/Drop-off Date <span class="required">*</span></label>
+                                    <input type="date" id="preferredDate" name="preferredDate" required>
+                                    <div class="error-message" id="preferredDate-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="additionalInfo">Additional Information</label>
+                                    <textarea id="additionalInfo" name="additionalInfo" rows="4"></textarea>
+                                </div>
+
+                                <div class="form-group consent-group">
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="consent" name="consent" required>
+                                        <label for="consent">I agree that Unity Serve can use my contact information to coordinate this donation <span class="required">*</span></label>
+                                    </div>
+                                    <div class="error-message" id="consent-error"></div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Submit Donation</button>
+                                    <button type="reset" class="btn btn-secondary">Reset Form</button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="donation-info">
+                            <h2>About Cloth Donations</h2>
+                            <p>Your clothing donations make a significant impact in our community. Here's what you should know:</p>
+                            
+                            <h3>Acceptable Items</h3>
+                            <ul>
+                                <li>Clean, gently used clothing</li>
+                                <li>New clothing with or without tags</li>
+                                <li>Shoes in good condition</li>
+                                <li>Accessories like scarves, hats, and gloves</li>
+                                <li>Professional attire for job seekers</li>
+                            </ul>
+                            
+                            <h3>Process</h3>
+                            <ol>
+                                <li>Fill out the donation form</li>
+                                <li>Our team will contact you to confirm details</li>
+                                <li>Drop off items or schedule a pickup</li>
+                                <li>Receive a donation receipt for tax purposes</li>
+                            </ol>
+                            
+                            <h3>Impact</h3>
+                            <p>Last year, your generous donations helped provide clothing to over 500 families in need. Your continued support makes our community stronger.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Success Page -->
+        <div id="success-page">
+            <section class="content-section">
+                <div class="container">
+                    <div class="success-container">
+                        <div class="success-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                        </div>
+                        <h1 class="success-title">Donation Submission Successful!</h1>
+                        <p class="success-message">
+                            Thank you for your generous clothing donation. Your contribution will make a 
+                            meaningful difference in someone's life.
+                        </p>
+                        
+                        <div class="next-steps">
+                            <h3>What Happens Next?</h3>
+                            <ul>
+                                <li>Your donation request will be reviewed within the next few days</li>
+                                <li>Our team will contact you via email or phone to confirm</li>
+                                <li>We'll arrange collection or drop-off based on your preference</li>
+                                <li>You'll receive confirmation once your donation has been processed</li>
+                            </ul>
+                        </div>
+                        
+                        <p>
+                            If you have any questions or need to update your donation information,
+                            please contact our support team at <strong>support@unityserve.org</strong>
+                        </p>
+                        
+                        <div class="btn-container">
+                            <a href="index.html" class="btn btn-primary">Return to Home</a>
+                            <button onclick="resetForm()" class="btn btn-secondary">Make Another Donation</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Unity Serve. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script>
-        function submitClothDonation() {
-            let selectedValue = document.getElementById("clothing-type").value;
-            if (selectedValue) {
-                alert("Thank you for choosing to donate " + selectedValue + " clothes!");
-            } else {
-                alert("Please select an option before submitting.");
+        document.addEventListener('DOMContentLoaded', () => {
+            const clothDonationForm = document.getElementById('clothDonationForm');
+            const donationFormPage = document.getElementById('donation-form-page');
+            const successPage = document.getElementById('success-page');
+            const reviewContainer = document.getElementById('review-container');
+            const reviewContent = document.getElementById('review-content');
+            const editFormBtn = document.getElementById('edit-form-btn');
+            const submitFinalBtn = document.getElementById('submit-final-btn');
+            
+            // Form data object to store information before final submission
+            let formDataObj = {};
+            
+            if (!clothDonationForm) {
+                console.error('Donation form not found');
+                return;
             }
-        }
-    </script>
+            
+            // Form validation
+            const validateForm = () => {
+                let isValid = true;
+                
+                // Clear previous error messages
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.textContent = '';
+                });
+                
+                document.querySelectorAll('.error').forEach(el => {
+                    el.classList.remove('error');
+                });
+                
+                // Validate Full Name
+                const fullName = document.getElementById('fullName');
+                if (!fullName.value.trim()) {
+                    displayError(fullName, 'fullName-error', 'Please enter your full name');
+                    isValid = false;
+                }
+                
+                // Validate Email
+                const email = document.getElementById('email');
+                if (!email.value.trim()) {
+                    displayError(email, 'email-error', 'Please enter your email address');
+                    isValid = false;
+                } else if (!isValidEmail(email.value)) {
+                    displayError(email, 'email-error', 'Please enter a valid email address');
+                    isValid = false;
+                }
+                
+                // Validate Phone
+                const phone = document.getElementById('phone');
+                if (!phone.value.trim()) {
+                    displayError(phone, 'phone-error', 'Please enter your phone number');
+                    isValid = false;
+                }
+                
+                // Validate Address
+                const address = document.getElementById('address');
+                if (!address.value.trim()) {
+                    displayError(address, 'address-error', 'Please enter your address');
+                    isValid = false;
+                }
+                
+                // Validate Zip Code
+                const zipCode = document.getElementById('zipCode');
+                if (!zipCode.value.trim()) {
+                    displayError(zipCode, 'zipCode-error', 'Please enter your zip code');
+                    isValid = false;
+                }
+                
+                // Validate Clothing Types (at least one should be selected)
+                const clothingTypes = document.querySelectorAll('input[name="clothingTypes"]:checked');
+                if (clothingTypes.length === 0) {
+                    displayError(null, 'clothingTypes-error', 'Please select at least one type of clothing');
+                    isValid = false;
+                }
+                
+                // Validate Condition
+                const condition = document.getElementById('condition');
+                if (!condition.value) {
+                    displayError(condition, 'condition-error', 'Please select the condition of items');
+                    isValid = false;
+                }
+                
+                // Validate Quantity
+                const quantity = document.getElementById('quantity');
+                if (!quantity.value) {
+                    displayError(quantity, 'quantity-error', 'Please select the approximate quantity');
+                    isValid = false;
+                }
+                
+                // Validate Collection Method
+                const preferredCollection = document.getElementById('preferredCollection');
+                if (!preferredCollection.value) {
+                    displayError(preferredCollection, 'preferredCollection-error', 'Please select your preferred collection method');
+                    isValid = false;
+                }
+                
+                // Validate Date
+                const preferredDate = document.getElementById('preferredDate');
+                if (!preferredDate.value) {
+                    displayError(preferredDate, 'preferredDate-error', 'Please select your preferred date');
+                    isValid = false;
+                } else {
+                    // Validate the date is in the future
+                    const selectedDate = new Date(preferredDate.value);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    if (selectedDate < today) {
+                        displayError(preferredDate, 'preferredDate-error', 'Please select a future date');
+                        isValid = false;
+                    }
+                }
+                
+                // Validate Consent
+                const consent = document.getElementById('consent');
+                if (!consent.checked) {
+                    displayError(consent, 'consent-error', 'You must agree to the terms');
+                    isValid = false;
+                }
+                
+                return isValid;
+            };
+            
+            // Helper functions
+            const displayError = (inputElement, errorId, message) => {
+                const errorElement = document.getElementById(errorId);
+                if (errorElement) {
+                    errorElement.textContent = message;
+                }
+                
+                if (inputElement) {
+                    inputElement.classList.add('error');
+                }
+            };
+            
+            const isValidEmail = (email) => {
+                const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(String(email).toLowerCase());
+            };
+            
+            // Function to format the review content
+            const formatReviewContent = (data) => {
+                // Format the date
+                const formattedDate = new Date(data.preferredDate).toLocaleDateString('en-US', {
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric'
+                });
+                
+                // Format clothing types as a list
+                const clothingTypesList = data.clothingTypes.join(', ');
+                
+                // Create the HTML content for review
+                return `
+                    <div class="review-section">
+                        <h4>Contact Information</h4>
+                        <p><strong>Name:</strong> ${data.fullName}</p>
+                        <p><strong>Email:</strong> ${data.email}</p>
+                        <p><strong>Phone:</strong> ${data.phone}</p>
+                        <p><strong>Address:</strong> ${data.address}</p>
+                        <p><strong>Zip Code:</strong> ${data.zipCode}</p>
+                    </div>
+                    <div class="review-section">
+                        <h4>Donation Details</h4>
+                        <p><strong>Clothing Types:</strong> ${clothingTypesList}</p>
+                        <p><strong>Condition:</strong> ${data.condition}</p>
+                        <p><strong>Quantity:</strong> ${data.quantity}</p>
+                        <p><strong>Collection Method:</strong> ${data.preferredCollection}</p>
+                        <p><strong>Preferred Date:</strong> ${formattedDate}</p>
+                        ${data.additionalInfo ? `<p><strong>Additional Information:</strong> ${data.additionalInfo}</p>` : ''}
+                    </div>
+                `;
+            };
 
+            // Function to show success page
+            const showSuccessPage = () => {
+                donationFormPage.style.display = 'none';
+                successPage.style.display = 'block';
+            };
+
+            // Function to reset form and go back to form page
+            window.resetForm = () => {
+                clothDonationForm.reset();
+                successPage.style.display = 'none';
+                donationFormPage.style.display = 'block';
+                reviewContainer.style.display = 'none';
+                clothDonationForm.style.display = 'block';
+            };
+
+            // Button to edit form (return to form view)
+            editFormBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                reviewContainer.style.display = 'none';
+                clothDonationForm.style.display = 'block';
+            });
+            
+            // Button to submit final donation after review
+            // Button to submit final donation after review
+submitFinalBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    
+    try {
+        // Add submission date and status
+        formDataObj.submitDate = new Date().toISOString();
+        formDataObj.status = 'new';
+        
+        // Save to Firestore
+        await db.collection("clothDonations").add(formDataObj);
+        
+        // Show success page
+        showSuccessPage();
+        
+    } catch (error) {
+        console.error('Error submitting donation:', error);
+        alert('There was an error processing your donation. Please try again later.');
+    }
+});
+            
+            // Initial form submission - show review
+            clothDonationForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Validate form
+                if (!validateForm()) {
+                    return;
+                }
+                
+                // Get form values
+                formDataObj = {
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    zipCode: document.getElementById('zipCode').value,
+                    clothingTypes: Array.from(document.querySelectorAll('input[name="clothingTypes"]:checked')).map(el => el.value),
+                    condition: document.getElementById('condition').value,
+                    quantity: document.getElementById('quantity').value,
+                    preferredCollection: document.getElementById('preferredCollection').value,
+                    preferredDate: document.getElementById('preferredDate').value,
+                    additionalInfo: document.getElementById('additionalInfo').value,
+                    consentGiven: true
+                };
+                
+                // Generate review content
+                reviewContent.innerHTML = formatReviewContent(formDataObj);
+                
+                // Hide form, show review
+                clothDonationForm.style.display = 'none';
+                reviewContainer.style.display = 'block';
+                
+                // Scroll to review container
+                reviewContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Set minimum date for the date picker to be today
+            const preferredDate = document.getElementById('preferredDate');
+            if (preferredDate) {
+                const today = new Date().toISOString().split('T')[0];
+                preferredDate.setAttribute('min', today);
+            }
+        });
+        
+    // Your web app's Firebase configuration
+    
+    // Initialize Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDamfMwJ3tdO1YduL6IfJ-nK_xpWwzfR3I",
+        authDomain: "unityserve-demo-2f30f.firebaseapp.com",
+        databaseURL: "https://unityserve-demo-2f30f-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "unityserve-demo-2f30f",
+        storageBucket: "unityserve-demo-2f30f.appspot.com",
+        messagingSenderId: "365353192644",
+        appId: "1:365353192644:web:104908f7e2c22db1d44d91",
+        measurementId: "G-J4SBKX337D"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // [Previous code remains the same until submitFinalBtn event listener]
+        
+        // Button to submit final donation after review
+        submitFinalBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            // Show loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.innerHTML = '<div class="spinner"></div>';
+            document.body.appendChild(loadingDiv);
+            
+            try {
+                // Add submission date and status
+                formDataObj.submitDate = new Date().toISOString();
+                formDataObj.status = 'new';
+                
+                // Save to Firestore
+                await db.collection("clothDonations").add(formDataObj);
+                
+                // Show success page
+                showSuccessPage();
+                
+            } catch (error) {
+                console.error('Error submitting donation:', error);
+                alert('There was an error processing your donation. Please try again later.');
+            } finally {
+                // Remove loading indicator
+                document.body.removeChild(loadingDiv);
+            }
+        });
+        
+        // [Rest of your existing code]
+    });
+
+
+</script>
 </body>
 </html>
