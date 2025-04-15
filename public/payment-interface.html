@@ -1065,3 +1065,106 @@
             }
         }
     </script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+    <script>
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDamfMwJ3tdO1YduL6IfJ-nK_xpWwzfR3I",
+        authDomain: "unityserve-demo-2f30f.firebaseapp.com",
+        projectId: "unityserve-demo-2f30f",
+        storageBucket: "unityserve-demo-2f30f.appspot.com",
+        messagingSenderId: "365353192644",
+        appId: "1:365353192644:web:104908f7e2c22db1d44d91",
+        measurementId: "G-J4SBKX337D"
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      // Override existing verificationForm submit handler to save to Firestore
+      verificationForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const name = nameInput.value.trim();
+        const transactionId = transactionIdInput.value.trim();
+        const paymentMethod = paymentMethodSelect.value;
+        const amount = parseFloat(amountInput.value);
+
+        if (!name || !transactionId || !paymentMethod || !amount || amount <= 0) {
+          verificationError.style.display = 'flex';
+          return;
+        }
+
+        verificationError.style.display = 'none';
+
+        try {
+          // Save transaction to Firestore
+          const docRef = await db.collection('payments').add({
+            name,
+            transactionId,
+            paymentMethod,
+            amount,
+            date: new Date().toISOString()
+          });
+
+          // Add transaction to local array for UI update
+          const transaction = {
+            id: docRef.id,
+            name,
+            amount,
+            transactionId,
+            paymentMethod,
+            date: new Date().toLocaleString()
+          };
+          transactions.push(transaction);
+
+          // Update receipt in step 3
+          receiptTransactionId.textContent = transactionId;
+          receiptAmount.textContent = `₹${amount}`;
+          receiptName.textContent = name;
+          receiptPaymentMethod.textContent = paymentMethod;
+          receiptDatetime.textContent = new Date().toLocaleString();
+
+          // Update transaction history UI
+          updateTransactionHistory();
+
+          // Show step 3
+          step2.classList.remove('active');
+          step3.classList.add('active');
+        } catch (error) {
+          console.error("Error adding document: ", error);
+          alert("Failed to save transaction. Please try again.");
+        }
+      });
+
+      // Load transactions from Firestore on page load
+      async function loadTransactions() {
+        try {
+          const querySnapshot = await db.collection('payments').orderBy('date', 'desc').get();
+          transactions = [];
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            transactions.push({
+              id: doc.id,
+              name: data.name,
+              amount: data.amount,
+              transactionId: data.transactionId,
+              paymentMethod: data.paymentMethod,
+              date: new Date(data.date).toLocaleString()
+            });
+          });
+          updateTransactionHistory();
+        } catch (error) {
+          console.error("Error loading transactions: ", error);
+        }
+      }
+
+      // Call loadTransactions on page load
+      window.addEventListener('load', () => {
+        loadTransactions();
+      });
+    </script>
