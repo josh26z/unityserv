@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Dashboard - Unity Serve</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --error-color: #e74c3c;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .sidebar {
+            background-color: var(--secondary-color);
+            min-height: 100vh;
+            color: white;
+            position: fixed;
+            width: 250px;
+            padding-top: 20px;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .sidebar .logo {
+            padding: 0 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .sidebar .logo img {
+            height: 50px;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            transition: var(--transition);
+            border-radius: 0;
+            margin-bottom: 5px;
+        }
+
+        .sidebar .nav-link:hover, 
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .header {
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--secondary-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info .user-name {
+            font-weight: 600;
+        }
+
+        .user-info .user-role {
+            font-size: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .badge-pending {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+
+        .badge-approved {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .badge-rejected {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            margin-right: 5px;
+        }
+
+        .view-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .view-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .accept-btn {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .accept-btn:hover {
+            background-color: #27ae60;
+        }
+
+        .decline-btn {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .decline-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-card h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .stats-card .stats-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stats-card .stats-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .modal-header {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            width: 150px;
+            min-width: 150px;
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--secondary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-login:hover {
+            background-color: #2980b9;
+        }
+
+        .login-error {
+            color: var(--error-color);
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        #loadingIndicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Switch styling for availability toggle */
+        .form-switch {
+            display: inline-block;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .form-switch i {
+            position: relative;
+            display: inline-block;
+            margin-right: .5rem;
+            width: 46px;
+            height: 26px;
+            background-color: #e6e6e6;
+            border-radius: 23px;
+            vertical-align: text-bottom;
+            transition: all 0.3s linear;
+        }
+
+        .form-switch i::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 42px;
+            height: 22px;
+            background-color: #fff;
+            border-radius: 11px;
+            transform: translate3d(2px, 2px, 0) scale3d(1, 1, 1);
+            transition: all 0.25s linear;
+        }
+
+        .form-switch i::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 22px;
+            height: 22px;
+            background-color: #fff;
+            border-radius: 11px;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+            transform: translate3d(2px, 2px, 0);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .form-switch:active i::after {
+            width: 28px;
+            transform: translate3d(2px, 2px, 0);
+        }
+
+        .form-switch:active input:checked + i::after { transform: translate3d(16px, 2px, 0); }
+
+        .form-switch input { display: none; }
+
+        .form-switch input:checked + i { background-color: var(--success-color); }
+
+        .form-switch input:checked + i::before {
+            transform: translate3d(18px, 2px, 0) scale3d(0, 0, 0);
+        }
+
+        .form-switch input:checked + i::after { transform: translate3d(22px, 2px, 0); }
+
+        .availability-toggle {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+        }
+        
+        .availability-status {
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .availability-status.available {
+            color: var(--success-color);
+        }
+
+        .availability-status.unavailable {
+            color: var(--error-color);
+        }
+
+        .day-schedule {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .day-schedule:last-child {
+            border-bottom: none;
+        }
+
+        .day-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: capitalize;
+        }
+
+        .time-select {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .credentials-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .skills-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .skill-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .skill-checkbox input {
+            margin-right: 10px;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+
+            .sidebar .nav-link span {
+                display: none;
+            }
+
+            .sidebar .nav-link i {
+                margin-right: 0;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .sidebar .logo {
+                padding: 10px;
+            }
+
+            .sidebar .logo img {
+                height: 30px;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Login Section -->
+    <div id="loginSection" style="display: block;">
+        <div class="login-container">
+            <h2>Volunteer Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn-login">Login</button>
+                <div id="loginError" class="login-error">Invalid email or password</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardSection" style="display: none;">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="https://placehold.co/100x50/2c3e50/FFFFFF.png?text=Unity+Serve" alt="Unity Serve Logo">
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#overview" onclick="showTab('overview')">
+                        <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#clothDonations" onclick="showTab('clothDonations')">
+                        <i class="bi bi-bag"></i> <span>Cloth Donations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#educationDonations" onclick="showTab('educationDonations')">
+                        <i class="bi bi-book"></i> <span>Education Donations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#foodDonations" onclick="showTab('foodDonations')">
+                        <i class="bi bi-egg-fried"></i> <span>Food Donations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#healthcareRequests" onclick="showTab('healthcareRequests')">
+                        <i class="bi bi-heart-pulse"></i> <span>Healthcare Requests</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#ngoRequests" onclick="showTab('ngoRequests')">
+                        <i class="bi bi-building"></i> <span>NGO Requests</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#availability" onclick="showTab('availability')">
+                        <i class="bi bi-calendar-check"></i> <span>Availability</span>
+                    </a>
+                </li>
+                <li class="nav-item mt-auto">
+                    <a class="nav-link text-danger" href="#" id="logoutBtn">
+                        <i class="bi bi-box-arrow-right"></i> <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1 id="pageTitle">Dashboard Overview</h1>
+                <div class="user-info">
+                    <div>
+                        <div class="user-name" id="userName">John Doe</div>
+                        <div class="user-role">Volunteer</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Availability Toggle -->
+            <div class="availability-toggle">
+                <label class="form-switch">
+                    <input type="checkbox" id="availabilityToggle">
+                    <i></i>
+                </label>
+                <div id="availabilityStatus" class="availability-status unavailable">Currently Unavailable</div>
+            </div>
+
+            <!-- Dashboard Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3>Cloth Donations</h3>
+                            <div class="stats-number" id="clothCount">0</div>
+                            <div class="stats-label">Total Donations</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3>Education Donations</h3>
+                            <div class="stats-number" id="educationCount">0</div>
+                            <div class="stats-label">Total Donations</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3>Food Donations</h3>
+                            <div class="stats-number" id="foodCount">0</div>
+                            <div class="stats-label">Total Donations</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3>Healthcare Requests</h3>
+                            <div class="stats-number" id="healthcareCount">0</div>
+                            <div class="stats-label">Total Requests</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        Recent Assignments
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Assignment Type</th>
+                                    <th>NGO</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentAssignmentsTable">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cloth Donations Tab -->
+            <div id="clothDonations" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        Cloth Donations List
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Donor Name</th>
+                                    <th>Clothing Type</th>
+                                    <th>Quantity</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clothDonationsTable">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education Donations Tab -->
+            <div id="educationDonations" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        Education Donations List
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Donor Name</th>
+                                    <th>Category</th>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="educationDonationsTable">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Food Donations Tab -->
+            <div id="foodDonations" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        Food Donations List
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Donor Name</th>
+                                    <th>Category</th>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="foodDonationsTable">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Healthcare Requests Tab -->
+            <div id="healthcareRequests" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        Healthcare Requests List
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Requester Name</th>
+                                    <th>Service Type</th>
+                                    <th>Service Name</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="healthcareRequestsTable">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NGO Requests Tab -->
+            <div id="ngoRequests" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        NGO Requests List
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>NGO Name</th>
+                                    <th>Request Type</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ngoRequestsTable">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Availability Tab -->
+            <div id="availability" class="tab-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Weekly Availability Schedule
+                            </div>
+                            <div class="card-body">
+                                <div class="weekly-schedule">
+                                    <div class="day-schedule">
+                                        <div class="day-name">Monday</div>
+                                        <div class="time-select">
+                                            <select class="form-select start-time" data-day="monday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="9:00 AM">9:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                            <span>to</span>
+                                            <select class="form-select end-time" data-day="monday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="10:00 AM">10:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="day-schedule">
+                                        <div class="day-name">Tuesday</div>
+                                        <div class="time-select">
+                                            <select class="form-select start-time" data-day="tuesday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="9:00 AM">9:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                            <span>to</span>
+                                            <select class="form-select end-time" data-day="tuesday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="10:00 AM">10:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="day-schedule">
+                                        <div class="day-name">Wednesday</div>
+                                        <div class="time-select">
+                                            <select class="form-select start-time" data-day="wednesday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="9:00 AM">9:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                            <span>to</span>
+                                            <select class="form-select end-time" data-day="wednesday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="10:00 AM">10:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="day-schedule">
+                                        <div class="day-name">Thursday</div>
+                                        <div class="time-select">
+                                            <select class="form-select start-time" data-day="thursday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="9:00 AM">9:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                            <span>to</span>
+                                            <select class="form-select end-time" data-day="thursday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="10:00 AM">10:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="day-schedule">
+                                        <div class="day-name">Friday</div>
+                                        <div class="time-select">
+                                            <select class="form-select start-time" data-day="friday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="9:00 AM">9:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                            <span>to</span>
+                                            <select class="form-select end-time" data-day="friday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="10:00 AM">10:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="day-schedule">
+                                        <div class="day-name">Saturday</div>
+                                        <div class="time-select">
+                                            <select class="form-select start-time" data-day="saturday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="9:00 AM">9:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                            <span>to</span>
+                                            <select class="form-select end-time" data-day="saturday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="10:00 AM">10:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="day-schedule">
+                                        <div class="day-name">Sunday</div>
+                                        <div class="time-select">
+                                            <select class="form-select start-time" data-day="sunday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="9:00 AM">9:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                            <span>to</span>
+                                            <select class="form-select end-time" data-day="sunday">
+                                                <option value="Not Available">Not Available</option>
+                                                <option value="10:00 AM">10:00 AM</option>
+                                                <!-- ... other options ... -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button id="saveScheduleBtn" class="btn btn-primary mt-3">Save Schedule</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Skills & Preferences
+                            </div>
+                            <div class="card-body">
+                                <h5 class="mb-3">Areas of Interest</h5>
+                                <div class="skills-grid mb-4">
+                                    <div class="skill-checkbox">
+                                        <input type="checkbox" id="food" class="skill-check" value="food">
+                                        <label for="food">Food Distribution</label>
+                                    </div>
+                                    <div class="skill-checkbox">
+                                        <input type="checkbox" id="clothing" class="skill-check" value="clothing">
+                                        <label for="clothing">Clothing Distribution</label>
+                                    </div>
+                                    <div class="skill-checkbox">
+                                        <input type="checkbox" id="education" class="skill-check" value="education">
+                                        <label for="education">Education Support</label>
+                                    </div>
+                                    <div class="skill-checkbox">
+                                        <input type="checkbox" id="healthcare" class="skill-check" value="healthcare">
+                                        <label for="healthcare">Healthcare Assistance</label>
+                                    </div>
+                                    <div class="skill-checkbox">
+                                        <input type="checkbox" id="driving" class="skill-check" value="driving">
+                                        <label for="driving">Driving/Transportation</label>
+                                    </div>
+                                    <div class="skill-checkbox">
+                                        <input type="checkbox" id="administrative" class="skill-check" value="administrative">
+                                        <label for="administrative">Administrative Support</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="specialSkills" class="form-label">Special Skills (Optional)</label>
+                                    <textarea id="specialSkills" class="form-control" rows="3" placeholder="List any special skills you have that may be helpful..."></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="transportation" class="form-label">Transportation</label>
+                                    <select id="transportation" class="form-select">
+                                        <option value="I don't have transportation">I don't have transportation</option>
+                                        <option value="I have my own vehicle">I have my own vehicle</option>
+                                        <option value="I can use public transportation">I can use public transportation</option>
+                                    </select>
+                                </div>
+                                
+                                <button id="savePreferencesBtn" class="btn btn-primary">Save Preferences</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donation Detail Modal -->
+    <div class="modal fade" id="donationDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="donationModalTitle">Donation Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="donationModalBody">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap and Other Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    
+    <script>
+        
+        // Firebase Configuration
+        const firebaseConfig = {
+  apiKey: "AIzaSyDamfMwJ3tdO1YduL6IfJ-nK_xpWwzfR3I",
+  authDomain: "unityserve-demo-2f30f.firebaseapp.com",
+  databaseURL: "https://unityserve-demo-2f30f-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "unityserve-demo-2f30f",
+  storageBucket: "unityserve-demo-2f30f.firebasestorage.app",
+  messagingSenderId: "365353192644",
+  appId: "1:365353192644:web:104908f7e2c22db1d44d91",
+  measurementId: "G-J4SBKX337D"
+};
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        
+        // DOM Elements
+        const loginSection = document.getElementById('loginSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userName = document.getElementById('userName');
+        const availabilityToggle = document.getElementById('availabilityToggle');
+        const availabilityStatus = document.getElementById('availabilityStatus');
+        const saveScheduleBtn = document.getElementById('saveScheduleBtn');
+        const savePreferencesBtn = document.getElementById('savePreferencesBtn');
+        
+        // Data Storage
+        let currentUser = null;
+        let volunteerProfile = null;
+        let clothDonations = [];
+        let educationDonations = [];
+        let foodDonations = [];
+        let healthcareRequests = [];
+        let ngoRequests = [];
+        let recentAssignments = [];
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+            
+            loginForm.addEventListener('submit', handleLogin);
+            logoutBtn.addEventListener('click', handleLogout);
+            availabilityToggle.addEventListener('change', toggleAvailability);
+            saveScheduleBtn.addEventListener('click', saveSchedule);
+            savePreferencesBtn.addEventListener('click', savePreferences);
+        });
+        
+        function initApp() {
+    showLoading();
+    
+    // Auth state change listener
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            currentUser = user;
+            
+            // Bypass role check for testing - comment this out in production!
+            volunteerProfile = {
+                name: "Test Volunteer",
+                role: "volunteer",
+                isAvailable: true,
+                availabilitySchedule: {
+                    monday: { start: "9:00 AM", end: "5:00 PM" },
+                    tuesday: { start: "9:00 AM", end: "5:00 PM" },
+                    wednesday: { start: "Not Available", end: "Not Available" },
+                    thursday: { start: "10:00 AM", end: "4:00 PM" },
+                    friday: { start: "9:00 AM", end: "5:00 PM" },
+                    saturday: { start: "Not Available", end: "Not Available" },
+                    sunday: { start: "Not Available", end: "Not Available" }
+                },
+                skills: ["food", "clothing"],
+                specialSkills: "Experience with food distribution",
+                transportation: "I have my own vehicle"
+            };
+            
+            displayDashboard();
+            loadDashboardData();
+            return;
+            
+            // Original role check code below - keep this for production
+            db.collection('users').doc(user.uid).get()
+                .then(doc => {
+                    if (doc.exists && doc.data().role === 'volunteer') {
+                        volunteerProfile = doc.data();
+                        displayDashboard();
+                        loadDashboardData();
+                    } else {
+                        alert("You don't have permission to access this dashboard.");
+                        auth.signOut();
+                        hideLoading();
+                    }
+                })
+                .catch(error => {
+                    console.error("Error getting user data: ", error);
+                    hideLoading();
+                });
+        } else {
+            // User is signed out
+            loginSection.style.display = 'block';
+            dashboardSection.style.display = 'none';
+            hideLoading();
+        }
+    });
+}
+        
+        // Login handler
+        function handleLogin(e) {
+    e.preventDefault();
+    showLoading();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    auth.signInWithEmailAndPassword(email, password)
+        .catch(error => {
+            if (error.code === 'auth/user-not-found') {
+                return auth.createUserWithEmailAndPassword(email, password)
+                    .then(userCredential => {
+                        // Create user document
+                        return db.collection('users').doc(userCredential.user.uid).set({
+                            name: "Test Volunteer",
+                            role: "volunteer",
+                            isAvailable: false,
+                            availabilitySchedule: {}, // Initialize empty schedule
+                            skills: [],
+                            specialSkills: "",
+                            transportation: ""
+                        }).then(() => {
+                            console.log("User document created successfully");
+                            return userCredential;
+                        });
+                    });
+            }
+            throw error;
+        })
+        .then(userCredential => {
+            // Ensure document exists after login
+            return db.collection('users').doc(userCredential.user.uid).get()
+                .then(doc => {
+                    if (!doc.exists) {
+                        // Create document if it doesn't exist
+                        return db.collection('users').doc(userCredential.user.uid).set({
+                            name: "Test Volunteer",
+                            role: "volunteer",
+                            isAvailable: false,
+                            availabilitySchedule: {},
+                            skills: [],
+                            specialSkills: "",
+                            transportation: ""
+                        });
+                    }
+                });
+        })
+        .catch(error => {
+            console.error("Login error:", error.code, error.message);
+            loginError.textContent = getFriendlyErrorMessage(error);
+            loginError.style.display = 'block';
+            hideLoading();
+        });
+}
+
+// Helper function to map Firebase error codes to user-friendly messages
+function getFriendlyErrorMessage(error) {
+    switch (error.code) {
+        case 'auth/invalid-email':
+            return 'Invalid email format.';
+        case 'auth/user-disabled':
+            return 'This account has been disabled.';
+        case 'auth/user-not-found':
+            return 'No account found with this email.';
+        case 'auth/wrong-password':
+            return 'Incorrect password.';
+        default:
+            return 'An error occurred during login. Please try again.';
+    }
+}
+
+        
+        // Logout handler
+        function handleLogout() {
+            auth.signOut()
+                .then(() => {
+                    // Reset data
+                    currentUser = null;
+                    volunteerProfile = null;
+                    clothDonations = [];
+                    educationDonations = [];
+                    foodDonations = [];
+                    healthcareRequests = [];
+                    ngoRequests = [];
+                    recentAssignments = [];
+                })
+                .catch(error => {
+                    console.error("Logout error: ", error);
+                });
+        }
+        
+        // Display the dashboard
+        function displayDashboard() {
+            loginSection.style.display = 'none';
+            dashboardSection.style.display = 'block';
+            
+            // Set user name
+            userName.textContent = volunteerProfile.name || currentUser.email;
+            
+            // Set availability toggle
+            availabilityToggle.checked = volunteerProfile.isAvailable || false;
+            if (volunteerProfile.isAvailable) {
+                availabilityStatus.textContent = 'Currently Available';
+                availabilityStatus.classList.remove('unavailable');
+                availabilityStatus.classList.add('available');
+            } else {
+                availabilityStatus.textContent = 'Currently Unavailable';
+                availabilityStatus.classList.remove('available');
+                availabilityStatus.classList.add('unavailable');
+            }
+            
+            // Load availability schedule
+            if (volunteerProfile.availabilitySchedule) {
+                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                
+                days.forEach(day => {
+                    const schedule = volunteerProfile.availabilitySchedule[day];
+                    if (schedule) {
+                        const startTimeSelect = document.querySelector(`.start-time[data-day="${day}"]`);
+                        const endTimeSelect = document.querySelector(`.end-time[data-day="${day}"]`);
+                        
+                        if (startTimeSelect && schedule.start) startTimeSelect.value = schedule.start;
+                        if (endTimeSelect && schedule.end) endTimeSelect.value = schedule.end;
+                    }
+                });
+            }
+            
+            // Load skills and preferences
+            if (volunteerProfile.skills) {
+                volunteerProfile.skills.forEach(skill => {
+                    const checkbox = document.getElementById(skill);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+            
+            if (volunteerProfile.specialSkills) {
+                document.getElementById('specialSkills').value = volunteerProfile.specialSkills;
+            }
+            
+            if (volunteerProfile.transportation) {
+                document.getElementById('transportation').value = volunteerProfile.transportation;
+            }
+        }
+        
+        // Load dashboard data
+        function loadDashboardData() {
+            // Load donation counts
+            db.collection('clothDonations').get()
+                .then(snapshot => {
+                    clothDonations = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    document.getElementById('clothCount').textContent = clothDonations.length;
+                    populateClothDonationsTable();
+                })
+                .catch(error => {
+                    console.error("Error getting cloth donations: ", error);
+                });
+                
+            db.collection('educationDonations').get()
+                .then(snapshot => {
+                    educationDonations = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    document.getElementById('educationCount').textContent = educationDonations.length;
+                    populateEducationDonationsTable();
+                })
+                .catch(error => {
+                    console.error("Error getting education donations: ", error);
+                });
+                
+            db.collection('foodDonations').get()
+                .then(snapshot => {
+                    foodDonations = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    document.getElementById('foodCount').textContent = foodDonations.length;
+                    populateFoodDonationsTable();
+                })
+                .catch(error => {
+                    console.error("Error getting food donations: ", error);
+                });
+                
+            db.collection('healthcareRequests').get()
+                .then(snapshot => {
+                    healthcareRequests = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    document.getElementById('healthcareCount').textContent = healthcareRequests.length;
+                    populateHealthcareRequestsTable();
+                })
+                .catch(error => {
+                    console.error("Error getting healthcare requests: ", error);
+                });
+            
+            // Get NGO requests for this volunteer
+            db.collection('ngoRequests')
+                .where('targetVolunteerId', '==', currentUser.uid)
+                .get()
+                .then(snapshot => {
+                    ngoRequests = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    populateNGORequestsTable();
+                })
+                .catch(error => {
+                    console.error("Error getting NGO requests: ", error);
+                });
+            
+            // Get recent assignments
+            db.collection('assignments')
+                .where('volunteerId', '==', currentUser.uid)
+                .orderBy('assignedDate', 'desc')
+                .limit(5)
+                .get()
+                .then(snapshot => {
+                    recentAssignments = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    populateRecentAssignmentsTable();
+                })
+                .catch(error => {
+                    console.error("Error getting recent assignments: ", error);
+                });
+                
+            hideLoading();
+        }
+        
+        // Populate tables for different donation types
+        function populateClothDonationsTable() {
+            const tableBody = document.getElementById('clothDonationsTable');
+            tableBody.innerHTML = '';
+            
+            clothDonations.forEach(donation => {
+                const row = document.createElement('tr');
+                
+                const formattedDate = donation.submitDate ? new Date(donation.submitDate.seconds * 1000).toLocaleDateString() : 'Unknown';
+                
+                row.innerHTML = `
+                    <td>${donation.fullName}</td>
+                    <td>${donation.clothingTypes.join(', ')}</td>
+                    <td>${donation.quantity}</td>
+                    <td>${formattedDate}</td>
+                    <td><span class="badge badge-${getBadgeClass(donation.status)}">${donation.status}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewDonationDetails('cloth', '${donation.id}')">View Details</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function populateEducationDonationsTable() {
+            const tableBody = document.getElementById('educationDonationsTable');
+            tableBody.innerHTML = '';
+            
+            educationDonations.forEach(donation => {
+                const row = document.createElement('tr');
+                
+                const formattedDate = donation.timestamp ? new Date(donation.timestamp.seconds * 1000).toLocaleDateString() : 'Unknown';
+                
+                row.innerHTML = `
+                    <td>${donation.donorName}</td>
+                    <td>${donation.categoryName || donation.category}</td>
+                    <td>${donation.itemName || donation.item}</td>
+                    <td>${donation.quantity}</td>
+                    <td>${formattedDate}</td>
+                    <td><span class="badge badge-${getBadgeClass(donation.status)}">${donation.status}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewDonationDetails('education', '${donation.id}')">View Details</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function populateFoodDonationsTable() {
+            const tableBody = document.getElementById('foodDonationsTable');
+            tableBody.innerHTML = '';
+            
+            foodDonations.forEach(donation => {
+                const row = document.createElement('tr');
+                
+                const formattedDate = donation.timestamp ? new Date(donation.timestamp.seconds * 1000).toLocaleDateString() : 'Unknown';
+                
+                row.innerHTML = `
+                    <td>${donation.donorName}</td>
+                    <td>${donation.categoryValue || donation.category}</td>
+                    <td>${donation.itemValue || donation.item}</td>
+                    <td>${donation.quantity}</td>
+                    <td>${formattedDate}</td>
+                    <td><span class="badge badge-${getBadgeClass(donation.status)}">${donation.status}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewDonationDetails('food', '${donation.id}')">View Details</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function populateHealthcareRequestsTable() {
+            const tableBody = document.getElementById('healthcareRequestsTable');
+            tableBody.innerHTML = '';
+            
+            healthcareRequests.forEach(request => {
+                const row = document.createElement('tr');
+                
+                const formattedDate = request.timestamp ? new Date(request.timestamp.seconds * 1000).toLocaleDateString() : 'Unknown';
+                
+                row.innerHTML = `
+                    <td>${request.name}</td>
+                    <td>${request.serviceType}</td>
+                    <td>${request.serviceName}</td>
+                    <td>${formattedDate}</td>
+                    <td><span class="badge badge-${getBadgeClass(request.status)}">${request.status}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewDonationDetails('healthcare', '${request.id}')">View Details</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function populateNGORequestsTable() {
+            const tableBody = document.getElementById('ngoRequestsTable');
+            tableBody.innerHTML = '';
+            
+            ngoRequests.forEach(request => {
+                const row = document.createElement('tr');
+                
+                const formattedDate = request.timestamp ? new Date(request.timestamp.seconds * 1000).toLocaleDateString() : 'Unknown';
+                
+                let actionButtons = '';
+                if (request.status === 'pending') {
+                    actionButtons = `
+                        <button class="action-btn accept-btn" onclick="respondToNgoRequest('${request.id}', 'accepted')">Accept</button>
+                        <button class="action-btn decline-btn" onclick="respondToNgoRequest('${request.id}', 'declined')">Decline</button>
+                    `;
+                }
+                
+                row.innerHTML = `
+                    <td>${request.ngoName}</td>
+                    <td>${request.requestType}</td>
+                    <td>${request.description}</td>
+                    <td>${formattedDate}</td>
+                    <td><span class="badge badge-${getBadgeClass(request.status)}">${request.status}</span></td>
+                    <td>
+                        ${actionButtons}
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function populateRecentAssignmentsTable() {
+            const tableBody = document.getElementById('recentAssignmentsTable');
+            tableBody.innerHTML = '';
+            
+            if (recentAssignments.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="4" class="text-center">No recent assignments</td>';
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            recentAssignments.forEach(assignment => {
+                const row = document.createElement('tr');
+                
+                const formattedDate = assignment.assignedDate ? new Date(assignment.assignedDate.seconds * 1000).toLocaleDateString() : 'Unknown';
+                
+                row.innerHTML = `
+                    <td>${formatDonationType(assignment.donationType)}</td>
+                    <td>${assignment.ngoName}</td>
+                    <td>${formattedDate}</td>
+                    <td><span class="badge badge-${getBadgeClass(assignment.status)}">${assignment.status}</span></td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Show tab content
+        function showTab(tabId) {
+            // Update page title
+            const pageTitle = document.getElementById('pageTitle');
+            
+            switch(tabId) {
+                case 'overview':
+                    pageTitle.textContent = 'Dashboard Overview';
+                    break;
+                case 'clothDonations':
+                    pageTitle.textContent = 'Cloth Donations';
+                    break;
+                case 'educationDonations':
+                    pageTitle.textContent = 'Education Donations';
+                    break;
+                case 'foodDonations':
+                    pageTitle.textContent = 'Food Donations';
+                    break;
+                case 'healthcareRequests':
+                    pageTitle.textContent = 'Healthcare Requests';
+                    break;
+                case 'ngoRequests':
+                    pageTitle.textContent = 'NGO Requests';
+                    break;
+                case 'availability':
+                    pageTitle.textContent = 'Availability Settings';
+                    break;
+                default:
+                    pageTitle.textContent = 'Dashboard';
+            }
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            document.querySelector(`.nav-link[href="#${tabId}"]`).classList.add('active');
+        }
+        
+        // Respond to NGO request
+        function respondToNgoRequest(requestId, status) {
+            showLoading();
+            
+            const request = ngoRequests.find(r => r.id === requestId);
+            if (!request) {
+                hideLoading();
+                return;
+            }
+            
+            db.collection('ngoRequests').doc(requestId).update({
+                status: status,
+                responseTimestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                // Update local data
+                request.status = status;
+                populateNGORequestsTable();
+                
+                alert(`Request ${status === 'accepted' ? 'accepted' : 'declined'} successfully!`);
+                hideLoading();
+            })
+            .catch((error) => {
+                console.error("Error responding to request: ", error);
+                alert("Failed to respond to request. Please try again.");
+                hideLoading();
+            });
+        }
+        
+        function toggleAvailability() {
+    const isAvailable = availabilityToggle.checked;
+    let isToggling = false;
+
+function toggleAvailability() {
+    if (isToggling) return; // Prevent multiple toggles
+    isToggling = true;
+
+    const isAvailable = availabilityToggle.checked;
+
+    // Update UI first
+    if (isAvailable) {
+        availabilityStatus.textContent = 'Currently Available';
+        availabilityStatus.classList.remove('unavailable');
+        availabilityStatus.classList.add('available');
+    } else {
+        availabilityStatus.textContent = 'Currently Unavailable';
+        availabilityStatus.classList.remove('available');
+        availabilityStatus.classList.add('unavailable');
+    }
+
+    // Check if document exists
+    db.collection('users').doc(currentUser.uid).get()
+        .then(doc => {
+            if (!doc.exists) {
+                return db.collection('users').doc(currentUser.uid).set({
+                    name: currentUser.email.split('@')[0] || "Volunteer",
+                    role: "volunteer",
+                    isAvailable: isAvailable,
+                    availabilitySchedule: {},
+                    skills: [],
+                    specialSkills: "",
+                    transportation: ""
+                });
+            } else {
+                return db.collection('users').doc(currentUser.uid).update({
+                    isAvailable: isAvailable
+                });
+            }
+        })
+        .then(() => {
+            console.log("Availability updated successfully");
+            volunteerProfile.isAvailable = isAvailable;
+        })
+        .catch(error => {
+            console.error("Error updating availability: ", error);
+            availabilityToggle.checked = !isAvailable;
+            if (!isAvailable) {
+                availabilityStatus.textContent = 'Currently Available';
+                availabilityStatus.classList.remove('unavailable');
+                availabilityStatus.classList.add('available');
+            } else {
+                availabilityStatus.textContent = 'Currently Unavailable';
+                availabilityStatus.classList.remove('available');
+                availabilityStatus.classList.add('unavailable');
+            }
+            alert("Failed to update availability. Please try again.");
+        })
+        .finally(() => {
+            isToggling = false; // Allow next toggle
+        });
+}
+
+    // Update UI first
+    if (isAvailable) {
+        availabilityStatus.textContent = 'Currently Available';
+        availabilityStatus.classList.remove('unavailable');
+        availabilityStatus.classList.add('available');
+    } else {
+        availabilityStatus.textContent = 'Currently Unavailable';
+        availabilityStatus.classList.remove('available');
+        availabilityStatus.classList.add('unavailable');
+    }
+
+    // Check if document exists
+    db.collection('users').doc(currentUser.uid).get()
+        .then(doc => {
+            if (!doc.exists) {
+                // Create document if it doesn't exist
+                return db.collection('users').doc(currentUser.uid).set({
+                    name: currentUser.email.split('@')[0] || "Volunteer",
+                    role: "volunteer",
+                    isAvailable: isAvailable,
+                    availabilitySchedule: {},
+                    skills: [],
+                    specialSkills: "",
+                    transportation: ""
+                });
+            } else {
+                // Update existing document
+                return db.collection('users').doc(currentUser.uid).update({
+                    isAvailable: isAvailable
+                });
+            }
+        })
+        .then(() => {
+            console.log("Availability updated successfully");
+            volunteerProfile.isAvailable = isAvailable;
+        })
+        .catch(error => {
+            console.error("Error updating availability: ", error);
+            // Revert UI if update fails
+            availabilityToggle.checked = !isAvailable;
+            if (!isAvailable) {
+                availabilityStatus.textContent = 'Currently Available';
+                availabilityStatus.classList.remove('unavailable');
+                availabilityStatus.classList.add('available');
+            } else {
+                availabilityStatus.textContent = 'Currently Unavailable';
+                availabilityStatus.classList.remove('available');
+                availabilityStatus.classList.add('unavailable');
+            }
+            alert("Failed to update availability. Please try again.");
+            
+        });
+        
+}
+        
+function saveSchedule() {
+    showLoading();
+    const schedule = {};
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+    try {
+        days.forEach(day => {
+            const startTimeSelect = document.querySelector(`.start-time[data-day="${day}"]`);
+            const endTimeSelect = document.querySelector(`.end-time[data-day="${day}"]`);
+
+            if (!startTimeSelect || !endTimeSelect) {
+                throw new Error(`Time select elements for ${day} not found`);
+            }
+
+            const startTime = startTimeSelect.value;
+            const endTime = endTimeSelect.value;
+
+            schedule[day] = {
+                start: startTime,
+                end: endTime
+            };
+        });
+
+        // Update in database
+        db.collection('users').doc(currentUser.uid).update({
+            availabilitySchedule: schedule
+        })
+        .then(() => {
+            alert("Schedule updated successfully!");
+            volunteerProfile.availabilitySchedule = schedule;
+            hideLoading();
+        })
+        .catch(error => {
+            console.error("Error updating schedule: ", error);
+            alert("Failed to update schedule. Please try again.");
+            hideLoading();
+        });
+    } catch (error) {
+        console.error("Error in saveSchedule: ", error);
+        alert("Failed to save schedule: " + error.message);
+        hideLoading();
+    }
+}
+        
+        function savePreferences() {
+            showLoading();
+            
+            // Get all checked skills
+            const skills = [];
+            document.querySelectorAll('.skill-check:checked').forEach(checkbox => {
+                skills.push(checkbox.value);
+            });
+            
+            const specialSkills = document.getElementById('specialSkills').value;
+            const transportation = document.getElementById('transportation').value;
+            
+            // Update in database
+            db.collection('users').doc(currentUser.uid).update({
+                skills: skills,
+                specialSkills: specialSkills,
+                transportation: transportation
+            })
+            .then(() => {
+                alert("Preferences updated successfully!");
+                // Update local profile
+                volunteerProfile.skills = skills;
+                volunteerProfile.specialSkills = specialSkills;
+                volunteerProfile.transportation = transportation;
+                hideLoading();
+            })
+            .catch((error) => {
+                console.error("Error updating preferences: ", error);
+                alert("Failed to update preferences. Please try again.");
+                hideLoading();
+            });
+        }
+        
+        // View donation details
+        function viewDonationDetails(type, id) {
+            let donationData;
+            let modalTitle;
+            let modalContent = '';
+            
+            // Find the donation/request
+            switch(type) {
+                case 'cloth':
+                    donationData = clothDonations.find(d => d.id === id);
+                    modalTitle = 'Cloth Donation Details';
+                    break;
+                case 'education':
+                    donationData = educationDonations.find(d => d.id === id);
+                    modalTitle = 'Education Donation Details';
+                    break;
+                case 'food':
+                    donationData = foodDonations.find(d => d.id === id);
+                    modalTitle = 'Food Donation Details';
+                    break;
+                case 'healthcare':
+                    donationData = healthcareRequests.find(r => r.id === id);
+                    modalTitle = 'Healthcare Request Details';
+                    break;
+                default:
+                    return;
+            }
+            
+            if (!donationData) {
+                return;
+            }
+            
+            // Set modal title
+            document.getElementById('donationModalTitle').textContent = modalTitle;
+            
+            // Format date
+            const timestamp = donationData.submitDate || donationData.timestamp;
+            const formattedDate = timestamp ? new Date(timestamp.seconds * 1000).toLocaleDateString() : 'Unknown';
+            
+            // Create content based on type
+            if (type === 'cloth') {
+                modalContent = `
+                    <div class="detail-row">
+                        <div class="detail-label">Donor Name:</div>
+                        <div class="detail-value">${donationData.fullName}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Contact Email:</div>
+                        <div class="detail-value">${donationData.email}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Contact Phone:</div>
+                        <div class="detail-value">${donationData.phone}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Address:</div>
+                        <div class="detail-value">${donationData.address}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Zip Code:</div>
+                        <div class="detail-value">${donationData.zipCode}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Clothing Types:</div>
+                        <div class="detail-value">${donationData.clothingTypes.join(', ')}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Condition:</div>
+                        <div class="detail-value">${donationData.condition}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Quantity:</div>
+                        <div class="detail-value">${donationData.quantity}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Preferred Collection:</div>
+                        <div class="detail-value">${donationData.preferredCollection}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Preferred Date:</div>
+                        <div class="detail-value">${donationData.preferredDate ? new Date(donationData.preferredDate.seconds * 1000).toLocaleDateString() : 'Not specified'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Additional Info:</div>
+                        <div class="detail-value">${donationData.additionalInfo || 'None'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Date Submitted:</div>
+                        <div class="detail-value">${formattedDate}</div>
+                    </div>
+                `;
+            } else if (type === 'education') {
+                modalContent = `
+                    <div class="detail-row">
+                        <div class="detail-label">Donor Name:</div>
+                        <div class="detail-value">${donationData.donorName}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Contact Email:</div>
+                        <div class="detail-value">${donationData.donorEmail}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Contact Phone:</div>
+                        <div class="detail-value">${donationData.donorPhone}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Category:</div>
+                        <div class="detail-value">${donationData.categoryName || donationData.category}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Item:</div>
+                        <div class="detail-value">${donationData.itemName || donationData.item}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Quantity:</div>
+                        <div class="detail-value">${donationData.quantity}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Date Submitted:</div>
+                        <div class="detail-value">${formattedDate}</div>
+                    </div>
+                `;
+            } else if (type === 'food') {
+                modalContent = `
+                    <div class="detail-row">
+                        <div class="detail-label">Donor Name:</div>
+                        <div class="detail-value">${donationData.donorName}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Contact Email:</div>
+                        <div class="detail-value">${donationData.donorEmail}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Contact Phone:</div>
+                        <div class="detail-value">${donationData.donorPhone}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Category:</div>
+                        <div class="detail-value">${donationData.categoryValue || donationData.category}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Item:</div>
+                        <div class="detail-value">${donationData.itemValue || donationData.item}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Quantity:</div>
+                        <div class="detail-value">${donationData.quantity}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Notes:</div>
+                        <div class="detail-value">${donationData.notes || 'None'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Date Submitted:</div>
+                        <div class="detail-value">${formattedDate}</div>
+                    </div>
+                `;
+            } else if (type === 'healthcare') {
+                modalContent = `
+                    <div class="detail-row">
+                        <div class="detail-label">Requester Name:</div>
+                        <div class="detail-value">${donationData.name}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Contact Email:</div>
+                        <div class="detail-value">${donationData.email}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Contact Phone:</div>
+                        <div class="detail-value">${donationData.phone}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Service Type:</div>
+                        <div class="detail-value">${donationData.serviceType || 'N/A'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Service Name:</div>
+                        <div class="detail-value">${donationData.serviceName || 'N/A'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Message:</div>
+                        <div class="detail-value">${donationData.message || 'None'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Date Submitted:</div>
+                        <div class="detail-value">${formattedDate}</div>
+                    </div>
+                `;
+            }
+            
+            // Set modal content
+            document.getElementById('donationModalBody').innerHTML = modalContent;
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('donationDetailModal'));
+            modal.show();
+        }
+        
+        // Helper functions
+        function showLoading() {
+            loadingIndicator.style.display = 'flex';
+        }
+        
+        function hideLoading() {
+            loadingIndicator.style.display = 'none';
+        }
+        
+        function getBadgeClass(status) {
+            switch(status.toLowerCase()) {
+                case 'pending':
+                    return 'pending';
+                case 'approved':
+                case 'completed':
+                case 'accepted':
+                    return 'approved';
+                case 'rejected':
+                case 'declined':
+                case 'canceled':
+                    return 'rejected';
+                default:
+                    return 'pending';
+            }
+        }
+        
+        function formatDonationType(type) {
+            switch(type) {
+                case 'cloth':
+                    return 'Cloth Donation';
+                case 'education':
+                    return 'Education Donation';
+                case 'food':
+                    return 'Food Donation';
+                case 'healthcare':
+                    return 'Healthcare Request';
+                default:
+                    return type;
+            }
+        }
+        
+        // Make functions available globally for event handlers
+        window.showTab = showTab;
+        window.respondToNgoRequest = respondToNgoRequest;
+        window.viewDonationDetails = viewDonationDetails;
+    </script>
+</body>
+</html>
